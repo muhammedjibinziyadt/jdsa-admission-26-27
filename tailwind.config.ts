@@ -2,7 +2,12 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  content: [
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   prefix: "",
   theme: {
     container: {
@@ -57,33 +62,69 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        gold: {
+          DEFAULT: "hsl(38 78% 52%)",
+          light: "hsl(45 85% 60%)",
+          dark: "hsl(35 70% 45%)",
+        },
+        emerald: {
+          DEFAULT: "hsl(158 64% 22%)",
+          light: "hsl(158 50% 35%)",
+          dark: "hsl(158 70% 15%)",
+        },
+        cream: {
+          DEFAULT: "hsl(42 40% 97%)",
+          dark: "hsl(42 30% 94%)",
+        },
+        teal: {
+          DEFAULT: "hsl(174 50% 40%)",
+          light: "hsl(174 45% 50%)",
+        },
+      },
+      fontFamily: {
+        display: ["Playfair Display", "serif"],
+        sans: ["Inter", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        "2xl": "1.5rem",
+        "3xl": "2rem",
+      },
+      boxShadow: {
+        soft: "0 4px 20px -4px hsla(158, 40%, 20%, 0.12)",
+        elevated: "0 12px 40px -8px hsla(158, 40%, 20%, 0.18)",
+        gold: "0 8px 30px -6px hsla(38, 78%, 52%, 0.35)",
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        fadeUp: {
+          from: { opacity: "0", transform: "translateY(30px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        float: {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-20px)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        shimmer: "shimmer 3s linear infinite",
+        "fade-up": "fadeUp 0.8s ease-out forwards",
+        float: "float 6s ease-in-out infinite",
       },
     },
   },
