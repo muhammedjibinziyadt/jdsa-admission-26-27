@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Menu, X, Settings, FileText } from "lucide-react";
 
 const navLinks = [
   { href: "#home", label: "ഹോം" },
   { href: "#about", label: "ഞങ്ങളെക്കുറിച്ച്" },
   { href: "#courses", label: "കോഴ്‌സുകൾ" },
   { href: "#gallery", label: "ഗാലറി" },
+  { href: "#route-map", label: "റൂട്ട് മാപ്പ്" },
   { href: "#contact", label: "ബന്ധപ്പെടുക" },
 ];
 
@@ -72,6 +74,25 @@ const Navigation = () => {
                 {link.label}
               </button>
             ))}
+            
+            {/* Admission & Admin Links */}
+            <Link
+              to="/admission"
+              className={`px-4 py-2 rounded-xl font-medium transition-all duration-300 flex items-center gap-1 gold-bg text-primary hover:scale-105 ml-2`}
+            >
+              <FileText className="w-4 h-4" />
+              അഡ്മിഷൻ
+            </Link>
+            <Link
+              to="/admin"
+              className={`px-3 py-2 rounded-xl font-medium transition-all duration-300 hover:bg-primary/10 ${
+                isScrolled
+                  ? "text-foreground hover:text-primary"
+                  : "text-primary-foreground hover:text-gold-light"
+              }`}
+            >
+              <Settings className="w-5 h-5" />
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -98,6 +119,20 @@ const Navigation = () => {
                   {link.label}
                 </button>
               ))}
+              <Link
+                to="/admission"
+                className="block w-full text-left px-4 py-3 rounded-xl font-medium text-primary bg-gold/10 hover:bg-gold/20 transition-all mt-2"
+              >
+                <FileText className="w-4 h-4 inline mr-2" />
+                അഡ്മിഷൻ ഫോം
+              </Link>
+              <Link
+                to="/admin"
+                className="block w-full text-left px-4 py-3 rounded-xl font-medium text-foreground hover:bg-muted hover:text-primary transition-all"
+              >
+                <Settings className="w-4 h-4 inline mr-2" />
+                അഡ്മിൻ
+              </Link>
             </div>
           </div>
         )}
