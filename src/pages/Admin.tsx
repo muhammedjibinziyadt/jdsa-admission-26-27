@@ -11,23 +11,84 @@ import {
   BookOpen,
   Settings,
   MapPin,
-  FileText
+  FileText,
+  Users,
+  Share2,
+  Phone,
+  Mail,
+  Clock,
+  Home,
+  MessageSquare,
+  Globe
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 
-// Editable content state
-interface EditableContent {
+// All editable sections
+interface SiteContent {
+  // Hero Section
   heroTitle: string;
   heroSubtitle: string;
+  heroDescription: string;
+  admissionBadge: string;
+  ctaButton: string;
+  
+  // Contact Info
   phone1: string;
   phone2: string;
-  aboutTitle: string;
-  aboutDescription: string;
   email: string;
   timing: string;
   location: string;
+  
+  // About Section
+  aboutBadge: string;
+  aboutTitle: string;
+  aboutHighlight: string;
+  aboutDescription: string;
+  missionQuote: string;
+  missionSource: string;
+  
+  // Courses Section
+  coursesBadge: string;
+  coursesTitle: string;
+  coursesHighlight: string;
+  coursesDescription: string;
+  
+  // Student Benefits
+  benefitsBadge: string;
+  benefitsTitle: string;
+  benefitsHighlight: string;
+  benefitsDescription: string;
+  
+  // Gallery Section
+  galleryBadge: string;
+  galleryTitle: string;
+  galleryHighlight: string;
+  galleryDescription: string;
+  
+  // Contact Section
+  contactBadge: string;
+  contactTitle: string;
+  contactHighlight: string;
+  contactDescription: string;
+  helplineTitle: string;
+  helplineSubtitle: string;
+  enquiryTitle: string;
+  
+  // Route Map
   mapLink: string;
+  mapTitle: string;
+  mapDescription: string;
+  
+  // Footer
+  footerDescription: string;
+  footerCopyright: string;
+  
+  // Social Links
+  whatsapp: string;
+  facebook: string;
+  youtube: string;
+  instagram: string;
 }
 
 interface GalleryImage {
@@ -43,26 +104,92 @@ interface Course {
   description: string;
   syllabus: string;
   imageUrl: string;
+  featured: boolean;
+}
+
+interface AboutFeature {
+  id: number;
+  title: string;
+  description: string;
+}
+
+interface Benefit {
+  id: number;
+  title: string;
+  description: string;
 }
 
 const Admin = () => {
-  const [activeTab, setActiveTab] = useState<"content" | "gallery" | "courses" | "map" | "forms">("content");
+  const [activeTab, setActiveTab] = useState<"hero" | "about" | "courses" | "benefits" | "gallery" | "contact" | "map" | "footer" | "social">("hero");
   
-  // Editable content
-  const [content, setContent] = useState<EditableContent>({
-    heroTitle: "ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസ്",
-    heroSubtitle: "വിജ്ഞാനത്തിന്റെയും മൂല്യങ്ങളുടെയും സമന്വയത്തിലൂടെ പുതിയ തലമുറയെ രൂപപ്പെടുത്തുന്ന വിദ്യാഭ്യാസ കേന്ദ്രം",
+  // Site Content
+  const [content, setContent] = useState<SiteContent>({
+    // Hero
+    heroTitle: "ജവ്ഹറത്തുൽ ഉലൂം",
+    heroSubtitle: "സുഫ്ഫാ ദർസ്",
+    heroDescription: "വിജ്ഞാനത്തിന്റെയും മൂല്യങ്ങളുടെയും സമന്വയത്തിലൂടെ പുതിയ തലമുറയെ രൂപപ്പെടുത്തുന്ന വിദ്യാഭ്യാസ കേന്ദ്രം",
+    admissionBadge: "Admissions Open 2025-26",
+    ctaButton: "കൂടുതൽ അറിയാൻ",
+    
+    // Contact
     phone1: "+91 95441 24059",
     phone2: "+91 82811 02606",
-    aboutTitle: "വിജ്ഞാനത്തിന്റെ വെളിച്ചം",
-    aboutDescription: "ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസ് ഇസ്ലാമിക വിദ്യാഭ്യാസത്തിന്റെയും ആധുനിക കഴിവുകളുടെയും സമന്വയത്തിലൂടെ വിദ്യാർത്ഥികളെ ഭാവിയിലേക്ക് സജ്ജമാക്കുന്നു.",
     email: "info@jawharathululoom.com",
     timing: "രാവിലെ 8:00 - വൈകുന്നേരം 5:00",
     location: "ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസ്, കേരളം, ഇന്ത്യ",
-    mapLink: "https://maps.app.goo.gl/ZN8C3epBni6h3hKn9?g_st=aw"
+    
+    // About
+    aboutBadge: "ഞങ്ങളെക്കുറിച്ച്",
+    aboutTitle: "വിജ്ഞാനത്തിന്റെ",
+    aboutHighlight: "വെളിച്ചം",
+    aboutDescription: "ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസ് ഇസ്ലാമിക വിദ്യാഭ്യാസത്തിന്റെയും ആധുനിക കഴിവുകളുടെയും സമന്വയത്തിലൂടെ വിദ്യാർത്ഥികളെ ഭാവിയിലേക്ക് സജ്ജമാക്കുന്നു.",
+    missionQuote: "വിദ്യ അഭ്യസിക്കുന്നത് ഓരോ മുസ്ലിമിനും ഫർദാണ്",
+    missionSource: "— نبوی حدیث",
+    
+    // Courses
+    coursesBadge: "പഠന പദ്ധതികൾ",
+    coursesTitle: "ഞങ്ങളുടെ",
+    coursesHighlight: "കോഴ്‌സുകൾ",
+    coursesDescription: "സമഗ്രമായ വിദ്യാഭ്യാസ പദ്ധതിയിലൂടെ വിദ്യാർത്ഥികളെ എല്ലാ മേഖലകളിലും മികവുറ്റവരാക്കുന്നു",
+    
+    // Benefits
+    benefitsBadge: "വിദ്യാർത്ഥി നേട്ടങ്ങൾ",
+    benefitsTitle: "എന്തുകൊണ്ട്",
+    benefitsHighlight: "ഞങ്ങളെ തിരഞ്ഞെടുക്കണം?",
+    benefitsDescription: "ഞങ്ങളുടെ സ്ഥാപനത്തിൽ നിന്ന് വിദ്യാർത്ഥികൾക്ക് ലഭിക്കുന്ന പ്രധാന നേട്ടങ്ങൾ",
+    
+    // Gallery
+    galleryBadge: "ഫോട്ടോ ഗാലറി",
+    galleryTitle: "ഞങ്ങളുടെ",
+    galleryHighlight: "നിമിഷങ്ങൾ",
+    galleryDescription: "വിദ്യാഭ്യാസ യാത്രയിലെ മനോഹരമായ നിമിഷങ്ങൾ",
+    
+    // Contact
+    contactBadge: "ബന്ധപ്പെടുക",
+    contactTitle: "അഡ്മിഷൻ",
+    contactHighlight: "എടുക്കാം",
+    contactDescription: "നിങ്ങളുടെ കുട്ടിയുടെ ഭാവി രൂപപ്പെടുത്താൻ ഇന്നുതന്നെ ഞങ്ങളെ ബന്ധപ്പെടുക",
+    helplineTitle: "അഡ്മിഷൻ ഹെൽപ്‌ലൈൻ",
+    helplineSubtitle: "ഇപ്പോൾ വിളിക്കൂ",
+    enquiryTitle: "അഡ്മിഷൻ അന്വേഷണം",
+    
+    // Map
+    mapLink: "https://maps.app.goo.gl/ZN8C3epBni6h3hKn9?g_st=aw",
+    mapTitle: "ഞങ്ങളുടെ സ്ഥാനം",
+    mapDescription: "ഞങ്ങളെ എങ്ങനെ എത്തിച്ചേരാം",
+    
+    // Footer
+    footerDescription: "വിജ്ഞാനത്തിന്റെയും മൂല്യങ്ങളുടെയും സമന്വയത്തിലൂടെ പുതിയ തലമുറയെ രൂപപ്പെടുത്തുന്ന വിദ്യാഭ്യാസ കേന്ദ്രം",
+    footerCopyright: "ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസ്",
+    
+    // Social
+    whatsapp: "919544124059",
+    facebook: "https://facebook.com/jawharathululoom",
+    youtube: "https://youtube.com/@jawharathululoom",
+    instagram: "https://instagram.com/jawharathululoom"
   });
 
-  // Gallery images
+  // Gallery Images
   const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([
     { id: 1, src: "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=600&h=400&fit=crop", alt: "ക്ലാസ് റൂം പഠനം" },
     { id: 2, src: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&h=400&fit=crop", alt: "ലൈബ്രറി" },
@@ -74,22 +201,43 @@ const Admin = () => {
 
   // Courses
   const [courses, setCourses] = useState<Course[]>([
-    { id: 1, title: "സുഫ്ഫാ കോഴ്‌സിന് കീഴിലെ ദർസ്", subtitle: "", description: "ഇസ്ലാമിക വിദ്യാഭ്യാസത്തിന്റെ അടിസ്ഥാനം ഉറപ്പിക്കുന്ന സമഗ്ര പഠന പരിപാടി.", syllabus: "", imageUrl: "" },
-    { id: 2, title: "ഖുർആൻ പഠനം", subtitle: "എഴുത്തും വായനയും", description: "തജ്‌വീദ് നിയമങ്ങൾ അനുസരിച്ചുള്ള ഖുർആൻ പാരായണം.", syllabus: "", imageUrl: "" },
-    { id: 3, title: "കമ്പ്യൂട്ടർ പഠനം", subtitle: "", description: "ആധുനിക സാങ്കേതിക വിദ്യകളിൽ പ്രാവീണ്യം.", syllabus: "", imageUrl: "" },
-    { id: 4, title: "എഴുത്ത് പഠനം", subtitle: "Handwriting & Writing Skills", description: "മനോഹരമായ കൈയക്ഷരം, ക്രിയാത്മക എഴുത്ത് കഴിവുകൾ.", syllabus: "", imageUrl: "" },
-    { id: 5, title: "പ്രസംഗ പരിശീലനം", subtitle: "Public Speaking & Dars Training", description: "പൊതുവേദികളിൽ ആത്മവിശ്വാസത്തോടെ സംസാരിക്കാൻ.", syllabus: "", imageUrl: "" },
-    { id: 6, title: "ലൈബ്രറി സൗകര്യം", subtitle: "", description: "വിവിധ വിഷയങ്ങളിലുള്ള പുസ്തകങ്ങൾ.", syllabus: "", imageUrl: "" },
-    { id: 7, title: "കാന്റീൻ സൗകര്യം", subtitle: "", description: "ശുചിത്വപൂർണ്ണമായ അന്തരീക്ഷത്തിൽ ആരോഗ്യകരമായ ഭക്ഷണം.", syllabus: "", imageUrl: "" },
-    { id: 8, title: "വഅള് പരിശീലനം", subtitle: "", description: "മതപരമായ പ്രഭാഷണങ്ങൾ നടത്താനുള്ള കഴിവ്.", syllabus: "", imageUrl: "" },
-    { id: 9, title: "വിദ്യാർത്ഥികളുടെ വ്യക്തിത്വ വികസനം", subtitle: "", description: "നേതൃത്വ ഗുണങ്ങൾ, ടീം വർക്ക്, സമയ മാനേജ്‌മെന്റ്.", syllabus: "", imageUrl: "" }
+    { id: 1, title: "സുഫ്ഫാ കോഴ്‌സിന് കീഴിലെ ദർസ്", subtitle: "", description: "പരമ്പരാഗത ഇസ്ലാമിക വിദ്യാഭ്യാസ പദ്ധതിയിലൂടെ ആഴത്തിലുള്ള മതപഠനം", syllabus: "", imageUrl: "", featured: true },
+    { id: 2, title: "ഖുർആൻ പഠനം", subtitle: "എഴുത്തും വായനയും", description: "ഖുർആൻ എഴുത്തും വായനയും തജ്‌വീദും", syllabus: "", imageUrl: "", featured: false },
+    { id: 3, title: "കമ്പ്യൂട്ടർ പഠനം", subtitle: "", description: "ആധുനിക ലോകത്തേക്കുള്ള ഡിജിറ്റൽ കഴിവുകൾ", syllabus: "", imageUrl: "", featured: false },
+    { id: 4, title: "എഴുത്ത് പഠനം", subtitle: "Handwriting & Writing Skills", description: "കൈയെഴുത്തും എഴുത്തു വൈദഗ്ധ്യവും", syllabus: "", imageUrl: "", featured: false },
+    { id: 5, title: "പ്രസംഗ പരിശീലനം", subtitle: "Public Speaking", description: "പബ്ലിക് സ്പീക്കിംഗും ദർസ് പരിശീലനവും", syllabus: "", imageUrl: "", featured: false },
+    { id: 6, title: "വഅള് പരിശീലനം", subtitle: "", description: "മത പ്രഭാഷണ കലയും ആശയവിനിമയവും", syllabus: "", imageUrl: "", featured: false },
+    { id: 7, title: "വ്യക്തിത്വ വികസനം", subtitle: "", description: "നേതൃത്വ ഗുണങ്ങളും സ്വഭാവ രൂപീകരണവും", syllabus: "", imageUrl: "", featured: false },
+    { id: 8, title: "ലൈബ്രറി സൗകര്യം", subtitle: "", description: "വിപുലമായ ഗ്രന്ഥശേഖരവും വായനാ സൗകര്യവും", syllabus: "", imageUrl: "", featured: false },
+    { id: 9, title: "കാന്റീൻ സൗകര്യം", subtitle: "", description: "ആരോഗ്യകരമായ ഭക്ഷണവും സ്നാക്കുകളും", syllabus: "", imageUrl: "", featured: false }
+  ]);
+
+  // About Features
+  const [aboutFeatures, setAboutFeatures] = useState<AboutFeature[]>([
+    { id: 1, title: "മതപരമായ വിദ്യാഭ്യാസം", description: "ഖുർആൻ, ഹദീസ്, ഫിഖ്ഹ് എന്നിവയിൽ ആഴത്തിലുള്ള പഠനം" },
+    { id: 2, title: "മൂല്യാധിഷ്ഠിത പരിശീലനം", description: "സ്വഭാവ രൂപീകരണവും ധാർമിക മൂല്യങ്ങളും" },
+    { id: 3, title: "സമഗ്ര വികസനം", description: "വ്യക്തിത്വ വികസനവും നേതൃത്വ പരിശീലനവും" },
+    { id: 4, title: "ആധുനിക കഴിവുകൾ", description: "കമ്പ്യൂട്ടർ പഠനവും പ്രായോഗിക വൈദഗ്ധ്യവും" }
+  ]);
+
+  // Benefits
+  const [benefits, setBenefits] = useState<Benefit[]>([
+    { id: 1, title: "അച്ചടക്കം", description: "ജീവിതത്തിന്റെ എല്ലാ മേഖലകളിലും അച്ചടക്കം പാലിക്കാൻ പരിശീലനം" },
+    { id: 2, title: "വിജ്ഞാനം", description: "മതപരവും ഭൗതികവുമായ വിജ്ഞാനത്തിൽ പ്രാവീണ്യം" },
+    { id: 3, title: "സ്വഭാവ ശുദ്ധി", description: "ഇസ്ലാമിക മൂല്യങ്ങളിൽ അധിഷ്ഠിതമായ സ്വഭാവ രൂപീകരണം" },
+    { id: 4, title: "ആത്മവിശ്വാസം", description: "ഏത് സാഹചര്യത്തിലും ആത്മവിശ്വാസത്തോടെ പ്രവർത്തിക്കാൻ" },
+    { id: 5, title: "നേതൃത്വം", description: "സമൂഹത്തിൽ നേതൃത്വം വഹിക്കാനുള്ള കഴിവ്" },
+    { id: 6, title: "കഴിവ് വികസനം", description: "ആധുനിക ലോകത്തിന് ആവശ്യമായ കഴിവുകൾ" }
   ]);
 
   const [editingField, setEditingField] = useState<string | null>(null);
   const [tempValue, setTempValue] = useState("");
   const [editingCourse, setEditingCourse] = useState<number | null>(null);
   const [tempCourse, setTempCourse] = useState<Course | null>(null);
-
+  const [editingFeature, setEditingFeature] = useState<number | null>(null);
+  const [tempFeature, setTempFeature] = useState<AboutFeature | null>(null);
+  const [editingBenefit, setEditingBenefit] = useState<number | null>(null);
+  const [tempBenefit, setTempBenefit] = useState<Benefit | null>(null);
   const [newImageUrl, setNewImageUrl] = useState("");
   const [newImageAlt, setNewImageAlt] = useState("");
 
@@ -98,13 +246,10 @@ const Admin = () => {
     setTempValue(value);
   };
 
-  const handleSave = (field: keyof EditableContent) => {
+  const handleSave = (field: keyof SiteContent) => {
     setContent(prev => ({ ...prev, [field]: tempValue }));
     setEditingField(null);
-    toast({
-      title: "സേവ് ചെയ്തു!",
-      description: "മാറ്റങ്ങൾ വിജയകരമായി സേവ് ചെയ്തു.",
-    });
+    toast({ title: "സേവ് ചെയ്തു!", description: "മാറ്റങ്ങൾ വിജയകരമായി സേവ് ചെയ്തു." });
   };
 
   const handleCancel = () => {
@@ -114,10 +259,7 @@ const Admin = () => {
 
   const handleDeleteImage = (id: number) => {
     setGalleryImages(prev => prev.filter(img => img.id !== id));
-    toast({
-      title: "ഇമേജ് ഡിലീറ്റ് ചെയ്തു!",
-      description: "ഗാലറിയിൽ നിന്നും ഇമേജ് നീക്കം ചെയ്തു.",
-    });
+    toast({ title: "ഇമേജ് ഡിലീറ്റ് ചെയ്തു!", description: "ഗാലറിയിൽ നിന്നും ഇമേജ് നീക്കം ചെയ്തു." });
   };
 
   const handleAddImage = () => {
@@ -126,10 +268,7 @@ const Admin = () => {
       setGalleryImages(prev => [...prev, { id: newId, src: newImageUrl, alt: newImageAlt }]);
       setNewImageUrl("");
       setNewImageAlt("");
-      toast({
-        title: "ഇമേജ് ചേർത്തു!",
-        description: "പുതിയ ഇമേജ് ഗാലറിയിലേക്ക് ചേർത്തു.",
-      });
+      toast({ title: "ഇമേജ് ചേർത്തു!", description: "പുതിയ ഇമേജ് ഗാലറിയിലേക്ക് ചേർത്തു." });
     }
   };
 
@@ -143,57 +282,116 @@ const Admin = () => {
       setCourses(prev => prev.map(c => c.id === tempCourse.id ? tempCourse : c));
       setEditingCourse(null);
       setTempCourse(null);
-      toast({
-        title: "കോഴ്‌സ് അപ്‌ഡേറ്റ് ചെയ്തു!",
-        description: "കോഴ്‌സ് വിവരങ്ങൾ സേവ് ചെയ്തു.",
-      });
+      toast({ title: "കോഴ്‌സ് അപ്‌ഡേറ്റ് ചെയ്തു!" });
     }
   };
 
   const handleDeleteCourse = (id: number) => {
     setCourses(prev => prev.filter(c => c.id !== id));
-    toast({
-      title: "കോഴ്‌സ് ഡിലീറ്റ് ചെയ്തു!",
-      description: "കോഴ്‌സ് നീക്കം ചെയ്തു.",
-    });
+    toast({ title: "കോഴ്‌സ് ഡിലീറ്റ് ചെയ്തു!" });
   };
 
   const handleAddCourse = () => {
     const newId = Math.max(...courses.map(c => c.id), 0) + 1;
-    const newCourse: Course = {
-      id: newId,
-      title: "പുതിയ കോഴ്‌സ്",
-      subtitle: "",
-      description: "കോഴ്‌സ് വിവരണം ഇവിടെ ചേർക്കുക",
-      syllabus: "",
-      imageUrl: ""
-    };
-    setCourses(prev => [...prev, newCourse]);
-    toast({
-      title: "കോഴ്‌സ് ചേർത്തു!",
-      description: "പുതിയ കോഴ്‌സ് ചേർത്തു. ഇപ്പോൾ എഡിറ്റ് ചെയ്യുക.",
-    });
+    setCourses(prev => [...prev, { id: newId, title: "പുതിയ കോഴ്‌സ്", subtitle: "", description: "കോഴ്‌സ് വിവരണം", syllabus: "", imageUrl: "", featured: false }]);
+    toast({ title: "കോഴ്‌സ് ചേർത്തു!" });
   };
 
-  const contentFields = [
-    { key: "heroTitle" as const, label: "ഹീറോ ടൈറ്റിൽ", value: content.heroTitle },
-    { key: "heroSubtitle" as const, label: "ഹീറോ സബ്‌ടൈറ്റിൽ", value: content.heroSubtitle },
-    { key: "phone1" as const, label: "ഫോൺ നമ്പർ 1", value: content.phone1 },
-    { key: "phone2" as const, label: "ഫോൺ നമ്പർ 2", value: content.phone2 },
-    { key: "aboutTitle" as const, label: "അബൗട്ട് ടൈറ്റിൽ", value: content.aboutTitle },
-    { key: "aboutDescription" as const, label: "അബൗട്ട് വിവരണം", value: content.aboutDescription },
-    { key: "email" as const, label: "ഇമെയിൽ", value: content.email },
-    { key: "timing" as const, label: "സമയം", value: content.timing },
-    { key: "location" as const, label: "സ്ഥലം", value: content.location },
-  ];
+  const handleEditFeature = (feature: AboutFeature) => {
+    setEditingFeature(feature.id);
+    setTempFeature({ ...feature });
+  };
+
+  const handleSaveFeature = () => {
+    if (tempFeature) {
+      setAboutFeatures(prev => prev.map(f => f.id === tempFeature.id ? tempFeature : f));
+      setEditingFeature(null);
+      setTempFeature(null);
+      toast({ title: "ഫീച്ചർ അപ്‌ഡേറ്റ് ചെയ്തു!" });
+    }
+  };
+
+  const handleDeleteFeature = (id: number) => {
+    setAboutFeatures(prev => prev.filter(f => f.id !== id));
+    toast({ title: "ഫീച്ചർ ഡിലീറ്റ് ചെയ്തു!" });
+  };
+
+  const handleAddFeature = () => {
+    const newId = Math.max(...aboutFeatures.map(f => f.id), 0) + 1;
+    setAboutFeatures(prev => [...prev, { id: newId, title: "പുതിയ ഫീച്ചർ", description: "വിവരണം" }]);
+    toast({ title: "ഫീച്ചർ ചേർത്തു!" });
+  };
+
+  const handleEditBenefit = (benefit: Benefit) => {
+    setEditingBenefit(benefit.id);
+    setTempBenefit({ ...benefit });
+  };
+
+  const handleSaveBenefit = () => {
+    if (tempBenefit) {
+      setBenefits(prev => prev.map(b => b.id === tempBenefit.id ? tempBenefit : b));
+      setEditingBenefit(null);
+      setTempBenefit(null);
+      toast({ title: "ബെനിഫിറ്റ് അപ്‌ഡേറ്റ് ചെയ്തു!" });
+    }
+  };
+
+  const handleDeleteBenefit = (id: number) => {
+    setBenefits(prev => prev.filter(b => b.id !== id));
+    toast({ title: "ബെനിഫിറ്റ് ഡിലീറ്റ് ചെയ്തു!" });
+  };
+
+  const handleAddBenefit = () => {
+    const newId = Math.max(...benefits.map(b => b.id), 0) + 1;
+    setBenefits(prev => [...prev, { id: newId, title: "പുതിയ നേട്ടം", description: "വിവരണം" }]);
+    toast({ title: "നേട്ടം ചേർത്തു!" });
+  };
 
   const tabs = [
-    { id: "content" as const, label: "ഉള്ളടക്കം", icon: Edit3 },
-    { id: "gallery" as const, label: "ഗാലറി", icon: ImageIcon },
+    { id: "hero" as const, label: "ഹീറോ", icon: Home },
+    { id: "about" as const, label: "അബൗട്ട്", icon: MessageSquare },
     { id: "courses" as const, label: "കോഴ്‌സുകൾ", icon: BookOpen },
-    { id: "map" as const, label: "റൂട്ട് മാപ്പ്", icon: MapPin },
-    { id: "forms" as const, label: "ഫോം ഫീൽഡുകൾ", icon: FileText },
+    { id: "benefits" as const, label: "നേട്ടങ്ങൾ", icon: Users },
+    { id: "gallery" as const, label: "ഗാലറി", icon: ImageIcon },
+    { id: "contact" as const, label: "കോൺടാക്ട്", icon: Phone },
+    { id: "map" as const, label: "മാപ്പ്", icon: MapPin },
+    { id: "footer" as const, label: "ഫൂട്ടർ", icon: FileText },
+    { id: "social" as const, label: "സോഷ്യൽ", icon: Share2 },
   ];
+
+  const renderContentEditor = (fields: { key: keyof SiteContent; label: string; multiline?: boolean }[]) => (
+    <div className="space-y-4">
+      {fields.map(field => (
+        <div key={field.key} className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1">
+              <label className="text-sm font-medium text-muted-foreground mb-2 block">{field.label}</label>
+              {editingField === field.key ? (
+                <div className="space-y-3">
+                  {field.multiline ? (
+                    <textarea value={tempValue} onChange={(e) => setTempValue(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors resize-none" rows={4} />
+                  ) : (
+                    <input type="text" value={tempValue} onChange={(e) => setTempValue(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors" />
+                  )}
+                  <div className="flex gap-2">
+                    <Button size="sm" onClick={() => handleSave(field.key)} className="rounded-lg"><Save className="w-4 h-4 mr-1" />സേവ്</Button>
+                    <Button size="sm" variant="outline" onClick={handleCancel} className="rounded-lg"><X className="w-4 h-4 mr-1" />റദ്ദാക്കുക</Button>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-foreground">{content[field.key]}</p>
+              )}
+            </div>
+            {editingField !== field.key && (
+              <Button size="sm" variant="ghost" onClick={() => handleEdit(field.key, content[field.key])} className="text-primary hover:text-primary">
+                <Edit3 className="w-4 h-4" />
+              </Button>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -215,129 +413,77 @@ const Admin = () => {
 
       {/* Tabs */}
       <div className="container mx-auto px-4 py-6">
-        <div className="flex flex-wrap gap-2 mb-8">
+        <div className="flex flex-wrap gap-2 mb-8 overflow-x-auto pb-2">
           {tabs.map(tab => (
-            <Button 
-              key={tab.id}
-              variant={activeTab === tab.id ? "default" : "outline"}
-              onClick={() => setActiveTab(tab.id)}
-              className="rounded-xl"
-            >
+            <Button key={tab.id} variant={activeTab === tab.id ? "default" : "outline"} onClick={() => setActiveTab(tab.id)} className="rounded-xl whitespace-nowrap">
               <tab.icon className="w-4 h-4 mr-2" />
               {tab.label}
             </Button>
           ))}
         </div>
 
-        {/* Content Tab */}
-        {activeTab === "content" && (
-          <div className="space-y-4">
-            <h2 className="font-display text-2xl font-semibold text-foreground mb-6">
-              ടെക്സ്റ്റ് & അക്ഷരത്തെറ്റുകൾ തിരുത്തുക
-            </h2>
-            {contentFields.map(field => (
-              <div key={field.key} className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <label className="text-sm font-medium text-muted-foreground mb-2 block">
-                      {field.label}
-                    </label>
-                    {editingField === field.key ? (
-                      <div className="space-y-3">
-                        <textarea
-                          value={tempValue}
-                          onChange={(e) => setTempValue(e.target.value)}
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors resize-none"
-                          rows={field.key.includes("Description") || field.key.includes("Subtitle") ? 4 : 2}
-                        />
-                        <div className="flex gap-2">
-                          <Button size="sm" onClick={() => handleSave(field.key)} className="rounded-lg">
-                            <Save className="w-4 h-4 mr-1" />
-                            സേവ്
-                          </Button>
-                          <Button size="sm" variant="outline" onClick={handleCancel} className="rounded-lg">
-                            <X className="w-4 h-4 mr-1" />
-                            റദ്ദാക്കുക
-                          </Button>
-                        </div>
-                      </div>
-                    ) : (
-                      <p className="text-foreground">{field.value}</p>
-                    )}
-                  </div>
-                  {editingField !== field.key && (
-                    <Button 
-                      size="sm" 
-                      variant="ghost" 
-                      onClick={() => handleEdit(field.key, field.value)}
-                      className="text-primary hover:text-primary"
-                    >
-                      <Edit3 className="w-4 h-4" />
-                    </Button>
-                  )}
-                </div>
-              </div>
-            ))}
+        {/* Hero Tab */}
+        {activeTab === "hero" && (
+          <div className="space-y-6">
+            <h2 className="font-display text-2xl font-semibold text-foreground">ഹീറോ സെക്ഷൻ എഡിറ്റ് ചെയ്യുക</h2>
+            {renderContentEditor([
+              { key: "heroTitle", label: "ടൈറ്റിൽ (ആദ്യ വരി)" },
+              { key: "heroSubtitle", label: "സബ്‌ടൈറ്റിൽ (രണ്ടാം വരി)" },
+              { key: "heroDescription", label: "വിവരണം", multiline: true },
+              { key: "admissionBadge", label: "അഡ്മിഷൻ ബാഡ്ജ്" },
+              { key: "ctaButton", label: "CTA ബട്ടൺ ടെക്സ്റ്റ്" },
+              { key: "phone1", label: "ഫോൺ 1" },
+              { key: "phone2", label: "ഫോൺ 2" },
+            ])}
           </div>
         )}
 
-        {/* Gallery Tab */}
-        {activeTab === "gallery" && (
+        {/* About Tab */}
+        {activeTab === "about" && (
           <div className="space-y-6">
-            <h2 className="font-display text-2xl font-semibold text-foreground">
-              ഗാലറി ഇമേജുകൾ
-            </h2>
+            <h2 className="font-display text-2xl font-semibold text-foreground">അബൗട്ട് സെക്ഷൻ</h2>
+            {renderContentEditor([
+              { key: "aboutBadge", label: "ബാഡ്ജ്" },
+              { key: "aboutTitle", label: "ടൈറ്റിൽ" },
+              { key: "aboutHighlight", label: "ഹൈലൈറ്റ്" },
+              { key: "aboutDescription", label: "വിവരണം", multiline: true },
+              { key: "missionQuote", label: "മിഷൻ ക്വോട്ട്", multiline: true },
+              { key: "missionSource", label: "ക്വോട്ട് സോഴ്സ്" },
+            ])}
             
-            {/* Add New Image */}
-            <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
-              <h3 className="font-medium text-foreground mb-4">പുതിയ ഇമേജ് ചേർക്കുക</h3>
-              <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                <input
-                  type="url"
-                  placeholder="ഇമേജ് URL"
-                  value={newImageUrl}
-                  onChange={(e) => setNewImageUrl(e.target.value)}
-                  className="px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
-                />
-                <input
-                  type="text"
-                  placeholder="ഇമേജ് വിവരണം (Alt text)"
-                  value={newImageAlt}
-                  onChange={(e) => setNewImageAlt(e.target.value)}
-                  className="px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
-                />
+            {/* About Features */}
+            <div className="mt-8">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-display text-xl font-semibold text-foreground">ഫീച്ചറുകൾ</h3>
+                <Button onClick={handleAddFeature} className="rounded-xl"><Plus className="w-4 h-4 mr-2" />ചേർക്കുക</Button>
               </div>
-              <Button onClick={handleAddImage} className="rounded-xl">
-                <Plus className="w-4 h-4 mr-2" />
-                ഇമേജ് ചേർക്കുക
-              </Button>
-            </div>
-
-            {/* Gallery Grid */}
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {galleryImages.map(image => (
-                <div key={image.id} className="group relative bg-card rounded-2xl overflow-hidden border border-border/50 shadow-soft">
-                  <img 
-                    src={image.src} 
-                    alt={image.alt}
-                    className="w-full aspect-video object-cover"
-                  />
-                  <div className="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                    <Button 
-                      size="sm" 
-                      variant="destructive"
-                      onClick={() => handleDeleteImage(image.id)}
-                      className="rounded-lg"
-                    >
-                      <Trash2 className="w-4 h-4 mr-1" />
-                      ഡിലീറ്റ്
-                    </Button>
+              <div className="space-y-4">
+                {aboutFeatures.map(feature => (
+                  <div key={feature.id} className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
+                    {editingFeature === feature.id && tempFeature ? (
+                      <div className="space-y-4">
+                        <input type="text" value={tempFeature.title} onChange={(e) => setTempFeature({ ...tempFeature, title: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-border bg-background" placeholder="ടൈറ്റിൽ" />
+                        <textarea value={tempFeature.description} onChange={(e) => setTempFeature({ ...tempFeature, description: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-border bg-background resize-none" rows={2} placeholder="വിവരണം" />
+                        <div className="flex gap-2">
+                          <Button size="sm" onClick={handleSaveFeature} className="rounded-lg"><Save className="w-4 h-4 mr-1" />സേവ്</Button>
+                          <Button size="sm" variant="outline" onClick={() => { setEditingFeature(null); setTempFeature(null); }} className="rounded-lg"><X className="w-4 h-4 mr-1" />റദ്ദാക്കുക</Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <h4 className="font-semibold text-foreground">{feature.title}</h4>
+                          <p className="text-muted-foreground text-sm">{feature.description}</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="ghost" onClick={() => handleEditFeature(feature)}><Edit3 className="w-4 h-4" /></Button>
+                          <Button size="sm" variant="ghost" className="text-destructive" onClick={() => handleDeleteFeature(feature.id)}><Trash2 className="w-4 h-4" /></Button>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <div className="p-4">
-                    <p className="text-sm text-foreground">{image.alt}</p>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -345,231 +491,199 @@ const Admin = () => {
         {/* Courses Tab */}
         {activeTab === "courses" && (
           <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="font-display text-2xl font-semibold text-foreground">
-                കോഴ്‌സുകൾ മാനേജ് ചെയ്യുക
-              </h2>
-              <Button onClick={handleAddCourse} className="rounded-xl">
-                <Plus className="w-4 h-4 mr-2" />
-                പുതിയ കോഴ്‌സ്
-              </Button>
-            </div>
+            <h2 className="font-display text-2xl font-semibold text-foreground">കോഴ്‌സ് സെക്ഷൻ</h2>
+            {renderContentEditor([
+              { key: "coursesBadge", label: "ബാഡ്ജ്" },
+              { key: "coursesTitle", label: "ടൈറ്റിൽ" },
+              { key: "coursesHighlight", label: "ഹൈലൈറ്റ്" },
+              { key: "coursesDescription", label: "വിവരണം", multiline: true },
+            ])}
             
-            <div className="space-y-4">
-              {courses.map(course => (
-                <div key={course.id} className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
-                  {editingCourse === course.id && tempCourse ? (
-                    <div className="space-y-4">
-                      <div className="grid sm:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-foreground mb-2">ടൈറ്റിൽ</label>
-                          <input
-                            type="text"
-                            value={tempCourse.title}
-                            onChange={(e) => setTempCourse({ ...tempCourse, title: e.target.value })}
-                            className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
-                          />
+            <div className="mt-8">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-display text-xl font-semibold text-foreground">കോഴ്‌സുകൾ</h3>
+                <Button onClick={handleAddCourse} className="rounded-xl"><Plus className="w-4 h-4 mr-2" />പുതിയ കോഴ്‌സ്</Button>
+              </div>
+              <div className="space-y-4">
+                {courses.map(course => (
+                  <div key={course.id} className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
+                    {editingCourse === course.id && tempCourse ? (
+                      <div className="space-y-4">
+                        <input type="text" value={tempCourse.title} onChange={(e) => setTempCourse({ ...tempCourse, title: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-border bg-background" placeholder="ടൈറ്റിൽ" />
+                        <input type="text" value={tempCourse.subtitle} onChange={(e) => setTempCourse({ ...tempCourse, subtitle: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-border bg-background" placeholder="സബ്‌ടൈറ്റിൽ" />
+                        <textarea value={tempCourse.description} onChange={(e) => setTempCourse({ ...tempCourse, description: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-border bg-background resize-none" rows={2} placeholder="വിവരണം" />
+                        <input type="text" value={tempCourse.syllabus} onChange={(e) => setTempCourse({ ...tempCourse, syllabus: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-border bg-background" placeholder="സിലബസ് URL" />
+                        <input type="text" value={tempCourse.imageUrl} onChange={(e) => setTempCourse({ ...tempCourse, imageUrl: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-border bg-background" placeholder="ഇമേജ് URL" />
+                        <label className="flex items-center gap-2">
+                          <input type="checkbox" checked={tempCourse.featured} onChange={(e) => setTempCourse({ ...tempCourse, featured: e.target.checked })} className="rounded" />
+                          <span className="text-sm">ഫീച്ചേഡ് കോഴ്‌സ്</span>
+                        </label>
+                        <div className="flex gap-2">
+                          <Button size="sm" onClick={handleSaveCourse} className="rounded-lg"><Save className="w-4 h-4 mr-1" />സേവ്</Button>
+                          <Button size="sm" variant="outline" onClick={() => { setEditingCourse(null); setTempCourse(null); }} className="rounded-lg"><X className="w-4 h-4 mr-1" />റദ്ദാക്കുക</Button>
                         </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-start justify-between gap-4">
                         <div>
-                          <label className="block text-sm font-medium text-foreground mb-2">സബ്‌ടൈറ്റിൽ</label>
-                          <input
-                            type="text"
-                            value={tempCourse.subtitle}
-                            onChange={(e) => setTempCourse({ ...tempCourse, subtitle: e.target.value })}
-                            className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
-                          />
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-semibold text-foreground">{course.title}</h4>
+                            {course.featured && <span className="px-2 py-0.5 rounded-full bg-gold/20 text-gold-dark text-xs">Featured</span>}
+                          </div>
+                          {course.subtitle && <p className="text-sm text-muted-foreground">{course.subtitle}</p>}
+                          <p className="text-muted-foreground text-sm mt-1">{course.description}</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="ghost" onClick={() => handleEditCourse(course)}><Edit3 className="w-4 h-4" /></Button>
+                          <Button size="sm" variant="ghost" className="text-destructive" onClick={() => handleDeleteCourse(course.id)}><Trash2 className="w-4 h-4" /></Button>
                         </div>
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">വിവരണം</label>
-                        <textarea
-                          value={tempCourse.description}
-                          onChange={(e) => setTempCourse({ ...tempCourse, description: e.target.value })}
-                          rows={3}
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors resize-none"
-                        />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Benefits Tab */}
+        {activeTab === "benefits" && (
+          <div className="space-y-6">
+            <h2 className="font-display text-2xl font-semibold text-foreground">നേട്ടങ്ങൾ സെക്ഷൻ</h2>
+            {renderContentEditor([
+              { key: "benefitsBadge", label: "ബാഡ്ജ്" },
+              { key: "benefitsTitle", label: "ടൈറ്റിൽ" },
+              { key: "benefitsHighlight", label: "ഹൈലൈറ്റ്" },
+              { key: "benefitsDescription", label: "വിവരണം", multiline: true },
+            ])}
+            
+            <div className="mt-8">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-display text-xl font-semibold text-foreground">നേട്ടങ്ങൾ</h3>
+                <Button onClick={handleAddBenefit} className="rounded-xl"><Plus className="w-4 h-4 mr-2" />ചേർക്കുക</Button>
+              </div>
+              <div className="space-y-4">
+                {benefits.map(benefit => (
+                  <div key={benefit.id} className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
+                    {editingBenefit === benefit.id && tempBenefit ? (
+                      <div className="space-y-4">
+                        <input type="text" value={tempBenefit.title} onChange={(e) => setTempBenefit({ ...tempBenefit, title: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-border bg-background" placeholder="ടൈറ്റിൽ" />
+                        <textarea value={tempBenefit.description} onChange={(e) => setTempBenefit({ ...tempBenefit, description: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-border bg-background resize-none" rows={2} placeholder="വിവരണം" />
+                        <div className="flex gap-2">
+                          <Button size="sm" onClick={handleSaveBenefit} className="rounded-lg"><Save className="w-4 h-4 mr-1" />സേവ്</Button>
+                          <Button size="sm" variant="outline" onClick={() => { setEditingBenefit(null); setTempBenefit(null); }} className="rounded-lg"><X className="w-4 h-4 mr-1" />റദ്ദാക്കുക</Button>
+                        </div>
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">സിലബസ് (ഓപ്ഷണൽ)</label>
-                        <textarea
-                          value={tempCourse.syllabus}
-                          onChange={(e) => setTempCourse({ ...tempCourse, syllabus: e.target.value })}
-                          rows={3}
-                          placeholder="സിലബസ് വിവരങ്ങൾ ഇവിടെ ചേർക്കുക..."
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors resize-none"
-                        />
+                    ) : (
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <h4 className="font-semibold text-foreground">{benefit.title}</h4>
+                          <p className="text-muted-foreground text-sm">{benefit.description}</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="ghost" onClick={() => handleEditBenefit(benefit)}><Edit3 className="w-4 h-4" /></Button>
+                          <Button size="sm" variant="ghost" className="text-destructive" onClick={() => handleDeleteBenefit(benefit.id)}><Trash2 className="w-4 h-4" /></Button>
+                        </div>
                       </div>
-                      <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">ഇമേജ് URL (ഓപ്ഷണൽ)</label>
-                        <input
-                          type="url"
-                          value={tempCourse.imageUrl}
-                          onChange={(e) => setTempCourse({ ...tempCourse, imageUrl: e.target.value })}
-                          placeholder="https://example.com/image.jpg"
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
-                        />
-                      </div>
-                      <div className="flex gap-2">
-                        <Button size="sm" onClick={handleSaveCourse} className="rounded-lg">
-                          <Save className="w-4 h-4 mr-1" />
-                          സേവ്
-                        </Button>
-                        <Button size="sm" variant="outline" onClick={() => { setEditingCourse(null); setTempCourse(null); }} className="rounded-lg">
-                          <X className="w-4 h-4 mr-1" />
-                          റദ്ദാക്കുക
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <h3 className="font-display text-lg font-semibold text-foreground">{course.title}</h3>
-                        {course.subtitle && <p className="text-sm text-primary mb-1">{course.subtitle}</p>}
-                        <p className="text-muted-foreground text-sm">{course.description}</p>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button size="sm" variant="ghost" onClick={() => handleEditCourse(course)} className="text-primary">
-                          <Edit3 className="w-4 h-4" />
-                        </Button>
-                        <Button size="sm" variant="ghost" onClick={() => handleDeleteCourse(course.id)} className="text-destructive">
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Gallery Tab */}
+        {activeTab === "gallery" && (
+          <div className="space-y-6">
+            <h2 className="font-display text-2xl font-semibold text-foreground">ഗാലറി സെക്ഷൻ</h2>
+            {renderContentEditor([
+              { key: "galleryBadge", label: "ബാഡ്ജ്" },
+              { key: "galleryTitle", label: "ടൈറ്റിൽ" },
+              { key: "galleryHighlight", label: "ഹൈലൈറ്റ്" },
+              { key: "galleryDescription", label: "വിവരണം", multiline: true },
+            ])}
+            
+            {/* Add New Image */}
+            <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft mt-8">
+              <h3 className="font-medium text-foreground mb-4">പുതിയ ഇമേജ് ചേർക്കുക</h3>
+              <div className="grid sm:grid-cols-2 gap-4 mb-4">
+                <input type="url" placeholder="ഇമേജ് URL" value={newImageUrl} onChange={(e) => setNewImageUrl(e.target.value)} className="px-4 py-3 rounded-xl border border-border bg-background" />
+                <input type="text" placeholder="ഇമേജ് വിവരണം" value={newImageAlt} onChange={(e) => setNewImageAlt(e.target.value)} className="px-4 py-3 rounded-xl border border-border bg-background" />
+              </div>
+              <Button onClick={handleAddImage} className="rounded-xl"><Plus className="w-4 h-4 mr-2" />ഇമേജ് ചേർക്കുക</Button>
+            </div>
+
+            {/* Gallery Grid */}
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {galleryImages.map(image => (
+                <div key={image.id} className="group relative bg-card rounded-2xl overflow-hidden border border-border/50 shadow-soft">
+                  <img src={image.src} alt={image.alt} className="w-full aspect-video object-cover" />
+                  <div className="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                    <Button size="sm" variant="destructive" onClick={() => handleDeleteImage(image.id)} className="rounded-lg"><Trash2 className="w-4 h-4 mr-1" />ഡിലീറ്റ്</Button>
+                  </div>
+                  <div className="p-4"><p className="text-sm text-foreground">{image.alt}</p></div>
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        {/* Map Tab */}
-        {activeTab === "map" && (
+        {/* Contact Tab */}
+        {activeTab === "contact" && (
           <div className="space-y-6">
-            <h2 className="font-display text-2xl font-semibold text-foreground">
-              റൂട്ട് മാപ്പ് സെറ്റിംഗ്സ്
-            </h2>
-            
-            <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Google Maps ലിങ്ക്</label>
-                  {editingField === "mapLink" ? (
-                    <div className="space-y-3">
-                      <input
-                        type="url"
-                        value={tempValue}
-                        onChange={(e) => setTempValue(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
-                        placeholder="https://maps.app.goo.gl/..."
-                      />
-                      <div className="flex gap-2">
-                        <Button size="sm" onClick={() => handleSave("mapLink")} className="rounded-lg">
-                          <Save className="w-4 h-4 mr-1" />
-                          സേവ്
-                        </Button>
-                        <Button size="sm" variant="outline" onClick={handleCancel} className="rounded-lg">
-                          <X className="w-4 h-4 mr-1" />
-                          റദ്ദാക്കുക
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-between gap-4">
-                      <p className="text-foreground break-all">{content.mapLink}</p>
-                      <Button 
-                        size="sm" 
-                        variant="ghost" 
-                        onClick={() => handleEdit("mapLink", content.mapLink)}
-                        className="text-primary hover:text-primary flex-shrink-0"
-                      >
-                        <Edit3 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  )}
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">സ്ഥലം / വിലാസം</label>
-                  {editingField === "location" ? (
-                    <div className="space-y-3">
-                      <textarea
-                        value={tempValue}
-                        onChange={(e) => setTempValue(e.target.value)}
-                        rows={3}
-                        className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors resize-none"
-                      />
-                      <div className="flex gap-2">
-                        <Button size="sm" onClick={() => handleSave("location")} className="rounded-lg">
-                          <Save className="w-4 h-4 mr-1" />
-                          സേവ്
-                        </Button>
-                        <Button size="sm" variant="outline" onClick={handleCancel} className="rounded-lg">
-                          <X className="w-4 h-4 mr-1" />
-                          റദ്ദാക്കുക
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-between gap-4">
-                      <p className="text-foreground">{content.location}</p>
-                      <Button 
-                        size="sm" 
-                        variant="ghost" 
-                        onClick={() => handleEdit("location", content.location)}
-                        className="text-primary hover:text-primary"
-                      >
-                        <Edit3 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
+            <h2 className="font-display text-2xl font-semibold text-foreground">കോൺടാക്ട് സെക്ഷൻ</h2>
+            {renderContentEditor([
+              { key: "contactBadge", label: "ബാഡ്ജ്" },
+              { key: "contactTitle", label: "ടൈറ്റിൽ" },
+              { key: "contactHighlight", label: "ഹൈലൈറ്റ്" },
+              { key: "contactDescription", label: "വിവരണം", multiline: true },
+              { key: "helplineTitle", label: "ഹെൽപ്‌ലൈൻ ടൈറ്റിൽ" },
+              { key: "helplineSubtitle", label: "ഹെൽപ്‌ലൈൻ സബ്‌ടൈറ്റിൽ" },
+              { key: "enquiryTitle", label: "എൻക്വയറി ടൈറ്റിൽ" },
+              { key: "phone1", label: "ഫോൺ 1" },
+              { key: "phone2", label: "ഫോൺ 2" },
+              { key: "email", label: "ഇമെയിൽ" },
+              { key: "timing", label: "സമയം" },
+              { key: "location", label: "സ്ഥലം", multiline: true },
+            ])}
           </div>
         )}
 
-        {/* Forms Tab */}
-        {activeTab === "forms" && (
+        {/* Map Tab */}
+        {activeTab === "map" && (
           <div className="space-y-6">
-            <h2 className="font-display text-2xl font-semibold text-foreground">
-              അഡ്മിഷൻ ഫോം ഫീൽഡുകൾ
-            </h2>
-            
-            <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
-              <p className="text-muted-foreground mb-4">
-                അഡ്മിഷൻ ഫോമിൽ ഇപ്പോൾ ലഭ്യമായ ഫീൽഡുകൾ:
-              </p>
-              
-              <div className="grid sm:grid-cols-2 gap-4">
-                {[
-                  "വിദ്യാർത്ഥിയുടെ പേര്",
-                  "വയസ്സ്",
-                  "ജനനതീയതി",
-                  "ലിംഗഭേദം",
-                  "രക്ഷിതാവിന്റെ പേര്",
-                  "ബന്ധം",
-                  "ഫോൺ നമ്പർ",
-                  "ഇമെയിൽ",
-                  "മേൽവിലാസം",
-                  "ആധാർ കാർഡ് നമ്പർ",
-                  "ആധാർ കാർഡ് അപ്‌ലോഡ്",
-                  "ജനന സർട്ടിഫിക്കറ്റ് അപ്‌ലോഡ്",
-                  "സ്കൂൾ TC അപ്‌ലോഡ്",
-                  "കോഴ്‌സ് തിരഞ്ഞെടുപ്പ്",
-                  "അധിക വിവരങ്ങൾ"
-                ].map((field, index) => (
-                  <div key={index} className="flex items-center gap-2 p-3 bg-muted/50 rounded-xl">
-                    <div className="w-2 h-2 rounded-full bg-primary" />
-                    <span className="text-sm text-foreground">{field}</span>
-                  </div>
-                ))}
-              </div>
-              
-              <p className="text-sm text-muted-foreground mt-6">
-                * ഡോക്യുമെന്റ് അപ്‌ലോഡ് ഫീച്ചർ ഇപ്പോൾ ലഭ്യമാണ്. Lovable Cloud ഉപയോഗിച്ച് ഡാറ്റാബേസിൽ സേവ് ചെയ്യാൻ Cloud enable ചെയ്യുക.
-              </p>
-            </div>
+            <h2 className="font-display text-2xl font-semibold text-foreground">റൂട്ട് മാപ്പ്</h2>
+            {renderContentEditor([
+              { key: "mapLink", label: "ഗൂഗിൾ മാപ്സ് ലിങ്ക്" },
+              { key: "mapTitle", label: "മാപ്പ് ടൈറ്റിൽ" },
+              { key: "mapDescription", label: "വിവരണം" },
+            ])}
+          </div>
+        )}
+
+        {/* Footer Tab */}
+        {activeTab === "footer" && (
+          <div className="space-y-6">
+            <h2 className="font-display text-2xl font-semibold text-foreground">ഫൂട്ടർ</h2>
+            {renderContentEditor([
+              { key: "footerDescription", label: "വിവരണം", multiline: true },
+              { key: "footerCopyright", label: "കോപ്പിറൈറ്റ് ടെക്സ്റ്റ്" },
+            ])}
+          </div>
+        )}
+
+        {/* Social Tab */}
+        {activeTab === "social" && (
+          <div className="space-y-6">
+            <h2 className="font-display text-2xl font-semibold text-foreground">സോഷ്യൽ മീഡിയ ലിങ്കുകൾ</h2>
+            <p className="text-muted-foreground">ഈ ലിങ്കുകൾ വെബ്സൈറ്റിന്റെ വലത് ഭാഗത്ത് ഫ്ലോട്ടിംഗ് ബട്ടണുകളായി കാണിക്കും</p>
+            {renderContentEditor([
+              { key: "whatsapp", label: "WhatsApp നമ്പർ (Country code ഉൾപ്പെടെ, + ഇല്ലാതെ. ഉദാ: 919544124059)" },
+              { key: "facebook", label: "Facebook Page URL" },
+              { key: "youtube", label: "YouTube Channel URL" },
+              { key: "instagram", label: "Instagram Profile URL" },
+            ])}
           </div>
         )}
       </div>
