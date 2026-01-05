@@ -95,7 +95,7 @@ const AdmissionForm = () => {
     return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validate required fields
@@ -108,9 +108,11 @@ const AdmissionForm = () => {
       return;
     }
 
-    // Here you would typically send the data to a backend
-    console.log("Form submitted:", formData);
-    console.log("Files:", { aadhaarFile, birthCertFile, tcFile });
+    // Send WhatsApp notification to admin
+    const whatsappMessage = `🎓 പുതിയ അഡ്മിഷൻ അപേക്ഷ!\n\n👤 വിദ്യാർത്ഥി: ${formData.studentName}\n👨‍👩‍👧 രക്ഷിതാവ്: ${formData.guardianName}\n📞 ഫോൺ: ${formData.guardianPhone}\n📚 കോഴ്‌സ്: ${formData.course || 'തിരഞ്ഞെടുത്തിട്ടില്ല'}`;
+    const encodedMessage = encodeURIComponent(whatsappMessage);
+    window.open(`https://wa.me/919048696090?text=${encodedMessage}`, '_blank');
+
     setSubmitted(true);
     toast({
       title: "അപേക്ഷ സമർപ്പിച്ചു!",

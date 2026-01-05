@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import { SplashScreen } from '@/components/SplashScreen';
 import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
@@ -10,6 +12,24 @@ import Footer from "@/components/Footer";
 import SocialButtons from "@/components/SocialButtons";
 
 const Index = () => {
+  const [showSplash, setShowSplash] = useState(true);
+
+  useEffect(() => {
+    const entered = sessionStorage.getItem('hasEntered');
+    if (entered === 'true') {
+      setShowSplash(false);
+    }
+  }, []);
+
+  const handleEnter = () => {
+    sessionStorage.setItem('hasEntered', 'true');
+    setShowSplash(false);
+  };
+
+  if (showSplash) {
+    return <SplashScreen onEnter={handleEnter} />;
+  }
+
   return (
     <main className="min-h-screen">
       <Navigation />
