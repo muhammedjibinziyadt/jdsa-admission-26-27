@@ -14,7 +14,90 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      admissions: {
+        Row: {
+          aadhaar_number: string | null
+          additional_info: string | null
+          address: string | null
+          age: number | null
+          birth_certificate_number: string | null
+          created_at: string
+          date_of_birth: string | null
+          gender: string | null
+          guardian_email: string | null
+          guardian_name: string
+          guardian_phone: string
+          guardian_relation: string | null
+          id: string
+          notified: boolean | null
+          previous_school: string | null
+          selected_course: string | null
+          status: string | null
+          student_name: string
+          tc_number: string | null
+        }
+        Insert: {
+          aadhaar_number?: string | null
+          additional_info?: string | null
+          address?: string | null
+          age?: number | null
+          birth_certificate_number?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          gender?: string | null
+          guardian_email?: string | null
+          guardian_name: string
+          guardian_phone: string
+          guardian_relation?: string | null
+          id?: string
+          notified?: boolean | null
+          previous_school?: string | null
+          selected_course?: string | null
+          status?: string | null
+          student_name: string
+          tc_number?: string | null
+        }
+        Update: {
+          aadhaar_number?: string | null
+          additional_info?: string | null
+          address?: string | null
+          age?: number | null
+          birth_certificate_number?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          gender?: string | null
+          guardian_email?: string | null
+          guardian_name?: string
+          guardian_phone?: string
+          guardian_relation?: string | null
+          id?: string
+          notified?: boolean | null
+          previous_school?: string | null
+          selected_course?: string | null
+          status?: string | null
+          student_name?: string
+          tc_number?: string | null
+        }
+        Relationships: []
+      }
+      website_content: {
+        Row: {
+          content: Json
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          content?: Json
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          content?: Json
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
