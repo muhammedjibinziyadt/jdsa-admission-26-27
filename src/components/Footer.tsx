@@ -1,6 +1,22 @@
 import { Phone, Mail, Heart } from "lucide-react";
 
-const Footer = () => {
+interface FooterContent {
+  copyright: string;
+  tagline: string;
+}
+
+interface ContactInfo {
+  phone1: string;
+  phone2: string;
+  email: string;
+}
+
+interface FooterProps {
+  content: FooterContent;
+  contact: ContactInfo;
+}
+
+const Footer = ({ content, contact }: FooterProps) => {
   const currentYear = new Date().getFullYear();
   
   return (
@@ -26,8 +42,7 @@ const Footer = () => {
               </div>
             </div>
             <p className="text-primary-foreground/70 leading-relaxed">
-              വിജ്ഞാനത്തിന്റെയും മൂല്യങ്ങളുടെയും സമന്വയത്തിലൂടെ 
-              പുതിയ തലമുറയെ രൂപപ്പെടുത്തുന്ന വിദ്യാഭ്യാസ കേന്ദ്രം
+              {content.tagline || 'വിജ്ഞാനത്തിന്റെയും മൂല്യങ്ങളുടെയും സമന്വയത്തിലൂടെ പുതിയ തലമുറയെ രൂപപ്പെടുത്തുന്ന വിദ്യാഭ്യാസ കേന്ദ്രം'}
             </p>
           </div>
           
@@ -58,25 +73,25 @@ const Footer = () => {
             <h4 className="font-display font-semibold text-lg mb-6">ബന്ധപ്പെടുക</h4>
             <div className="space-y-4">
               <a 
-                href="tel:+919544124059"
+                href={`tel:${contact.phone1?.replace(/\s/g, '')}`}
                 className="flex items-center gap-3 text-primary-foreground/70 hover:text-gold-light transition-colors"
               >
                 <Phone className="w-5 h-5" />
-                +91 95441 24059
+                {contact.phone1}
               </a>
               <a 
-                href="tel:+918281102606"
+                href={`tel:${contact.phone2?.replace(/\s/g, '')}`}
                 className="flex items-center gap-3 text-primary-foreground/70 hover:text-gold-light transition-colors"
               >
                 <Phone className="w-5 h-5" />
-                +91 82811 02606
+                {contact.phone2}
               </a>
               <a 
-                href="mailto:info@jawharathululoom.com"
+                href={`mailto:${contact.email}`}
                 className="flex items-center gap-3 text-primary-foreground/70 hover:text-gold-light transition-colors"
               >
                 <Mail className="w-5 h-5" />
-                info@jawharathululoom.com
+                {contact.email}
               </a>
             </div>
           </div>
@@ -86,7 +101,7 @@ const Footer = () => {
         <div className="border-t border-primary-foreground/10 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-primary-foreground/60 text-sm text-center md:text-left">
-              © {currentYear} ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസ്. എല്ലാ അവകാശങ്ങളും സംരക്ഷിതം.
+              {content.copyright || `© ${currentYear} ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസ്. എല്ലാ അവകാശങ്ങളും സംരക്ഷിതം.`}
             </p>
             <p className="text-primary-foreground/60 text-sm flex items-center gap-1">
               Made with <Heart className="w-4 h-4 text-gold" fill="currentColor" /> for education

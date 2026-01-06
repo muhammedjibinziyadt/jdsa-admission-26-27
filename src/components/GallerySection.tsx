@@ -1,48 +1,54 @@
 import { useState } from "react";
 import { X, ChevronLeft, ChevronRight, Image as ImageIcon } from "lucide-react";
 
-// Sample gallery images - these would be managed by admin
-const galleryImages = [
+interface GalleryImage {
+  id: string;
+  url: string;
+  alt: string;
+}
+
+interface GallerySectionProps {
+  images: GalleryImage[];
+}
+
+// Default fallback images if none in database
+const defaultImages = [
   {
-    id: 1,
-    src: "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=600&h=400&fit=crop",
-    alt: "ക്ലാസ് റൂം പഠനം",
-    category: "classes"
+    id: "1",
+    url: "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=600&h=400&fit=crop",
+    alt: "ക്ലാസ് റൂം പഠനം"
   },
   {
-    id: 2,
-    src: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&h=400&fit=crop",
-    alt: "ലൈബ്രറി",
-    category: "facilities"
+    id: "2",
+    url: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=600&h=400&fit=crop",
+    alt: "ലൈബ്രറി"
   },
   {
-    id: 3,
-    src: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=600&h=400&fit=crop",
-    alt: "ഗ്രന്ഥപഠനം",
-    category: "activities"
+    id: "3",
+    url: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=600&h=400&fit=crop",
+    alt: "ഗ്രന്ഥപഠനം"
   },
   {
-    id: 4,
-    src: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&h=400&fit=crop",
-    alt: "വിദ്യാർത്ഥികൾ",
-    category: "students"
+    id: "4",
+    url: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&h=400&fit=crop",
+    alt: "വിദ്യാർത്ഥികൾ"
   },
   {
-    id: 5,
-    src: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&h=400&fit=crop",
-    alt: "ക്ലാസ് മുറി",
-    category: "classes"
+    id: "5",
+    url: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&h=400&fit=crop",
+    alt: "ക്ലാസ് മുറി"
   },
   {
-    id: 6,
-    src: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=600&h=400&fit=crop",
-    alt: "പ്രാർത്ഥന",
-    category: "activities"
+    id: "6",
+    url: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=600&h=400&fit=crop",
+    alt: "പ്രാർത്ഥന"
   }
 ];
 
-const GallerySection = () => {
-  const [selectedImage, setSelectedImage] = useState<number | null>(null);
+const GallerySection = ({ images }: GallerySectionProps) => {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  
+  const galleryImages = images && images.length > 0 ? images : defaultImages;
 
   const currentIndex = selectedImage !== null 
     ? galleryImages.findIndex(img => img.id === selectedImage) 
@@ -93,7 +99,7 @@ const GallerySection = () => {
             >
               <div className={`relative ${index === 0 ? 'aspect-square md:aspect-auto md:h-full min-h-[300px]' : 'aspect-square'}`}>
                 <img 
-                  src={image.src} 
+                  src={image.url} 
                   alt={image.alt}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
@@ -143,7 +149,7 @@ const GallerySection = () => {
           
           {/* Image */}
           <img 
-            src={galleryImages.find(img => img.id === selectedImage)?.src}
+            src={galleryImages.find(img => img.id === selectedImage)?.url}
             alt={galleryImages.find(img => img.id === selectedImage)?.alt}
             className="max-w-full max-h-[80vh] rounded-2xl shadow-elevated object-contain"
             onClick={(e) => e.stopPropagation()}

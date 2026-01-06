@@ -10,9 +10,11 @@ import RouteMapSection from "@/components/RouteMapSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import SocialButtons from "@/components/SocialButtons";
+import { useWebsiteContent } from "@/hooks/useWebsiteContent";
 
 const Index = () => {
   const [showSplash, setShowSplash] = useState(true);
+  const { content, loading } = useWebsiteContent();
 
   useEffect(() => {
     const entered = sessionStorage.getItem('hasEntered');
@@ -30,25 +32,26 @@ const Index = () => {
     return <SplashScreen onEnter={handleEnter} />;
   }
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
     <main className="min-h-screen">
       <Navigation />
-      <HeroSection />
-      <AboutSection />
-      <CoursesSection />
-      <StudentBenefits />
-      <GallerySection />
-      <RouteMapSection />
-      <ContactSection />
-      <Footer />
-      <SocialButtons 
-        links={{
-          whatsapp: "919544124059",
-          facebook: "https://facebook.com/jawharathululoom",
-          youtube: "https://youtube.com/@jawharathululoom",
-          instagram: "https://instagram.com/jawharathululoom"
-        }}
-      />
+      <HeroSection content={content.hero} />
+      <AboutSection content={content.about} />
+      <CoursesSection courses={content.courses} />
+      <StudentBenefits benefits={content.benefits} />
+      <GallerySection images={content.gallery} />
+      <RouteMapSection content={content.map} />
+      <ContactSection content={content.contact} />
+      <Footer content={content.footer} contact={content.contact} />
+      <SocialButtons links={content.social} />
     </main>
   );
 };

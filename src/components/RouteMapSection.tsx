@@ -1,13 +1,22 @@
 import { MapPin, Navigation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const RouteMapSection = () => {
-  // Actual Google Maps embed URL for the institution
+interface MapContent {
+  embedUrl: string;
+  address: string;
+}
+
+interface RouteMapSectionProps {
+  content: MapContent;
+}
+
+const RouteMapSection = ({ content }: RouteMapSectionProps) => {
+  // Build embed URL from the Google Maps link
   const googleMapsEmbedUrl = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3929.5!2d76.27!3d10.04!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDAyJzI0LjAiTiA3NsKwMTYnMTIuMCJF!5e0!3m2!1sen!2sin!4v1234567890";
   
   const handleGetDirections = () => {
-    // Direct link to Google Maps location
-    window.open("https://maps.app.goo.gl/ZN8C3epBni6h3hKn9?g_st=aw", "_blank");
+    // Use the link from admin or default
+    window.open(content.embedUrl || "https://maps.app.goo.gl/ZN8C3epBni6h3hKn9?g_st=aw", "_blank");
   };
 
   return (
@@ -58,7 +67,7 @@ const RouteMapSection = () => {
                   </div>
                   <div>
                     <h3 className="font-display text-xl font-semibold text-foreground mb-2">
-                      ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസ്
+                      {content.address || 'ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസ്'}
                     </h3>
                     <p className="text-muted-foreground leading-relaxed">
                       കേരളം, ഇന്ത്യ
