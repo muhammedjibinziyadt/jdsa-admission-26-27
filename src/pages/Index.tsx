@@ -10,11 +10,14 @@ import RouteMapSection from "@/components/RouteMapSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import SocialButtons from "@/components/SocialButtons";
+import ApprovedApplications from "@/components/ApprovedApplications";
 import { useWebsiteContent } from "@/hooks/useWebsiteContent";
+import { useAdmissions } from "@/hooks/useAdmissions";
 
 const Index = () => {
   const [showSplash, setShowSplash] = useState(true);
   const { content, loading } = useWebsiteContent();
+  const { getApprovedAdmissions } = useAdmissions();
 
   useEffect(() => {
     const entered = sessionStorage.getItem('hasEntered');
@@ -40,6 +43,8 @@ const Index = () => {
     );
   }
 
+  const approvedApplications = getApprovedAdmissions();
+
   return (
     <main className="min-h-screen">
       <Navigation />
@@ -47,6 +52,9 @@ const Index = () => {
       <AboutSection content={content.about} />
       <CoursesSection courses={content.courses} />
       <StudentBenefits benefits={content.benefits} />
+      {approvedApplications.length > 0 && (
+        <ApprovedApplications applications={approvedApplications} />
+      )}
       <GallerySection images={content.gallery} />
       <RouteMapSection content={content.map} />
       <ContactSection content={content.contact} />

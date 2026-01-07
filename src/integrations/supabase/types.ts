@@ -14,12 +14,37 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_credentials: {
+        Row: {
+          created_at: string
+          id: string
+          password_hash: string
+          updated_at: string
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          password_hash?: string
+          updated_at?: string
+          username?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          password_hash?: string
+          updated_at?: string
+          username?: string
+        }
+        Relationships: []
+      }
       admissions: {
         Row: {
           aadhaar_number: string | null
           additional_info: string | null
           address: string | null
           age: number | null
+          approved: boolean | null
           birth_certificate_number: string | null
           created_at: string
           date_of_birth: string | null
@@ -29,6 +54,7 @@ export type Database = {
           guardian_phone: string
           guardian_relation: string | null
           id: string
+          image_url: string | null
           notified: boolean | null
           previous_school: string | null
           selected_course: string | null
@@ -41,6 +67,7 @@ export type Database = {
           additional_info?: string | null
           address?: string | null
           age?: number | null
+          approved?: boolean | null
           birth_certificate_number?: string | null
           created_at?: string
           date_of_birth?: string | null
@@ -50,6 +77,7 @@ export type Database = {
           guardian_phone: string
           guardian_relation?: string | null
           id?: string
+          image_url?: string | null
           notified?: boolean | null
           previous_school?: string | null
           selected_course?: string | null
@@ -62,6 +90,7 @@ export type Database = {
           additional_info?: string | null
           address?: string | null
           age?: number | null
+          approved?: boolean | null
           birth_certificate_number?: string | null
           created_at?: string
           date_of_birth?: string | null
@@ -71,6 +100,7 @@ export type Database = {
           guardian_phone?: string
           guardian_relation?: string | null
           id?: string
+          image_url?: string | null
           notified?: boolean | null
           previous_school?: string | null
           selected_course?: string | null
