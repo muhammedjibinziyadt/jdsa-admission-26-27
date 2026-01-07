@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { 
   ArrowLeft, 
@@ -17,14 +17,28 @@ import {
   Phone,
   Home,
   MessageSquare,
-  Loader2
+  Loader2,
+  LogOut,
+  Upload,
+  Check,
+  Eye,
+  EyeOff,
+  ClipboardList
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWebsiteContent, WebsiteContent } from "@/hooks/useWebsiteContent";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { useImageUpload } from "@/hooks/useImageUpload";
+import { useAdmissions } from "@/hooks/useAdmissions";
+import AdminLogin from "@/components/AdminLogin";
 
 const Admin = () => {
+  const { isAuthenticated, loading: authLoading, login, logout } = useAdminAuth();
   const { content, loading, saveContent } = useWebsiteContent();
-  const [activeTab, setActiveTab] = useState<"hero" | "about" | "courses" | "benefits" | "gallery" | "contact" | "map" | "footer" | "social">("hero");
+  const { uploadImage, deleteImage, uploading } = useImageUpload();
+  const { admissions, updateAdmission, deleteAdmission, newAdmissionCount } = useAdmissions();
+  
+  const [activeTab, setActiveTab] = useState<"hero" | "about" | "courses" | "benefits" | "gallery" | "contact" | "map" | "footer" | "social" | "admissions">("hero");
   
   // Local editing state
   const [localContent, setLocalContent] = useState<WebsiteContent | null>(null);
@@ -36,9 +50,10 @@ const Admin = () => {
   const [tempFeature, setTempFeature] = useState<WebsiteContent['about']['features'][0] | null>(null);
   const [editingBenefit, setEditingBenefit] = useState<string | null>(null);
   const [tempBenefit, setTempBenefit] = useState<WebsiteContent['benefits'][0] | null>(null);
-  const [newImageUrl, setNewImageUrl] = useState("");
   const [newImageAlt, setNewImageAlt] = useState("");
   const [saving, setSaving] = useState(false);
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Sync local content with database content
   useEffect(() => {
@@ -53,6 +68,19 @@ const Admin = () => {
       setLocalContent(content);
     }
   }, [content]);
+
+  // Show login if not authenticated
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <AdminLogin onLogin={login} />;
+  }
 
   const handleSaveToDatabase = async (updatedContent: WebsiteContent) => {
     setSaving(true);
@@ -78,11 +106,6 @@ const Admin = () => {
   };
 
   // About section handlers
-  const handleEditAboutField = (field: string, value: string) => {
-    setEditingField(field);
-    setTempValue(value);
-  };
-
   const handleSaveAboutField = async (field: keyof WebsiteContent['about']) => {
     if (!localContent) return;
     const updatedContent = {
@@ -210,19 +233,28 @@ const Admin = () => {
     await handleSaveToDatabase(updatedContent);
   };
 
-  // Gallery handlers
-  const handleAddImage = async () => {
-    if (!localContent || !newImageUrl || !newImageAlt) return;
-    const newImage = { id: String(Date.now()), url: newImageUrl, alt: newImageAlt };
-    const updatedContent = { ...localContent, gallery: [...localContent.gallery, newImage] };
-    setLocalContent(updatedContent);
-    setNewImageUrl("");
-    setNewImageAlt("");
-    await handleSaveToDatabase(updatedContent);
+  // Gallery handlers with file upload
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !localContent) return;
+
+    const url = await uploadImage(file, 'gallery');
+    if (url) {
+      const newImage = { id: String(Date.now()), url, alt: newImageAlt || 'Gallery Image' };
+      const updatedContent = { ...localContent, gallery: [...localContent.gallery, newImage] };
+      setLocalContent(updatedContent);
+      setNewImageAlt("");
+      await handleSaveToDatabase(updatedContent);
+    }
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const handleDeleteImage = async (id: string) => {
     if (!localContent) return;
+    const image = localContent.gallery.find(img => img.id === id);
+    if (image) {
+      await deleteImage(image.url);
+    }
     const updatedGallery = localContent.gallery.filter(img => img.id !== id);
     const updatedContent = { ...localContent, gallery: updatedGallery };
     setLocalContent(updatedContent);
@@ -230,11 +262,6 @@ const Admin = () => {
   };
 
   // Contact handlers
-  const handleEditContactField = (field: string, value: string) => {
-    setEditingField(field);
-    setTempValue(value);
-  };
-
   const handleSaveContactField = async (field: keyof WebsiteContent['contact']) => {
     if (!localContent) return;
     const updatedContent = {
@@ -247,11 +274,6 @@ const Admin = () => {
   };
 
   // Map handlers
-  const handleEditMapField = (field: string, value: string) => {
-    setEditingField(field);
-    setTempValue(value);
-  };
-
   const handleSaveMapField = async (field: keyof WebsiteContent['map']) => {
     if (!localContent) return;
     const updatedContent = {
@@ -264,11 +286,6 @@ const Admin = () => {
   };
 
   // Footer handlers
-  const handleEditFooterField = (field: string, value: string) => {
-    setEditingField(field);
-    setTempValue(value);
-  };
-
   const handleSaveFooterField = async (field: keyof WebsiteContent['footer']) => {
     if (!localContent) return;
     const updatedContent = {
@@ -281,11 +298,6 @@ const Admin = () => {
   };
 
   // Social handlers
-  const handleEditSocialField = (field: string, value: string) => {
-    setEditingField(field);
-    setTempValue(value);
-  };
-
   const handleSaveSocialField = async (field: keyof WebsiteContent['social']) => {
     if (!localContent) return;
     const updatedContent = {
@@ -312,6 +324,7 @@ const Admin = () => {
     { id: "map" as const, label: "മാപ്പ്", icon: MapPin },
     { id: "footer" as const, label: "ഫൂട്ടർ", icon: FileText },
     { id: "social" as const, label: "സോഷ്യൽ", icon: Share2 },
+    { id: "admissions" as const, label: "അപേക്ഷകൾ", icon: ClipboardList, badge: newAdmissionCount },
   ];
 
   if (loading || !localContent) {
@@ -396,12 +409,18 @@ const Admin = () => {
               <h1 className="font-display text-xl font-bold text-foreground">അഡ്മിൻ ഡാഷ്‌ബോർഡ്</h1>
             </div>
           </div>
-          {saving && (
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Loader2 className="w-4 h-4 animate-spin" />
-              <span className="text-sm">സേവ് ചെയ്യുന്നു...</span>
-            </div>
-          )}
+          <div className="flex items-center gap-4">
+            {saving && (
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span className="text-sm">സേവ് ചെയ്യുന്നു...</span>
+              </div>
+            )}
+            <Button variant="outline" onClick={logout} className="rounded-xl">
+              <LogOut className="w-4 h-4 mr-2" />
+              ലോഗൗട്ട്
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -413,10 +432,15 @@ const Admin = () => {
               key={tab.id}
               variant={activeTab === tab.id ? "default" : "outline"}
               onClick={() => setActiveTab(tab.id)}
-              className="rounded-xl whitespace-nowrap"
+              className="rounded-xl whitespace-nowrap relative"
             >
               <tab.icon className="w-4 h-4 mr-2" />
               {tab.label}
+              {tab.badge && tab.badge > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-destructive text-destructive-foreground text-xs flex items-center justify-center">
+                  {tab.badge}
+                </span>
+              )}
             </Button>
           ))}
         </div>
@@ -651,33 +675,47 @@ const Admin = () => {
           </div>
         )}
 
-        {/* Gallery Tab */}
+        {/* Gallery Tab with File Upload */}
         {activeTab === "gallery" && (
           <div className="space-y-6">
             <h2 className="font-display text-2xl font-semibold text-foreground">ഗാലറി സെക്ഷൻ</h2>
             
-            {/* Add New Image */}
+            {/* Image Upload */}
             <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
-              <h3 className="font-medium text-foreground mb-4">പുതിയ ഇമേജ് ചേർക്കുക</h3>
-              <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                <input
-                  type="url"
-                  placeholder="ഇമേജ് URL"
-                  value={newImageUrl}
-                  onChange={(e) => setNewImageUrl(e.target.value)}
-                  className="px-4 py-3 rounded-xl border border-border bg-background"
-                />
+              <h3 className="font-medium text-foreground mb-4">ഡിവൈസിൽ നിന്ന് ഇമേജ് അപ്‌ലോഡ് ചെയ്യുക</h3>
+              <div className="space-y-4">
                 <input
                   type="text"
-                  placeholder="ഇമേജ് വിവരണം"
+                  placeholder="ഇമേജ് വിവരണം (Alt Text)"
                   value={newImageAlt}
                   onChange={(e) => setNewImageAlt(e.target.value)}
-                  className="px-4 py-3 rounded-xl border border-border bg-background"
+                  className="w-full px-4 py-3 rounded-xl border border-border bg-background"
                 />
+                <div className="flex gap-4">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    id="gallery-upload"
+                  />
+                  <label
+                    htmlFor="gallery-upload"
+                    className="flex-1 flex flex-col items-center justify-center p-8 border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-primary/50 hover:bg-muted/30 transition-colors"
+                  >
+                    {uploading ? (
+                      <Loader2 className="w-10 h-10 text-primary animate-spin mb-2" />
+                    ) : (
+                      <Upload className="w-10 h-10 text-muted-foreground mb-2" />
+                    )}
+                    <span className="text-sm text-muted-foreground">
+                      {uploading ? 'അപ്‌ലോഡ് ചെയ്യുന്നു...' : 'ക്ലിക്ക് ചെയ്ത് ഇമേജ് തിരഞ്ഞെടുക്കുക'}
+                    </span>
+                    <span className="text-xs text-muted-foreground mt-1">JPG, PNG, WEBP</span>
+                  </label>
+                </div>
               </div>
-              <Button onClick={handleAddImage} className="rounded-xl" disabled={saving || !newImageUrl || !newImageAlt}>
-                <Plus className="w-4 h-4 mr-2" />ഇമേജ് ചേർക്കുക
-              </Button>
             </div>
 
             {/* Gallery Grid */}
@@ -743,6 +781,94 @@ const Admin = () => {
               {renderFieldEditor("social.youtube", "YouTube URL", localContent.social.youtube, () => handleSaveSocialField("youtube"))}
               {renderFieldEditor("social.instagram", "Instagram URL", localContent.social.instagram, () => handleSaveSocialField("instagram"))}
             </div>
+          </div>
+        )}
+
+        {/* Admissions Tab */}
+        {activeTab === "admissions" && (
+          <div className="space-y-6">
+            <h2 className="font-display text-2xl font-semibold text-foreground">അഡ്മിഷൻ അപേക്ഷകൾ</h2>
+            
+            {admissions.length === 0 ? (
+              <div className="bg-card rounded-2xl p-8 border border-border/50 shadow-soft text-center">
+                <ClipboardList className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground">അപേക്ഷകൾ ഇല്ല</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {admissions.map(admission => (
+                  <div key={admission.id} className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
+                    <div className="flex flex-col md:flex-row md:items-start gap-4">
+                      {/* Photo */}
+                      {admission.image_url && (
+                        <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0">
+                          <img src={admission.image_url} alt={admission.student_name} className="w-full h-full object-cover" />
+                        </div>
+                      )}
+                      
+                      {/* Details */}
+                      <div className="flex-1 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-semibold text-foreground text-lg">{admission.student_name}</h4>
+                          {admission.approved ? (
+                            <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-xs flex items-center gap-1">
+                              <Check className="w-3 h-3" /> അംഗീകരിച്ചു
+                            </span>
+                          ) : (
+                            <span className="px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700 text-xs">
+                              കാത്തിരിക്കുന്നു
+                            </span>
+                          )}
+                        </div>
+                        
+                        <div className="grid sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
+                          <p><strong>രക്ഷിതാവ്:</strong> {admission.guardian_name}</p>
+                          <p><strong>ഫോൺ:</strong> {admission.guardian_phone}</p>
+                          <p><strong>കോഴ്‌സ്:</strong> {admission.selected_course || '-'}</p>
+                          <p><strong>വയസ്സ്:</strong> {admission.age || '-'}</p>
+                          {admission.address && <p className="sm:col-span-2"><strong>വിലാസം:</strong> {admission.address}</p>}
+                          {admission.additional_info && <p className="sm:col-span-2"><strong>കുറിപ്പ്:</strong> {admission.additional_info}</p>}
+                        </div>
+                        
+                        <p className="text-xs text-muted-foreground">
+                          സമർപ്പിച്ചത്: {new Date(admission.created_at).toLocaleDateString('ml-IN')}
+                        </p>
+                      </div>
+                      
+                      {/* Actions */}
+                      <div className="flex gap-2 flex-shrink-0">
+                        <Button
+                          size="sm"
+                          variant={admission.approved ? "outline" : "default"}
+                          onClick={() => updateAdmission(admission.id, { approved: !admission.approved })}
+                          className="rounded-lg"
+                        >
+                          {admission.approved ? (
+                            <>
+                              <EyeOff className="w-4 h-4 mr-1" />
+                              മറയ്ക്കുക
+                            </>
+                          ) : (
+                            <>
+                              <Eye className="w-4 h-4 mr-1" />
+                              അംഗീകരിക്കുക
+                            </>
+                          )}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="text-destructive"
+                          onClick={() => deleteAdmission(admission.id)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>

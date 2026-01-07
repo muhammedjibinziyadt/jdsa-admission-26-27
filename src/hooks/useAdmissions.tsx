@@ -22,6 +22,8 @@ export interface Admission {
   status: string;
   notified: boolean;
   created_at: string;
+  image_url: string | null;
+  approved: boolean;
 }
 
 export function useAdmissions() {
@@ -38,7 +40,7 @@ export function useAdmissions() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setAdmissions(data || []);
+      setAdmissions((data as Admission[]) || []);
       setNewAdmissionCount(data?.filter(a => !a.notified).length || 0);
     } catch (error) {
       console.error('Error loading admissions:', error);
@@ -47,11 +49,13 @@ export function useAdmissions() {
     }
   }, []);
 
-  const submitAdmission = useCallback(async (admissionData: Omit<Admission, 'id' | 'status' | 'notified' | 'created_at'>) => {
+  const submitAdmission = useCallback(async (
+    admissionData: Omit<Admission, 'id' | 'status' | 'notified' | 'created_at' | 'approved'>
+  ) => {
     try {
       const { data, error } = await supabase
         .from('admissions')
-        .insert([admissionData])
+        .insert([{ ...admissionData, approved: false }])
         .select()
         .single();
 
@@ -71,21 +75,69 @@ export function useAdmissions() {
     }
   }, [toast]);
 
+  const updateAdmission = useCallback(async (id: string, updates: Partial<Admission>) => {
+    try {
+      const { error } = await supabase
+        .from('admissions')
+        .update(updates)
+        .eq('id', id);
+
+      if (error) throw error;
+      
+      setAdmissions(prev => prev.map(a => a.id === id ? { ...a, ...updates } : a));
+      toast({ title: "അപ്‌ഡേറ്റ് ചെയ്തു!", description: "മാറ്റങ്ങൾ സേവ് ചെയ്തു" });
+      return true;
+    } catch (error) {
+      console.error('Error updating admission:', error);
+      toast({ title: "പിശക്!", description: "അപ്‌ഡേറ്റ് ചെയ്യാൻ കഴിഞ്ഞില്ല", variant: "destructive" });
+      return false;
+    }
+  }, [toast]);
+
+  const deleteAdmission = useCallback(async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('admissions')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      
+      setAdmissions(prev => prev.filter(a => a.id !== id));
+      toast({ title: "ഡിലീറ്റ് ചെയ്തു!", description: "അപേക്ഷ നീക്കം ചെയ്തു" });
+      return true;
+    } catch (error) {
+      console.error('Error deleting admission:', error);
+      toast({ title: "പിശക്!", description: "ഡിലീറ്റ് ചെയ്യാൻ കഴിഞ്ഞില്ല", variant: "destructive" });
+      return false;
+    }
+  }, [toast]);
+
+  const getApprovedAdmissions = useCallback(() => {
+    return admissions.filter(a => a.approved);
+  }, [admissions]);
+
   useEffect(() => {
     loadAdmissions();
 
     const channel = supabase
       .channel('admissions-changes')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'admissions' }, (payload) => {
-        const newAdmission = payload.new as Admission;
-        setAdmissions(prev => [newAdmission, ...prev]);
-        setNewAdmissionCount(prev => prev + 1);
-        toast({ title: "🎓 പുതിയ അഡ്മിഷൻ!", description: `${newAdmission.student_name} അപേക്ഷ സമർപ്പിച്ചു` });
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'admissions' }, () => {
+        loadAdmissions();
       })
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
-  }, [loadAdmissions, toast]);
+  }, [loadAdmissions]);
 
-  return { admissions, loading, newAdmissionCount, submitAdmission, refreshAdmissions: loadAdmissions };
+  return { 
+    admissions, 
+    loading, 
+    newAdmissionCount, 
+    submitAdmission, 
+    updateAdmission,
+    deleteAdmission,
+    getApprovedAdmissions,
+    refreshAdmissions: loadAdmissions 
+  };
 }
