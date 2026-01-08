@@ -33,11 +33,11 @@ const Footer = ({ content, contact }: FooterProps) => {
                 <span className="text-primary font-display font-bold text-xl">ج</span>
               </div>
               <div>
-                <span className="font-display font-semibold text-xl block leading-tight">
-                  ജവ്ഹറത്തുൽ ഉലൂം
+              <span className="font-display font-semibold text-xl block leading-tight">
+                  ജൗഹറത്തുൽ ഉലൂം
                 </span>
                 <span className="text-primary-foreground/70 text-sm">
-                  സുഫ്ഫാ ദർസ്
+                  സുഫ്ഫ ദർസ്
                 </span>
               </div>
             </div>

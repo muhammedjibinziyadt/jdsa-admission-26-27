@@ -11,6 +11,7 @@ import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import SocialButtons from "@/components/SocialButtons";
 import ApprovedApplications from "@/components/ApprovedApplications";
+import AdmissionFormSection from "@/components/AdmissionFormSection";
 import { useWebsiteContent } from "@/hooks/useWebsiteContent";
 import { useAdmissions } from "@/hooks/useAdmissions";
 
@@ -57,6 +58,7 @@ const Index = () => {
       )}
       <GallerySection images={content.gallery} />
       <RouteMapSection content={content.map} />
+      <AdmissionFormSection />
       <ContactSection content={content.contact} />
       <Footer content={content.footer} contact={content.contact} />
       <SocialButtons links={content.social} />
