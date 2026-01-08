@@ -3,6 +3,58 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 // Default content for the website
+// Form field types for dynamic form
+export interface FormField {
+  id: string;
+  name: string;
+  label: string;
+  type: 'text' | 'number' | 'date' | 'select' | 'textarea' | 'file';
+  required: boolean;
+  placeholder?: string;
+  options?: string[]; // For select type
+  order: number;
+}
+
+const defaultFormFields: FormField[] = [
+  { id: 'studentName', name: 'studentName', label: 'വിദ്യാർത്ഥിയുടെ പേര്', type: 'text', required: true, placeholder: 'പൂർണ്ണ നാമം', order: 1 },
+  { id: 'studentAge', name: 'studentAge', label: 'വയസ്സ്', type: 'number', required: true, placeholder: 'വയസ്സ്', order: 2 },
+  { id: 'dateOfBirth', name: 'dateOfBirth', label: 'ജനനതീയതി', type: 'date', required: true, order: 3 },
+  { id: 'gender', name: 'gender', label: 'ലിംഗഭേദം', type: 'select', required: true, options: ['ആൺ', 'പെൺ'], order: 4 },
+  { id: 'guardianName', name: 'guardianName', label: 'രക്ഷിതാവിന്റെ പേര്', type: 'text', required: true, placeholder: 'രക്ഷിതാവിന്റെ പൂർണ്ണ നാമം', order: 5 },
+  { id: 'guardianRelation', name: 'guardianRelation', label: 'ബന്ധം', type: 'select', required: true, options: ['പിതാവ്', 'മാതാവ്', 'രക്ഷാകർത്താവ്'], order: 6 },
+  { id: 'guardianPhone', name: 'guardianPhone', label: 'ഫോൺ നമ്പർ', type: 'text', required: true, placeholder: '+91 XXXXX XXXXX', order: 7 },
+  { id: 'guardianEmail', name: 'guardianEmail', label: 'ഇമെയിൽ', type: 'text', required: false, placeholder: 'email@example.com', order: 8 },
+  { id: 'address', name: 'address', label: 'മേൽവിലാസം', type: 'textarea', required: true, placeholder: 'പൂർണ്ണ മേൽവിലാസം', order: 9 },
+  { id: 'aadhaarNumber', name: 'aadhaarNumber', label: 'ആധാർ കാർഡ് നമ്പർ', type: 'text', required: true, placeholder: 'XXXX XXXX XXXX', order: 10 },
+  { id: 'birthCertificateNumber', name: 'birthCertificateNumber', label: 'ജനന സർട്ടിഫിക്കറ്റ് നമ്പർ', type: 'text', required: false, placeholder: 'സർട്ടിഫിക്കറ്റ് നമ്പർ', order: 11 },
+  { id: 'previousSchool', name: 'previousSchool', label: 'മുൻ സ്കൂൾ', type: 'text', required: false, placeholder: 'മുൻ വിദ്യാലയത്തിന്റെ പേര്', order: 12 },
+  { id: 'tcNumber', name: 'tcNumber', label: 'TC നമ്പർ', type: 'text', required: false, placeholder: 'ട്രാൻസ്ഫർ സർട്ടിഫിക്കറ്റ് നമ്പർ', order: 13 },
+  { id: 'course', name: 'course', label: 'കോഴ്‌സ്', type: 'select', required: true, options: ['സുഫ്ഫാ കോഴ്‌സിന് കീഴിലെ ദർസ്', 'ഖുർആൻ പഠനം', 'കമ്പ്യൂട്ടർ പഠനം', 'എഴുത്ത് പഠനം', 'പ്രസംഗ പരിശീലനം', 'വഅള് പരിശീലനം'], order: 14 },
+  { id: 'additionalInfo', name: 'additionalInfo', label: 'അധിക വിവരങ്ങൾ', type: 'textarea', required: false, placeholder: 'എന്തെങ്കിലും പ്രത്യേക കാര്യങ്ങൾ അറിയിക്കണമെങ്കിൽ ഇവിടെ എഴുതുക...', order: 15 },
+];
+
+const defaultInstitutionRules = `സ്ഥാപനത്തിന്റെ അച്ചടക്ക നിയമങ്ങൾ
+
+1. എല്ലാ വിദ്യാർത്ഥികളും സമയം കൃത്യമായി പാലിക്കണം.
+
+2. ക്ലാസ്സിൽ അച്ചടക്കം പാലിക്കുകയും അധ്യാപകരെ ബഹുമാനിക്കുകയും വേണം.
+
+3. മൊബൈൽ ഫോൺ ക്ലാസ്സിൽ കൊണ്ടുവരുന്നത് നിരോധിച്ചിരിക്കുന്നു.
+
+4. യൂണിഫോം ധരിക്കൽ നിർബന്ധമാണ്.
+
+5. മറ്റ് വിദ്യാർത്ഥികളോട് സൗഹാർദ്ദപരമായി പെരുമാറണം.
+
+6. സ്ഥാപനത്തിന്റെ സ്വത്തുക്കൾ സൂക്ഷിക്കാൻ ബാധ്യസ്ഥരാണ്.
+
+7. അവധി ദിവസങ്ങളിൽ മുൻകൂട്ടി അനുമതി വാങ്ങണം.
+
+8. പരീക്ഷകളിൽ ക്രമക്കേട് നടത്തുന്നത് ശിക്ഷാർഹമാണ്.
+
+9. രക്ഷിതാക്കൾ മാസത്തിൽ ഒരിക്കലെങ്കിലും സ്ഥാപനം സന്ദർശിക്കണം.
+
+10. മേൽപ്പറഞ്ഞ നിയമങ്ങൾ ലംഘിച്ചാൽ ശിക്ഷാനടപടി സ്വീകരിക്കും.`;
+
 const defaultContent = {
   splash: {
     buttonText: 'Click to Open',
@@ -30,87 +82,15 @@ const defaultContent = {
     image: '/placeholder.svg'
   },
   courses: [
-    {
-      id: '1',
-      title: 'സുഫ്ഫാ കോഴ്‌സിന് കീഴിലെ ദർസ്',
-      subtitle: 'ഇസ്‌ലാമിക പഠനം',
-      description: 'പരമ്പരാഗത ഇസ്‌ലാമിക വിദ്യാഭ്യാസം ആധുനിക രീതിയിൽ',
-      image: '/placeholder.svg',
-      syllabus: '',
-      featured: true
-    },
-    {
-      id: '2',
-      title: 'ഖുർആൻ പഠനം',
-      subtitle: 'എഴുത്തും വായനയും',
-      description: 'ഖുർആൻ പാരായണവും എഴുത്തും പഠിക്കാം',
-      image: '/placeholder.svg',
-      syllabus: '',
-      featured: true
-    },
-    {
-      id: '3',
-      title: 'കമ്പ്യൂട്ടർ പഠനം',
-      subtitle: 'ഡിജിറ്റൽ സാക്ഷരത',
-      description: 'ആധുനിക കമ്പ്യൂട്ടർ കഴിവുകൾ നേടാം',
-      image: '/placeholder.svg',
-      syllabus: '',
-      featured: true
-    },
-    {
-      id: '4',
-      title: 'എഴുത്ത് പഠനം',
-      subtitle: 'Handwriting & Writing Skills',
-      description: 'മനോഹരമായ കൈയെഴുത്ത് കഴിവുകൾ',
-      image: '/placeholder.svg',
-      syllabus: '',
-      featured: false
-    },
-    {
-      id: '5',
-      title: 'പ്രസംഗ പരിശീലനം',
-      subtitle: 'Public Speaking & Dars Training',
-      description: 'ആത്മവിശ്വാസത്തോടെ പ്രസംഗിക്കാൻ പഠിക്കാം',
-      image: '/placeholder.svg',
-      syllabus: '',
-      featured: false
-    },
-    {
-      id: '6',
-      title: 'ലൈബ്രറി സൗകര്യം',
-      subtitle: 'വിജ്ഞാന ഭണ്ഡാരം',
-      description: 'വിപുലമായ പുസ്തക ശേഖരം',
-      image: '/placeholder.svg',
-      syllabus: '',
-      featured: false
-    },
-    {
-      id: '7',
-      title: 'കാന്റീൻ സൗകര്യം',
-      subtitle: 'ആരോഗ്യകരമായ ഭക്ഷണം',
-      description: 'ശുദ്ധമായ ഭക്ഷണം ന്യായമായ വിലയിൽ',
-      image: '/placeholder.svg',
-      syllabus: '',
-      featured: false
-    },
-    {
-      id: '8',
-      title: 'വഅള് പരിശീലനം',
-      subtitle: 'മത പ്രഭാഷണം',
-      description: 'മത പ്രഭാഷണ കഴിവുകൾ വികസിപ്പിക്കാം',
-      image: '/placeholder.svg',
-      syllabus: '',
-      featured: false
-    },
-    {
-      id: '9',
-      title: 'വ്യക്തിത്വ വികസനം',
-      subtitle: 'Personality Development',
-      description: 'വിദ്യാർത്ഥികളുടെ സമഗ്ര വ്യക്തിത്വ വികസനം',
-      image: '/placeholder.svg',
-      syllabus: '',
-      featured: false
-    }
+    { id: '1', title: 'സുഫ്ഫാ കോഴ്‌സിന് കീഴിലെ ദർസ്', subtitle: 'ഇസ്‌ലാമിക പഠനം', description: 'പരമ്പരാഗത ഇസ്‌ലാമിക വിദ്യാഭ്യാസം ആധുനിക രീതിയിൽ', image: '/placeholder.svg', syllabus: '', featured: true },
+    { id: '2', title: 'ഖുർആൻ പഠനം', subtitle: 'എഴുത്തും വായനയും', description: 'ഖുർആൻ പാരായണവും എഴുത്തും പഠിക്കാം', image: '/placeholder.svg', syllabus: '', featured: true },
+    { id: '3', title: 'കമ്പ്യൂട്ടർ പഠനം', subtitle: 'ഡിജിറ്റൽ സാക്ഷരത', description: 'ആധുനിക കമ്പ്യൂട്ടർ കഴിവുകൾ നേടാം', image: '/placeholder.svg', syllabus: '', featured: true },
+    { id: '4', title: 'എഴുത്ത് പഠനം', subtitle: 'Handwriting & Writing Skills', description: 'മനോഹരമായ കൈയെഴുത്ത് കഴിവുകൾ', image: '/placeholder.svg', syllabus: '', featured: false },
+    { id: '5', title: 'പ്രസംഗ പരിശീലനം', subtitle: 'Public Speaking & Dars Training', description: 'ആത്മവിശ്വാസത്തോടെ പ്രസംഗിക്കാൻ പഠിക്കാം', image: '/placeholder.svg', syllabus: '', featured: false },
+    { id: '6', title: 'ലൈബ്രറി സൗകര്യം', subtitle: 'വിജ്ഞാന ഭണ്ഡാരം', description: 'വിപുലമായ പുസ്തക ശേഖരം', image: '/placeholder.svg', syllabus: '', featured: false },
+    { id: '7', title: 'കാന്റീൻ സൗകര്യം', subtitle: 'ആരോഗ്യകരമായ ഭക്ഷണം', description: 'ശുദ്ധമായ ഭക്ഷണം ന്യായമായ വിലയിൽ', image: '/placeholder.svg', syllabus: '', featured: false },
+    { id: '8', title: 'വഅള് പരിശീലനം', subtitle: 'മത പ്രഭാഷണം', description: 'മത പ്രഭാഷണ കഴിവുകൾ വികസിപ്പിക്കാം', image: '/placeholder.svg', syllabus: '', featured: false },
+    { id: '9', title: 'വ്യക്തിത്വ വികസനം', subtitle: 'Personality Development', description: 'വിദ്യാർത്ഥികളുടെ സമഗ്ര വ്യക്തിത്വ വികസനം', image: '/placeholder.svg', syllabus: '', featured: false }
   ],
   benefits: [
     { id: '1', title: 'അച്ചടക്കം', description: 'ജീവിതത്തിന്റെ അടിസ്ഥാനം', icon: 'Shield' },
@@ -139,6 +119,16 @@ const defaultContent = {
     facebook: 'https://facebook.com',
     youtube: 'https://youtube.com',
     instagram: 'https://instagram.com'
+  },
+  admissionForm: {
+    title: 'വിദ്യാർത്ഥി അഡ്മിഷൻ അപേക്ഷ',
+    subtitle: 'പ്രവേശനം 2025-26',
+    description: 'എല്ലാ വിവരങ്ങളും കൃത്യമായി പൂരിപ്പിക്കുക. * അടയാളപ്പെടുത്തിയ ഫീൽഡുകൾ നിർബന്ധമാണ്.',
+    fields: defaultFormFields,
+    institutionRules: defaultInstitutionRules,
+    rulesTitle: 'സ്ഥാപനത്തിന്റെ അച്ചടക്ക നിയമങ്ങൾ',
+    approvalText: 'ഞാൻ മേൽപ്പറഞ്ഞ നിയമങ്ങൾ വായിക്കുകയും അംഗീകരിക്കുകയും ചെയ്തു',
+    submitButtonText: 'അപേക്ഷ സമർപ്പിക്കുക'
   }
 };
 
@@ -173,8 +163,9 @@ export function useWebsiteContent() {
   // Save content to database
   const saveContent = useCallback(async (newContent: WebsiteContent) => {
     try {
-      const { error } = await supabase
-        .from('website_content')
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error } = await (supabase
+        .from('website_content') as any)
         .upsert({
           id: 'main',
           content: newContent,
