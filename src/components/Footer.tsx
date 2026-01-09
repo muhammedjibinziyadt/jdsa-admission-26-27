@@ -1,22 +1,6 @@
 import { Phone, Mail, Heart } from "lucide-react";
 
-interface FooterContent {
-  copyright: string;
-  tagline: string;
-}
-
-interface ContactInfo {
-  phone1: string;
-  phone2: string;
-  email: string;
-}
-
-interface FooterProps {
-  content: FooterContent;
-  contact: ContactInfo;
-}
-
-const Footer = ({ content, contact }: FooterProps) => {
+const Footer = () => {
   const currentYear = new Date().getFullYear();
   
   return (
@@ -33,16 +17,17 @@ const Footer = ({ content, contact }: FooterProps) => {
                 <span className="text-primary font-display font-bold text-xl">ج</span>
               </div>
               <div>
-              <span className="font-display font-semibold text-xl block leading-tight">
-                  ജൗഹറത്തുൽ ഉലൂം
+                <span className="font-display font-semibold text-xl block leading-tight">
+                  ജവ്ഹറത്തുൽ ഉലൂം
                 </span>
                 <span className="text-primary-foreground/70 text-sm">
-                  സുഫ്ഫ ദർസ്
+                  സുഫ്ഫാ ദർസ്
                 </span>
               </div>
             </div>
             <p className="text-primary-foreground/70 leading-relaxed">
-              {content.tagline || 'വിജ്ഞാനത്തിന്റെയും മൂല്യങ്ങളുടെയും സമന്വയത്തിലൂടെ പുതിയ തലമുറയെ രൂപപ്പെടുത്തുന്ന വിദ്യാഭ്യാസ കേന്ദ്രം'}
+              വിജ്ഞാനത്തിന്റെയും മൂല്യങ്ങളുടെയും സമന്വയത്തിലൂടെ 
+              പുതിയ തലമുറയെ രൂപപ്പെടുത്തുന്ന വിദ്യാഭ്യാസ കേന്ദ്രം
             </p>
           </div>
           
@@ -73,25 +58,25 @@ const Footer = ({ content, contact }: FooterProps) => {
             <h4 className="font-display font-semibold text-lg mb-6">ബന്ധപ്പെടുക</h4>
             <div className="space-y-4">
               <a 
-                href={`tel:${contact.phone1?.replace(/\s/g, '')}`}
+                href="tel:+919544124059"
                 className="flex items-center gap-3 text-primary-foreground/70 hover:text-gold-light transition-colors"
               >
                 <Phone className="w-5 h-5" />
-                {contact.phone1}
+                +91 95441 24059
               </a>
               <a 
-                href={`tel:${contact.phone2?.replace(/\s/g, '')}`}
+                href="tel:+918281102606"
                 className="flex items-center gap-3 text-primary-foreground/70 hover:text-gold-light transition-colors"
               >
                 <Phone className="w-5 h-5" />
-                {contact.phone2}
+                +91 82811 02606
               </a>
               <a 
-                href={`mailto:${contact.email}`}
+                href="mailto:info@jawharathululoom.com"
                 className="flex items-center gap-3 text-primary-foreground/70 hover:text-gold-light transition-colors"
               >
                 <Mail className="w-5 h-5" />
-                {contact.email}
+                info@jawharathululoom.com
               </a>
             </div>
           </div>
@@ -101,7 +86,7 @@ const Footer = ({ content, contact }: FooterProps) => {
         <div className="border-t border-primary-foreground/10 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-primary-foreground/60 text-sm text-center md:text-left">
-              {content.copyright || `© ${currentYear} ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസ്. എല്ലാ അവകാശങ്ങളും സംരക്ഷിതം.`}
+              © {currentYear} ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസ്. എല്ലാ അവകാശങ്ങളും സംരക്ഷിതം.
             </p>
             <p className="text-primary-foreground/60 text-sm flex items-center gap-1">
               Made with <Heart className="w-4 h-4 text-gold" fill="currentColor" /> for education

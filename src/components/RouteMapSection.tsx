@@ -1,22 +1,13 @@
 import { MapPin, Navigation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-interface MapContent {
-  embedUrl: string;
-  address: string;
-}
-
-interface RouteMapSectionProps {
-  content: MapContent;
-}
-
-const RouteMapSection = ({ content }: RouteMapSectionProps) => {
-  // Build embed URL from the Google Maps link
-  const googleMapsEmbedUrl = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3929.5!2d76.27!3d10.04!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDAyJzI0LjAiTiA3NsKwMTYnMTIuMCJF!5e0!3m2!1sen!2sin!4v1234567890";
+const RouteMapSection = () => {
+  // Replace with your actual Google Maps embed URL or coordinates
+  const googleMapsUrl = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3929.9!2d76.2!3d10.0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDAzJzAwLjAiTiA3NsKwMTInMDAuMCJF!5e0!3m2!1sen!2sin!4v1234567890";
   
   const handleGetDirections = () => {
-    // Use the link from admin or default
-    window.open(content.embedUrl || "https://maps.app.goo.gl/ZN8C3epBni6h3hKn9?g_st=aw", "_blank");
+    // Replace with your actual coordinates
+    window.open("https://www.google.com/maps/dir/?api=1&destination=10.0,76.2", "_blank");
   };
 
   return (
@@ -46,7 +37,7 @@ const RouteMapSection = ({ content }: RouteMapSectionProps) => {
             {/* Map Embed */}
             <div className="aspect-video lg:aspect-[21/9] w-full">
               <iframe
-                src={googleMapsEmbedUrl}
+                src={googleMapsUrl}
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
@@ -67,7 +58,7 @@ const RouteMapSection = ({ content }: RouteMapSectionProps) => {
                   </div>
                   <div>
                     <h3 className="font-display text-xl font-semibold text-foreground mb-2">
-                      {content.address || 'ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസ്'}
+                      ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസ്
                     </h3>
                     <p className="text-muted-foreground leading-relaxed">
                       കേരളം, ഇന്ത്യ

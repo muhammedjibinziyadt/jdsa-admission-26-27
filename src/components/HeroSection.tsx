@@ -2,26 +2,13 @@ import { Phone, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroBg from "@/assets/hero-bg.jpg";
 
-interface HeroContent {
-  title: string;
-  subtitle: string;
-  phone1: string;
-  phone2: string;
-  ctaText: string;
-  backgroundImage?: string;
-}
-
-interface HeroSectionProps {
-  content: HeroContent;
-}
-
-const HeroSection = ({ content }: HeroSectionProps) => {
+const HeroSection = () => {
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${content.backgroundImage || heroBg})` }}
+        style={{ backgroundImage: `url(${heroBg})` }}
       />
       
       {/* Overlay */}
@@ -37,14 +24,14 @@ const HeroSection = ({ content }: HeroSectionProps) => {
         <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full border border-gold/40 bg-primary/20 backdrop-blur-sm mb-8 animate-fade-up">
           <span className="w-2 h-2 rounded-full gold-bg animate-pulse" />
           <span className="text-gold-light font-medium tracking-wide text-sm uppercase">
-            {content.ctaText || 'Admissions Open 2025-26'}
+            Admissions Open 2025-26
           </span>
         </div>
         
         {/* Main Heading - Malayalam */}
         <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-primary-foreground mb-6 animate-fade-up animation-delay-200 leading-tight">
-          <span className="block mb-2">{content.title || 'ജവ്ഹറത്തുൽ ഉലൂം'}</span>
-          <span className="gold-text">{content.subtitle || 'സുഫ്ഫാ ദർസ്'}</span>
+          <span className="block mb-2">ജവ്ഹറത്തുൽ ഉലൂം</span>
+          <span className="gold-text">സുഫ്ഫാ ദർസ്</span>
         </h1>
         
         {/* Subtitle */}
@@ -57,23 +44,23 @@ const HeroSection = ({ content }: HeroSectionProps) => {
         {/* Contact Numbers */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10 animate-fade-up animation-delay-600">
           <a 
-            href={`tel:${content.phone1?.replace(/\s/g, '')}`} 
+            href="tel:+919544124059" 
             className="group flex items-center gap-3 px-6 py-3 rounded-2xl bg-card/10 backdrop-blur-md border border-primary-foreground/20 hover:border-gold/50 transition-all duration-300 hover:shadow-gold"
           >
             <div className="w-10 h-10 rounded-full gold-bg flex items-center justify-center group-hover:scale-110 transition-transform">
               <Phone className="w-5 h-5 text-primary" />
             </div>
-            <span className="text-primary-foreground font-semibold">{content.phone1}</span>
+            <span className="text-primary-foreground font-semibold">+91 95441 24059</span>
           </a>
           
           <a 
-            href={`tel:${content.phone2?.replace(/\s/g, '')}`} 
+            href="tel:+918281102606" 
             className="group flex items-center gap-3 px-6 py-3 rounded-2xl bg-card/10 backdrop-blur-md border border-primary-foreground/20 hover:border-gold/50 transition-all duration-300 hover:shadow-gold"
           >
             <div className="w-10 h-10 rounded-full gold-bg flex items-center justify-center group-hover:scale-110 transition-transform">
               <Phone className="w-5 h-5 text-primary" />
             </div>
-            <span className="text-primary-foreground font-semibold">{content.phone2}</span>
+            <span className="text-primary-foreground font-semibold">+91 82811 02606</span>
           </a>
         </div>
         

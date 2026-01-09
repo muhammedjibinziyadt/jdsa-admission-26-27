@@ -1,19 +1,7 @@
-import { Phone, Mail, Clock, Send } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-interface ContactContent {
-  phone1: string;
-  phone2: string;
-  email: string;
-  address: string;
-  timing: string;
-}
-
-interface ContactSectionProps {
-  content: ContactContent;
-}
-
-const ContactSection = ({ content }: ContactSectionProps) => {
+const ContactSection = () => {
   return (
     <section id="contact" className="py-24 lg:py-32 relative bg-background">
       {/* Decorative gradient */}
@@ -57,22 +45,22 @@ const ContactSection = ({ content }: ContactSectionProps) => {
                 
                 <div className="space-y-4">
                   <a 
-                    href={`tel:${content.phone1?.replace(/\s/g, '')}`}
+                    href="tel:+919544124059"
                     className="flex items-center gap-4 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors group"
                   >
                     <div className="w-10 h-10 rounded-full gold-bg flex items-center justify-center group-hover:scale-110 transition-transform">
                       <Phone className="w-5 h-5 text-primary" />
                     </div>
-                    <span className="font-semibold text-lg text-foreground">{content.phone1}</span>
+                    <span className="font-semibold text-lg text-foreground">+91 95441 24059</span>
                   </a>
                   <a 
-                    href={`tel:${content.phone2?.replace(/\s/g, '')}`}
+                    href="tel:+918281102606"
                     className="flex items-center gap-4 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors group"
                   >
                     <div className="w-10 h-10 rounded-full gold-bg flex items-center justify-center group-hover:scale-110 transition-transform">
                       <Phone className="w-5 h-5 text-primary" />
                     </div>
-                    <span className="font-semibold text-lg text-foreground">{content.phone2}</span>
+                    <span className="font-semibold text-lg text-foreground">+91 82811 02606</span>
                   </a>
                 </div>
               </div>
@@ -85,7 +73,7 @@ const ContactSection = ({ content }: ContactSectionProps) => {
                   <Mail className="w-6 h-6 text-primary" />
                 </div>
                 <h4 className="font-display font-semibold text-foreground mb-1">ഇമെയിൽ</h4>
-                <p className="text-muted-foreground text-sm">{content.email}</p>
+                <p className="text-muted-foreground text-sm">info@jawharathululoom.com</p>
               </div>
               
               <div className="bg-card rounded-2xl p-6 shadow-soft border border-border/50">
@@ -93,7 +81,7 @@ const ContactSection = ({ content }: ContactSectionProps) => {
                   <Clock className="w-6 h-6 text-primary" />
                 </div>
                 <h4 className="font-display font-semibold text-foreground mb-1">സമയം</h4>
-                <p className="text-muted-foreground text-sm">{content.timing}</p>
+                <p className="text-muted-foreground text-sm">രാവിലെ 8:00 - വൈകുന്നേരം 5:00</p>
               </div>
             </div>
           </div>
@@ -158,6 +146,29 @@ const ContactSection = ({ content }: ContactSectionProps) => {
                 <Send className="ml-2 w-5 h-5" />
               </Button>
             </form>
+          </div>
+        </div>
+        
+        {/* Location */}
+        <div className="mt-16 bg-card rounded-3xl p-8 shadow-soft border border-border/50">
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+            <div className="w-16 h-16 rounded-2xl emerald-gradient flex items-center justify-center shadow-soft flex-shrink-0">
+              <MapPin className="w-8 h-8 text-primary-foreground" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-display text-xl font-semibold text-foreground mb-2">
+                ഞങ്ങളുടെ സ്ഥാനം
+              </h3>
+              <p className="text-muted-foreground leading-relaxed">
+                ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസ്, കേരളം, ഇന്ത്യ
+              </p>
+            </div>
+            <Button 
+              variant="outline" 
+              className="rounded-xl border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+            >
+              മാപ്പിൽ കാണുക
+            </Button>
           </div>
         </div>
       </div>

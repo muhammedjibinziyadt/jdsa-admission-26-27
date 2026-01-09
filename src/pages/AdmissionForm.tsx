@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Send, User, Calendar, Users, FileText, GraduationCap, CheckCircle, Upload, X, File } from "lucide-react";
+import { ArrowLeft, Send, User, Calendar, Users, FileText, GraduationCap, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 
@@ -22,12 +22,6 @@ interface FormData {
   additionalInfo: string;
 }
 
-interface UploadedFile {
-  name: string;
-  type: string;
-  size: number;
-}
-
 const AdmissionForm = () => {
   const [formData, setFormData] = useState<FormData>({
     studentName: "",
@@ -47,10 +41,6 @@ const AdmissionForm = () => {
     additionalInfo: ""
   });
 
-  const [aadhaarFile, setAadhaarFile] = useState<UploadedFile | null>(null);
-  const [birthCertFile, setBirthCertFile] = useState<UploadedFile | null>(null);
-  const [tcFile, setTcFile] = useState<UploadedFile | null>(null);
-
   const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -58,44 +48,7 @@ const AdmissionForm = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleFileUpload = (
-    e: React.ChangeEvent<HTMLInputElement>, 
-    setFile: React.Dispatch<React.SetStateAction<UploadedFile | null>>
-  ) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Check file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        toast({
-          title: "ഫയൽ വലുതാണ്!",
-          description: "5MB-ൽ കുറവുള്ള ഫയൽ അപ്‌ലോഡ് ചെയ്യുക.",
-          variant: "destructive"
-        });
-        return;
-      }
-      setFile({
-        name: file.name,
-        type: file.type,
-        size: file.size
-      });
-      toast({
-        title: "ഫയൽ അപ്‌ലോഡ് ചെയ്തു!",
-        description: `${file.name} വിജയകരമായി ചേർത്തു.`,
-      });
-    }
-  };
-
-  const removeFile = (setFile: React.Dispatch<React.SetStateAction<UploadedFile | null>>) => {
-    setFile(null);
-  };
-
-  const formatFileSize = (bytes: number) => {
-    if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validate required fields
@@ -108,11 +61,8 @@ const AdmissionForm = () => {
       return;
     }
 
-    // Send WhatsApp notification to admin
-    const whatsappMessage = `🎓 പുതിയ അഡ്മിഷൻ അപേക്ഷ!\n\n👤 വിദ്യാർത്ഥി: ${formData.studentName}\n👨‍👩‍👧 രക്ഷിതാവ്: ${formData.guardianName}\n📞 ഫോൺ: ${formData.guardianPhone}\n📚 കോഴ്‌സ്: ${formData.course || 'തിരഞ്ഞെടുത്തിട്ടില്ല'}`;
-    const encodedMessage = encodeURIComponent(whatsappMessage);
-    window.open(`https://wa.me/919048696090?text=${encodedMessage}`, '_blank');
-
+    // Here you would typically send the data to a backend
+    console.log("Form submitted:", formData);
     setSubmitted(true);
     toast({
       title: "അപേക്ഷ സമർപ്പിച്ചു!",
@@ -144,62 +94,6 @@ const AdmissionForm = () => {
       </div>
     );
   }
-
-  const FileUploadBox = ({ 
-    label, 
-    file, 
-    setFile, 
-    inputId,
-    required = false
-  }: { 
-    label: string; 
-    file: UploadedFile | null; 
-    setFile: React.Dispatch<React.SetStateAction<UploadedFile | null>>;
-    inputId: string;
-    required?: boolean;
-  }) => (
-    <div>
-      <label className="block text-sm font-medium text-foreground mb-2">
-        {label} {required && '*'}
-      </label>
-      {file ? (
-        <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-xl border border-border">
-          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-            <File className="w-5 h-5 text-primary" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-foreground truncate">{file.name}</p>
-            <p className="text-xs text-muted-foreground">{formatFileSize(file.size)}</p>
-          </div>
-          <Button 
-            type="button"
-            size="sm" 
-            variant="ghost" 
-            onClick={() => removeFile(setFile)}
-            className="text-destructive hover:text-destructive"
-          >
-            <X className="w-4 h-4" />
-          </Button>
-        </div>
-      ) : (
-        <label 
-          htmlFor={inputId}
-          className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-primary/50 hover:bg-muted/30 transition-colors"
-        >
-          <Upload className="w-8 h-8 text-muted-foreground mb-2" />
-          <span className="text-sm text-muted-foreground">ഫയൽ അപ്‌ലോഡ് ചെയ്യുക</span>
-          <span className="text-xs text-muted-foreground mt-1">PDF, JPG, PNG (Max 5MB)</span>
-          <input
-            id={inputId}
-            type="file"
-            accept=".pdf,.jpg,.jpeg,.png"
-            onChange={(e) => handleFileUpload(e, setFile)}
-            className="hidden"
-          />
-        </label>
-      )}
-    </div>
-  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -450,32 +344,6 @@ const AdmissionForm = () => {
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
                     placeholder="ട്രാൻസ്ഫർ സർട്ടിഫിക്കറ്റ് നമ്പർ"
-                  />
-                </div>
-              </div>
-
-              {/* Document Uploads */}
-              <div className="mt-6 pt-6 border-t border-border">
-                <h4 className="font-medium text-foreground mb-4">ഡോക്യുമെന്റുകൾ അപ്‌ലോഡ് ചെയ്യുക</h4>
-                <div className="grid sm:grid-cols-3 gap-5">
-                  <FileUploadBox 
-                    label="ആധാർ കാർഡ്" 
-                    file={aadhaarFile} 
-                    setFile={setAadhaarFile}
-                    inputId="aadhaar-upload"
-                    required
-                  />
-                  <FileUploadBox 
-                    label="ജനന സർട്ടിഫിക്കറ്റ്" 
-                    file={birthCertFile} 
-                    setFile={setBirthCertFile}
-                    inputId="birth-cert-upload"
-                  />
-                  <FileUploadBox 
-                    label="സ്കൂൾ TC" 
-                    file={tcFile} 
-                    setFile={setTcFile}
-                    inputId="tc-upload"
                   />
                 </div>
               </div>
