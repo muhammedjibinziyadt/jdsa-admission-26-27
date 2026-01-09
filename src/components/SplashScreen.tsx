@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { BookOpen, Star, GraduationCap, ArrowRight, Sparkles } from 'lucide-react';
 import { useWebsiteContent } from '@/hooks/useWebsiteContent';
 
 interface SplashScreenProps {
@@ -13,135 +11,128 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
 
   const handleEnter = () => {
     setIsExiting(true);
-    setTimeout(onEnter, 600);
+    setTimeout(onEnter, 500);
   };
 
   // Get splash content from website content or use defaults
-  const splashContent = content.splash || {
-    buttonText: 'Click to Open Website',
+  const defaultSplash = {
+    buttonText: 'Click to Open',
     buttonSubtitle: 'Tap to explore our institution',
     institutionName: 'ജൗഹറത്തുൽ ഉലൂം',
     institutionSubtitle: 'സുഫ്ഫ ദർസ്',
-    tagline: 'വിശ്വാസവും വിജ്ഞാനവും കരുത്താക്കുന്ന വിദ്യാഭ്യാസം'
+    tagline: 'വിശ്വാസവും വിജ്ഞാനവും കരുത്താക്കുന്ന വിദ്യാഭ്യാസം',
+    enabled: true
   };
+  
+  const splashContent = { ...defaultSplash, ...content.splash };
+
+  // If modal is disabled, don't show
+  if (splashContent.enabled === false) {
+    return null;
+  }
 
   return (
     <div 
-      className={`fixed inset-0 z-50 flex items-center justify-center transition-all duration-600 ${
-        isExiting ? 'opacity-0 scale-110' : 'opacity-100 scale-100'
+      className={`fixed inset-0 z-50 flex items-center justify-center transition-all duration-500 ${
+        isExiting ? 'opacity-0' : 'opacity-100'
       }`}
-      style={{
-        background: 'linear-gradient(135deg, hsl(158 64% 12%) 0%, hsl(158 50% 20%) 40%, hsl(38 78% 30%) 100%)'
-      }}
     >
-      {/* Animated background patterns */}
-      <div className="absolute inset-0 overflow-hidden">
-        {/* Floating shapes */}
-        <div className="absolute w-[600px] h-[600px] -top-40 -left-40 rounded-full bg-gradient-to-br from-primary/20 to-transparent blur-3xl animate-float" />
-        <div className="absolute w-[500px] h-[500px] top-1/3 -right-32 rounded-full bg-gradient-to-bl from-secondary/20 to-transparent blur-3xl animate-float animation-delay-400" />
-        <div className="absolute w-[400px] h-[400px] -bottom-20 left-1/4 rounded-full bg-gradient-to-tr from-gold/20 to-transparent blur-3xl animate-float animation-delay-800" />
-        
-        {/* Islamic pattern overlay */}
-        <div className="absolute inset-0 islamic-pattern opacity-5" />
-        
-        {/* Sparkle effects */}
-        <div className="absolute top-20 left-20 animate-pulse">
-          <Sparkles className="w-4 h-4 text-secondary/50" />
-        </div>
-        <div className="absolute top-40 right-32 animate-pulse animation-delay-400">
-          <Sparkles className="w-3 h-3 text-secondary/40" />
-        </div>
-        <div className="absolute bottom-32 left-40 animate-pulse animation-delay-800">
-          <Sparkles className="w-5 h-5 text-secondary/30" />
-        </div>
-      </div>
+      {/* Blur overlay - shows website behind with blur effect */}
+      <div 
+        className={`absolute inset-0 bg-black/40 backdrop-blur-md transition-all duration-500 ${
+          isExiting ? 'backdrop-blur-none bg-transparent' : ''
+        }`}
+      />
 
-      <div className="relative text-center px-6 max-w-2xl mx-auto">
-        {/* Logo/Icon with enhanced styling */}
-        <div className="mb-10 animate-fade-up">
-          <div className="relative inline-flex items-center justify-center">
-            {/* Outer glow ring */}
-            <div className="absolute w-40 h-40 rounded-full bg-gradient-to-r from-secondary/30 to-gold/30 animate-pulse blur-xl" />
-            
-            {/* Main logo container */}
-            <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-gold via-secondary to-gold-dark flex items-center justify-center shadow-2xl border-4 border-white/10">
-              <BookOpen className="w-16 h-16 text-primary drop-shadow-lg" />
-            </div>
-            
-            {/* Orbiting icons */}
-            <div className="absolute w-48 h-48 animate-spin" style={{ animationDuration: '25s' }}>
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-primary/80 flex items-center justify-center shadow-lg">
-                <Star className="w-4 h-4 text-secondary" />
-              </div>
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-8 h-8 rounded-full bg-primary/80 flex items-center justify-center shadow-lg">
-                <GraduationCap className="w-4 h-4 text-secondary" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Title with enhanced typography */}
-        <h1 className="text-5xl md:text-7xl font-bold text-white mb-3 animate-fade-up animation-delay-200 tracking-tight">
-          <span className="bg-gradient-to-r from-gold via-secondary to-gold-light bg-clip-text text-transparent drop-shadow-lg">
-            {splashContent.institutionName}
-          </span>
-        </h1>
-        <h2 className="text-2xl md:text-4xl font-semibold text-white/90 mb-6 animate-fade-up animation-delay-400">
-          {splashContent.institutionSubtitle}
-        </h2>
-
-        {/* Tagline with decorative line */}
-        <div className="animate-fade-up animation-delay-600 mb-12">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="h-px w-12 bg-gradient-to-r from-transparent to-secondary/50" />
-            <Star className="w-4 h-4 text-secondary/70" />
-            <div className="h-px w-12 bg-gradient-to-l from-transparent to-secondary/50" />
-          </div>
-          <p className="text-lg md:text-xl text-white/80 leading-relaxed max-w-lg mx-auto">
-            {splashContent.tagline}
-          </p>
-        </div>
-
-        {/* Professional Enter Button */}
-        <div className="animate-fade-up animation-delay-800">
-          <Button
-            onClick={handleEnter}
-            size="lg"
-            className="group relative overflow-hidden bg-gradient-to-r from-gold via-secondary to-gold-dark text-primary font-bold text-lg md:text-xl px-12 py-7 rounded-2xl shadow-2xl hover:shadow-gold/30 transition-all duration-500 hover:scale-105 border-2 border-white/20"
-          >
-            {/* Button shine effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-            
-            <span className="relative flex items-center gap-3">
-              {splashContent.buttonText || 'Click to Open Website'}
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </span>
-          </Button>
+      {/* Glassmorphism Modal */}
+      <div 
+        className={`relative z-10 mx-4 w-full max-w-md transform transition-all duration-500 ${
+          isExiting ? 'scale-95 opacity-0 translate-y-4' : 'scale-100 opacity-100 translate-y-0'
+        }`}
+      >
+        {/* Modal Card */}
+        <div className="relative overflow-hidden rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
+          {/* Gradient glow effect behind card */}
+          <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500/20 via-gold/30 to-emerald-500/20 blur-xl opacity-60" />
           
-          {/* Button subtitle */}
-          {splashContent.buttonSubtitle && (
-            <p className="mt-4 text-sm text-white/50">
-              {splashContent.buttonSubtitle}
-            </p>
-          )}
-        </div>
+          {/* Card content */}
+          <div className="relative bg-gradient-to-br from-white/80 to-white/60 dark:from-gray-900/80 dark:to-gray-800/60 backdrop-blur-sm p-8 md:p-10">
+            {/* Institution logo/icon */}
+            <div className="flex justify-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-600 to-emerald-800 flex items-center justify-center shadow-lg border-4 border-white/30">
+                <span className="text-3xl">📚</span>
+              </div>
+            </div>
 
-        {/* Contact numbers with enhanced styling */}
-        <div className="mt-12 flex flex-col md:flex-row items-center justify-center gap-4 animate-fade-up animation-delay-800">
-          <a 
-            href="tel:+919544124059" 
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition-all duration-300 backdrop-blur-sm border border-white/10"
-          >
-            <span className="text-lg">📞</span>
-            <span>+91 95441 24059</span>
-          </a>
-          <a 
-            href="tel:+918281102606" 
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white/80 hover:text-white transition-all duration-300 backdrop-blur-sm border border-white/10"
-          >
-            <span className="text-lg">📞</span>
-            <span>+91 82811 02606</span>
-          </a>
+            {/* Institution name */}
+            <h1 className="text-2xl md:text-3xl font-bold text-center text-gray-800 dark:text-white mb-2">
+              {splashContent.institutionName}
+            </h1>
+            <h2 className="text-lg md:text-xl text-center text-gray-600 dark:text-gray-300 mb-4">
+              {splashContent.institutionSubtitle}
+            </h2>
+
+            {/* Subtitle/Description */}
+            {splashContent.buttonSubtitle && (
+              <p className="text-center text-gray-500 dark:text-gray-400 text-sm mb-8">
+                {splashContent.buttonSubtitle}
+              </p>
+            )}
+
+            {/* 3D Glowing Button */}
+            <button
+              onClick={handleEnter}
+              className="group relative w-full overflow-hidden rounded-2xl transition-all duration-300 active:scale-[0.98]"
+            >
+              {/* Button shadow/depth layer */}
+              <div className="absolute inset-0 bg-gradient-to-b from-emerald-700 to-emerald-900 rounded-2xl translate-y-2" />
+              
+              {/* Main button surface */}
+              <div className="relative bg-gradient-to-b from-emerald-500 to-emerald-600 rounded-2xl p-4 md:p-5 transform transition-transform duration-150 group-hover:-translate-y-0.5 group-active:translate-y-0.5">
+                {/* Inner highlight */}
+                <div className="absolute inset-x-4 top-2 h-1/3 bg-gradient-to-b from-white/30 to-transparent rounded-full" />
+                
+                {/* Glow animation overlay */}
+                <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="absolute inset-0 bg-emerald-400/30 animate-pulse rounded-2xl" />
+                </div>
+                
+                {/* Button text */}
+                <span className="relative flex items-center justify-center gap-2 text-white font-bold text-lg md:text-xl tracking-wide">
+                  {splashContent.buttonText || 'Click to Open'}
+                  <svg 
+                    className="w-5 h-5 transform transition-transform duration-300 group-hover:translate-x-1" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </span>
+              </div>
+              
+              {/* Outer glow effect */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-2xl blur-lg opacity-0 group-hover:opacity-40 transition-opacity duration-300 -z-10" />
+            </button>
+
+            {/* Contact info */}
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <a 
+                href="tel:+919544124059" 
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 text-sm transition-colors"
+              >
+                <span>📞</span>
+                <span>+91 95441 24059</span>
+              </a>
+              <a 
+                href="tel:+918281102606" 
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 text-sm transition-colors"
+              >
+                <span>📞</span>
+                <span>+91 82811 02606</span>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
