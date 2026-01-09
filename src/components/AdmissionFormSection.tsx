@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Send, User, CheckCircle, Upload, X, File, Loader2, FileText, ScrollText } from "lucide-react";
+import { Send, User, CheckCircle, Upload, X, File, Loader2, FileText, ScrollText, Image, FileCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
 import { useAdmissions } from "@/hooks/useAdmissions";
-import { useWebsiteContent, FormField } from "@/hooks/useWebsiteContent";
+import { useWebsiteContent } from "@/hooks/useWebsiteContent";
 import { supabase } from "@/integrations/supabase/client";
 
 interface UploadedFile {
@@ -14,12 +14,24 @@ interface UploadedFile {
   size: number;
 }
 
+interface DocumentUploads {
+  studentPhoto: UploadedFile | null;
+  aadhaarCard: UploadedFile | null;
+  birthCertificate: UploadedFile | null;
+  tcCopy: UploadedFile | null;
+}
+
 const AdmissionFormSection = () => {
   const { submitAdmission } = useAdmissions();
   const { content } = useWebsiteContent();
   const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState<Record<string, string>>({});
-  const [studentPhoto, setStudentPhoto] = useState<UploadedFile | null>(null);
+  const [documents, setDocuments] = useState<DocumentUploads>({
+    studentPhoto: null,
+    aadhaarCard: null,
+    birthCertificate: null,
+    tcCopy: null
+  });
   const [submitted, setSubmitted] = useState(false);
   const [rulesApproved, setRulesApproved] = useState(false);
   const [showRulesError, setShowRulesError] = useState(false);
@@ -28,38 +40,42 @@ const AdmissionFormSection = () => {
     title: 'വിദ്യാർത്ഥി അഡ്മിഷൻ അപേക്ഷ',
     subtitle: 'പ്രവേശനം 2025-26',
     description: 'എല്ലാ വിവരങ്ങളും കൃത്യമായി പൂരിപ്പിക്കുക.',
-    fields: [],
     institutionRules: '',
     rulesTitle: 'സ്ഥാപനത്തിന്റെ അച്ചടക്ക നിയമങ്ങൾ',
     approvalText: 'ഞാൻ മേൽപ്പറഞ്ഞ നിയമങ്ങൾ വായിക്കുകയും അംഗീകരിക്കുകയും ചെയ്തു',
     submitButtonText: 'അപേക്ഷ സമർപ്പിക്കുക'
   };
 
-  const sortedFields = [...(formConfig.fields || [])].sort((a, b) => a.order - b.order);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDocumentUpload = (docType: keyof DocumentUploads, maxSize: number = 5) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
+      if (file.size > maxSize * 1024 * 1024) {
         toast({
           title: "ഫയൽ വലുതാണ്!",
-          description: "5MB-ൽ കുറവുള്ള ഫയൽ അപ്‌ലോഡ് ചെയ്യുക.",
+          description: `${maxSize}MB-ൽ കുറവുള്ള ഫയൽ അപ്‌ലോഡ് ചെയ്യുക.`,
           variant: "destructive"
         });
         return;
       }
-      setStudentPhoto({
-        file,
-        name: file.name,
-        type: file.type,
-        size: file.size
-      });
+      setDocuments(prev => ({
+        ...prev,
+        [docType]: {
+          file,
+          name: file.name,
+          type: file.type,
+          size: file.size
+        }
+      }));
     }
+  };
+
+  const removeDocument = (docType: keyof DocumentUploads) => {
+    setDocuments(prev => ({ ...prev, [docType]: null }));
   };
 
   const formatFileSize = (bytes: number) => {
@@ -105,13 +121,23 @@ const AdmissionFormSection = () => {
     }
 
     // Check required fields
-    const requiredFields = sortedFields.filter(f => f.required);
-    const missingFields = requiredFields.filter(f => !formData[f.name]?.trim());
+    const requiredFields = ['studentName', 'studentAge', 'dateOfBirth', 'guardianName', 'guardianPhone', 'address'];
+    const missingFields = requiredFields.filter(f => !formData[f]?.trim());
     
     if (missingFields.length > 0) {
       toast({
         title: "പിശക്!",
-        description: `ആവശ്യമായ ഫീൽഡുകൾ പൂരിപ്പിക്കുക: ${missingFields.map(f => f.label).join(', ')}`,
+        description: "ആവശ്യമായ എല്ലാ ഫീൽഡുകളും പൂരിപ്പിക്കുക.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Check required documents
+    if (!documents.studentPhoto || !documents.aadhaarCard || !documents.birthCertificate || !documents.tcCopy) {
+      toast({
+        title: "ഡോക്യുമെന്റുകൾ ആവശ്യമാണ്!",
+        description: "എല്ലാ ഡോക്യുമെന്റുകളും അപ്‌ലോഡ് ചെയ്യുക.",
         variant: "destructive"
       });
       return;
@@ -120,30 +146,42 @@ const AdmissionFormSection = () => {
     setSubmitting(true);
 
     try {
-      // Upload student photo if provided
-      let imageUrl = null;
-      if (studentPhoto) {
-        imageUrl = await uploadFileToStorage(studentPhoto.file, 'student-photos');
-      }
+      // Upload all documents
+      const [photoUrl, aadhaarUrl, birthCertUrl, tcUrl] = await Promise.all([
+        uploadFileToStorage(documents.studentPhoto.file, 'student-photos'),
+        uploadFileToStorage(documents.aadhaarCard.file, 'aadhaar-cards'),
+        uploadFileToStorage(documents.birthCertificate.file, 'birth-certificates'),
+        uploadFileToStorage(documents.tcCopy.file, 'tc-copies')
+      ]);
 
       // Map form data to database fields
       const admissionData = {
         student_name: formData.studentName || '',
         age: formData.studentAge ? parseInt(formData.studentAge) : null,
         date_of_birth: formData.dateOfBirth || null,
-        gender: formData.gender || null,
+        gender: null,
         guardian_name: formData.guardianName || '',
-        guardian_relation: formData.guardianRelation || null,
+        guardian_relation: null,
         guardian_phone: formData.guardianPhone || '',
         guardian_email: formData.guardianEmail || null,
         address: formData.address || null,
-        aadhaar_number: formData.aadhaarNumber || null,
-        birth_certificate_number: formData.birthCertificateNumber || null,
+        aadhaar_number: null,
+        birth_certificate_number: null,
         previous_school: formData.previousSchool || null,
-        tc_number: formData.tcNumber || null,
-        selected_course: formData.course || null,
-        additional_info: formData.additionalInfo || null,
-        image_url: imageUrl
+        tc_number: null,
+        selected_course: null,
+        additional_info: JSON.stringify({
+          madarasaLevel: formData.madarasaLevel || '',
+          madarasaName: formData.madarasaName || '',
+          notes: formData.additionalInfo || '',
+          documents: {
+            photo: photoUrl,
+            aadhaar: aadhaarUrl,
+            birthCertificate: birthCertUrl,
+            tc: tcUrl
+          }
+        }),
+        image_url: photoUrl
       };
 
       const result = await submitAdmission(admissionData);
@@ -151,7 +189,12 @@ const AdmissionFormSection = () => {
       if (result) {
         setSubmitted(true);
         setFormData({});
-        setStudentPhoto(null);
+        setDocuments({
+          studentPhoto: null,
+          aadhaarCard: null,
+          birthCertificate: null,
+          tcCopy: null
+        });
         setRulesApproved(false);
       }
     } catch (error) {
@@ -195,85 +238,56 @@ const AdmissionFormSection = () => {
     );
   }
 
-  const renderField = (field: FormField) => {
-    const baseInputClass = "w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors";
-    
-    switch (field.type) {
-      case 'textarea':
-        return (
-          <textarea
-            name={field.name}
-            value={formData[field.name] || ''}
-            onChange={handleChange}
-            required={field.required}
-            rows={3}
-            className={`${baseInputClass} resize-none`}
-            placeholder={field.placeholder}
-          />
-        );
-      case 'select':
-        return (
-          <select
-            name={field.name}
-            value={formData[field.name] || ''}
-            onChange={handleChange}
-            required={field.required}
-            className={baseInputClass}
+  const baseInputClass = "w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors";
+
+  const renderDocumentUpload = (
+    docType: keyof DocumentUploads,
+    label: string,
+    icon: React.ReactNode,
+    accept: string
+  ) => (
+    <div className="space-y-2">
+      <label className="block text-sm font-medium text-foreground">
+        {label} *
+      </label>
+      {documents[docType] ? (
+        <div className="flex items-center gap-3 p-4 bg-primary/5 rounded-xl border border-primary/20">
+          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <FileCheck className="w-5 h-5 text-primary" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-foreground truncate">{documents[docType]!.name}</p>
+            <p className="text-xs text-muted-foreground">{formatFileSize(documents[docType]!.size)}</p>
+          </div>
+          <Button 
+            type="button"
+            size="sm" 
+            variant="ghost" 
+            onClick={() => removeDocument(docType)}
+            className="text-destructive hover:text-destructive"
           >
-            <option value="">തിരഞ്ഞെടുക്കുക</option>
-            {field.options?.map(option => (
-              <option key={option} value={option}>{option}</option>
-            ))}
-          </select>
-        );
-      case 'date':
-        return (
+            <X className="w-4 h-4" />
+          </Button>
+        </div>
+      ) : (
+        <label 
+          htmlFor={`${docType}-upload`}
+          className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-primary/50 hover:bg-muted/30 transition-colors"
+        >
+          {icon}
+          <span className="text-sm text-muted-foreground mt-2">ഫയൽ അപ്‌ലോഡ് ചെയ്യുക</span>
+          <span className="text-xs text-muted-foreground mt-1">PDF, JPG, PNG (Max 5MB)</span>
           <input
-            type="date"
-            name={field.name}
-            value={formData[field.name] || ''}
-            onChange={handleChange}
-            required={field.required}
-            className={baseInputClass}
-          />
-        );
-      case 'number':
-        return (
-          <input
-            type="number"
-            name={field.name}
-            value={formData[field.name] || ''}
-            onChange={handleChange}
-            required={field.required}
-            className={baseInputClass}
-            placeholder={field.placeholder}
-          />
-        );
-      case 'file':
-        return (
-          <input
+            id={`${docType}-upload`}
             type="file"
-            name={field.name}
-            onChange={handleChange}
-            required={field.required}
-            className={baseInputClass}
-            accept=".pdf,.jpg,.jpeg,.png"
+            accept={accept}
+            onChange={handleDocumentUpload(docType)}
+            className="hidden"
           />
-        );
-      default:
-        return (
-          <input
-            type="text"
-            name={field.name}
-            value={formData[field.name] || ''}
-            onChange={handleChange}
-            required={field.required}
-            className={baseInputClass}
-            placeholder={field.placeholder}
-          />
-        );
-    }
-  };
+        </label>
+      )}
+    </div>
+  );
 
   return (
     <section id="admission-form" className="py-20 bg-muted/30">
@@ -294,76 +308,223 @@ const AdmissionFormSection = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Student Photo */}
+            {/* Student Photo Upload */}
+            <div className="bg-card rounded-3xl p-8 shadow-soft border border-border/50">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl emerald-gradient flex items-center justify-center">
+                  <Image className="w-5 h-5 text-primary-foreground" />
+                </div>
+                <h3 className="font-display text-xl font-semibold text-foreground">വിദ്യാർത്ഥിയുടെ ഫോട്ടോ</h3>
+              </div>
+              {renderDocumentUpload('studentPhoto', 'പാസ്പോർട്ട് സൈസ് ഫോട്ടോ', <User className="w-8 h-8 text-muted-foreground" />, '.jpg,.jpeg,.png')}
+            </div>
+
+            {/* Student Details */}
             <div className="bg-card rounded-3xl p-8 shadow-soft border border-border/50">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-xl emerald-gradient flex items-center justify-center">
                   <User className="w-5 h-5 text-primary-foreground" />
                 </div>
-                <h3 className="font-display text-xl font-semibold text-foreground">വിദ്യാർത്ഥിയുടെ ഫോട്ടോ</h3>
+                <h3 className="font-display text-xl font-semibold text-foreground">വിദ്യാർത്ഥിയുടെ വിവരങ്ങൾ</h3>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  പാസ്പോർട്ട് സൈസ് ഫോട്ടോ
-                </label>
-                {studentPhoto ? (
-                  <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-xl border border-border">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <File className="w-5 h-5 text-primary" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate">{studentPhoto.name}</p>
-                      <p className="text-xs text-muted-foreground">{formatFileSize(studentPhoto.size)}</p>
-                    </div>
-                    <Button 
-                      type="button"
-                      size="sm" 
-                      variant="ghost" 
-                      onClick={() => setStudentPhoto(null)}
-                      className="text-destructive hover:text-destructive"
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
-                  </div>
-                ) : (
-                  <label 
-                    htmlFor="student-photo-upload"
-                    className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-primary/50 hover:bg-muted/30 transition-colors"
-                  >
-                    <Upload className="w-8 h-8 text-muted-foreground mb-2" />
-                    <span className="text-sm text-muted-foreground">ഫയൽ അപ്‌ലോഡ് ചെയ്യുക</span>
-                    <span className="text-xs text-muted-foreground mt-1">PDF, JPG, PNG (Max 5MB)</span>
-                    <input
-                      id="student-photo-upload"
-                      type="file"
-                      accept=".pdf,.jpg,.jpeg,.png"
-                      onChange={handleFileUpload}
-                      className="hidden"
-                    />
+              
+              <div className="grid sm:grid-cols-2 gap-5">
+                <div className="sm:col-span-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    വിദ്യാർത്ഥിയുടെ പേര് *
                   </label>
-                )}
+                  <input
+                    type="text"
+                    name="studentName"
+                    value={formData.studentName || ''}
+                    onChange={handleChange}
+                    required
+                    className={baseInputClass}
+                    placeholder="പൂർണ്ണ നാമം"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    വയസ്സ് *
+                  </label>
+                  <input
+                    type="number"
+                    name="studentAge"
+                    value={formData.studentAge || ''}
+                    onChange={handleChange}
+                    required
+                    className={baseInputClass}
+                    placeholder="വയസ്സ്"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    ജനനതീയതി *
+                  </label>
+                  <input
+                    type="date"
+                    name="dateOfBirth"
+                    value={formData.dateOfBirth || ''}
+                    onChange={handleChange}
+                    required
+                    className={baseInputClass}
+                  />
+                </div>
               </div>
             </div>
 
-            {/* Dynamic Form Fields */}
+            {/* Guardian Details */}
             <div className="bg-card rounded-3xl p-8 shadow-soft border border-border/50">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 rounded-xl emerald-gradient flex items-center justify-center">
                   <FileText className="w-5 h-5 text-primary-foreground" />
                 </div>
-                <h3 className="font-display text-xl font-semibold text-foreground">വിവരങ്ങൾ പൂരിപ്പിക്കുക</h3>
+                <h3 className="font-display text-xl font-semibold text-foreground">രക്ഷിതാവിന്റെ വിവരങ്ങൾ</h3>
               </div>
               
               <div className="grid sm:grid-cols-2 gap-5">
-                {sortedFields.map(field => (
-                  <div key={field.id} className={field.type === 'textarea' ? 'sm:col-span-2' : ''}>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      {field.label} {field.required && '*'}
-                    </label>
-                    {renderField(field)}
-                  </div>
-                ))}
+                <div className="sm:col-span-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    രക്ഷിതാവിന്റെ പേര് *
+                  </label>
+                  <input
+                    type="text"
+                    name="guardianName"
+                    value={formData.guardianName || ''}
+                    onChange={handleChange}
+                    required
+                    className={baseInputClass}
+                    placeholder="രക്ഷിതാവിന്റെ പൂർണ്ണ നാമം"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    ഫോൺ നമ്പർ *
+                  </label>
+                  <input
+                    type="tel"
+                    name="guardianPhone"
+                    value={formData.guardianPhone || ''}
+                    onChange={handleChange}
+                    required
+                    className={baseInputClass}
+                    placeholder="+91 XXXXX XXXXX"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    ഇമെയിൽ
+                  </label>
+                  <input
+                    type="email"
+                    name="guardianEmail"
+                    value={formData.guardianEmail || ''}
+                    onChange={handleChange}
+                    className={baseInputClass}
+                    placeholder="email@example.com"
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    മേൽവിലാസം *
+                  </label>
+                  <textarea
+                    name="address"
+                    value={formData.address || ''}
+                    onChange={handleChange}
+                    required
+                    rows={3}
+                    className={`${baseInputClass} resize-none`}
+                    placeholder="പൂർണ്ണ മേൽവിലാസം"
+                  />
+                </div>
               </div>
+            </div>
+
+            {/* Madarasa Education Details */}
+            <div className="bg-card rounded-3xl p-8 shadow-soft border border-border/50">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl emerald-gradient flex items-center justify-center">
+                  <ScrollText className="w-5 h-5 text-primary-foreground" />
+                </div>
+                <h3 className="font-display text-xl font-semibold text-foreground">മദ്രസ പഠന വിവരങ്ങൾ</h3>
+              </div>
+              
+              <div className="grid sm:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    മദ്രസ എത്ര വരെ പഠിച്ചു
+                  </label>
+                  <input
+                    type="text"
+                    name="madarasaLevel"
+                    value={formData.madarasaLevel || ''}
+                    onChange={handleChange}
+                    className={baseInputClass}
+                    placeholder="ഉദാ: 5-ാം ക്ലാസ്"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    മദ്രസയുടെ പേര്
+                  </label>
+                  <input
+                    type="text"
+                    name="madarasaName"
+                    value={formData.madarasaName || ''}
+                    onChange={handleChange}
+                    className={baseInputClass}
+                    placeholder="മദ്രസയുടെ പേര്"
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    മുൻ സ്കൂൾ
+                  </label>
+                  <input
+                    type="text"
+                    name="previousSchool"
+                    value={formData.previousSchool || ''}
+                    onChange={handleChange}
+                    className={baseInputClass}
+                    placeholder="മുൻ വിദ്യാലയത്തിന്റെ പേര്"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Document Uploads */}
+            <div className="bg-card rounded-3xl p-8 shadow-soft border border-border/50">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl emerald-gradient flex items-center justify-center">
+                  <Upload className="w-5 h-5 text-primary-foreground" />
+                </div>
+                <h3 className="font-display text-xl font-semibold text-foreground">ഡോക്യുമെന്റുകൾ അപ്‌ലോഡ് ചെയ്യുക</h3>
+              </div>
+              
+              <div className="grid sm:grid-cols-2 gap-6">
+                {renderDocumentUpload('aadhaarCard', 'ആധാർ കാർഡ് കോപ്പി', <FileText className="w-8 h-8 text-muted-foreground" />, '.pdf,.jpg,.jpeg,.png')}
+                {renderDocumentUpload('birthCertificate', 'ജനന സർട്ടിഫിക്കറ്റ് കോപ്പി', <File className="w-8 h-8 text-muted-foreground" />, '.pdf,.jpg,.jpeg,.png')}
+                {renderDocumentUpload('tcCopy', 'TC കോപ്പി', <FileText className="w-8 h-8 text-muted-foreground" />, '.pdf,.jpg,.jpeg,.png')}
+              </div>
+            </div>
+
+            {/* Additional Info */}
+            <div className="bg-card rounded-3xl p-8 shadow-soft border border-border/50">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl emerald-gradient flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-primary-foreground" />
+                </div>
+                <h3 className="font-display text-xl font-semibold text-foreground">അധിക വിവരങ്ങൾ</h3>
+              </div>
+              <textarea
+                name="additionalInfo"
+                value={formData.additionalInfo || ''}
+                onChange={handleChange}
+                rows={3}
+                className={`${baseInputClass} resize-none`}
+                placeholder="എന്തെങ്കിലും പ്രത്യേക കാര്യങ്ങൾ അറിയിക്കണമെങ്കിൽ ഇവിടെ എഴുതുക..."
+              />
             </div>
 
             {/* Institution Rules Section */}
@@ -432,23 +593,17 @@ const AdmissionFormSection = () => {
               >
                 {submitting ? (
                   <>
-                    <Loader2 className="mr-2 w-5 h-5 animate-spin" />
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                     സമർപ്പിക്കുന്നു...
                   </>
                 ) : (
                   <>
+                    <Send className="w-5 h-5 mr-2" />
                     {formConfig.submitButtonText}
-                    <Send className="ml-2 w-5 h-5" />
                   </>
                 )}
               </Button>
             </div>
-            
-            {!rulesApproved && formConfig.institutionRules && (
-              <p className="text-center text-sm text-muted-foreground">
-                സമർപ്പിക്കാൻ മുകളിലുള്ള നിയമങ്ങൾ വായിച്ച് അംഗീകരിക്കുക
-              </p>
-            )}
           </form>
         </div>
       </div>

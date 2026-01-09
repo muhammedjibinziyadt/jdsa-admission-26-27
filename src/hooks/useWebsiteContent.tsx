@@ -19,18 +19,14 @@ const defaultFormFields: FormField[] = [
   { id: 'studentName', name: 'studentName', label: 'വിദ്യാർത്ഥിയുടെ പേര്', type: 'text', required: true, placeholder: 'പൂർണ്ണ നാമം', order: 1 },
   { id: 'studentAge', name: 'studentAge', label: 'വയസ്സ്', type: 'number', required: true, placeholder: 'വയസ്സ്', order: 2 },
   { id: 'dateOfBirth', name: 'dateOfBirth', label: 'ജനനതീയതി', type: 'date', required: true, order: 3 },
-  { id: 'gender', name: 'gender', label: 'ലിംഗഭേദം', type: 'select', required: true, options: ['ആൺ', 'പെൺ'], order: 4 },
-  { id: 'guardianName', name: 'guardianName', label: 'രക്ഷിതാവിന്റെ പേര്', type: 'text', required: true, placeholder: 'രക്ഷിതാവിന്റെ പൂർണ്ണ നാമം', order: 5 },
-  { id: 'guardianRelation', name: 'guardianRelation', label: 'ബന്ധം', type: 'select', required: true, options: ['പിതാവ്', 'മാതാവ്', 'രക്ഷാകർത്താവ്'], order: 6 },
-  { id: 'guardianPhone', name: 'guardianPhone', label: 'ഫോൺ നമ്പർ', type: 'text', required: true, placeholder: '+91 XXXXX XXXXX', order: 7 },
-  { id: 'guardianEmail', name: 'guardianEmail', label: 'ഇമെയിൽ', type: 'text', required: false, placeholder: 'email@example.com', order: 8 },
-  { id: 'address', name: 'address', label: 'മേൽവിലാസം', type: 'textarea', required: true, placeholder: 'പൂർണ്ണ മേൽവിലാസം', order: 9 },
-  { id: 'aadhaarNumber', name: 'aadhaarNumber', label: 'ആധാർ കാർഡ് നമ്പർ', type: 'text', required: true, placeholder: 'XXXX XXXX XXXX', order: 10 },
-  { id: 'birthCertificateNumber', name: 'birthCertificateNumber', label: 'ജനന സർട്ടിഫിക്കറ്റ് നമ്പർ', type: 'text', required: false, placeholder: 'സർട്ടിഫിക്കറ്റ് നമ്പർ', order: 11 },
-  { id: 'previousSchool', name: 'previousSchool', label: 'മുൻ സ്കൂൾ', type: 'text', required: false, placeholder: 'മുൻ വിദ്യാലയത്തിന്റെ പേര്', order: 12 },
-  { id: 'tcNumber', name: 'tcNumber', label: 'TC നമ്പർ', type: 'text', required: false, placeholder: 'ട്രാൻസ്ഫർ സർട്ടിഫിക്കറ്റ് നമ്പർ', order: 13 },
-  { id: 'course', name: 'course', label: 'കോഴ്‌സ്', type: 'select', required: true, options: ['സുഫ്ഫാ കോഴ്‌സിന് കീഴിലെ ദർസ്', 'ഖുർആൻ പഠനം', 'കമ്പ്യൂട്ടർ പഠനം', 'എഴുത്ത് പഠനം', 'പ്രസംഗ പരിശീലനം', 'വഅള് പരിശീലനം'], order: 14 },
-  { id: 'additionalInfo', name: 'additionalInfo', label: 'അധിക വിവരങ്ങൾ', type: 'textarea', required: false, placeholder: 'എന്തെങ്കിലും പ്രത്യേക കാര്യങ്ങൾ അറിയിക്കണമെങ്കിൽ ഇവിടെ എഴുതുക...', order: 15 },
+  { id: 'guardianName', name: 'guardianName', label: 'രക്ഷിതാവിന്റെ പേര്', type: 'text', required: true, placeholder: 'രക്ഷിതാവിന്റെ പൂർണ്ണ നാമം', order: 4 },
+  { id: 'guardianPhone', name: 'guardianPhone', label: 'ഫോൺ നമ്പർ', type: 'text', required: true, placeholder: '+91 XXXXX XXXXX', order: 5 },
+  { id: 'guardianEmail', name: 'guardianEmail', label: 'ഇമെയിൽ', type: 'text', required: false, placeholder: 'email@example.com', order: 6 },
+  { id: 'address', name: 'address', label: 'മേൽവിലാസം', type: 'textarea', required: true, placeholder: 'പൂർണ്ണ മേൽവിലാസം', order: 7 },
+  { id: 'madarasaLevel', name: 'madarasaLevel', label: 'മദ്രസ എത്ര വരെ പഠിച്ചു', type: 'text', required: false, placeholder: 'ഉദാ: 5-ാം ക്ലാസ്', order: 8 },
+  { id: 'madarasaName', name: 'madarasaName', label: 'മദ്രസയുടെ പേര്', type: 'text', required: false, placeholder: 'മദ്രസയുടെ പേര്', order: 9 },
+  { id: 'previousSchool', name: 'previousSchool', label: 'മുൻ സ്കൂൾ', type: 'text', required: false, placeholder: 'മുൻ വിദ്യാലയത്തിന്റെ പേര്', order: 10 },
+  { id: 'additionalInfo', name: 'additionalInfo', label: 'അധിക വിവരങ്ങൾ', type: 'textarea', required: false, placeholder: 'എന്തെങ്കിലും പ്രത്യേക കാര്യങ്ങൾ അറിയിക്കണമെങ്കിൽ ഇവിടെ എഴുതുക...', order: 11 },
 ];
 
 const defaultInstitutionRules = `സ്ഥാപനത്തിന്റെ അച്ചടക്ക നിയമങ്ങൾ
@@ -57,7 +53,8 @@ const defaultInstitutionRules = `സ്ഥാപനത്തിന്റെ അ�
 
 const defaultContent = {
   splash: {
-    buttonText: 'Click to Open',
+    buttonText: 'Click to Open Website',
+    buttonSubtitle: 'Tap to explore our institution',
     institutionName: 'ജൗഹറത്തുൽ ഉലൂം',
     institutionSubtitle: 'സുഫ്ഫ ദർസ്',
     tagline: 'വിശ്വാസവും വിജ്ഞാനവും കരുത്താക്കുന്ന വിദ്യാഭ്യാസം'
