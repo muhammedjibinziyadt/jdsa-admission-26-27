@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { BookOpen, Star, GraduationCap } from 'lucide-react';
+import { useWebsiteContent } from '@/hooks/useWebsiteContent';
 
 interface SplashScreenProps {
   onEnter: () => void;
@@ -8,10 +9,19 @@ interface SplashScreenProps {
 
 export function SplashScreen({ onEnter }: SplashScreenProps) {
   const [isExiting, setIsExiting] = useState(false);
+  const { content } = useWebsiteContent();
 
   const handleEnter = () => {
     setIsExiting(true);
     setTimeout(onEnter, 600);
+  };
+
+  // Get splash content from website content or use defaults
+  const splashContent = content.splash || {
+    buttonText: 'Click to Open',
+    institutionName: 'ജൗഹറത്തുൽ ഉലൂം',
+    institutionSubtitle: 'സുഫ്ഫ ദർസ്',
+    tagline: 'വിശ്വാസവും വിജ്ഞാനവും കരുത്താക്കുന്ന വിദ്യാഭ്യാസം'
   };
 
   return (
@@ -52,15 +62,15 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
 
         {/* Title */}
         <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground mb-4 animate-fade-up animation-delay-200">
-          <span className="gold-text">ജവഹറത്തുൽ ഉലൂം</span>
+          <span className="gold-text">{splashContent.institutionName}</span>
         </h1>
         <h2 className="text-2xl md:text-3xl font-semibold text-primary-foreground/90 mb-6 animate-fade-up animation-delay-400">
-          സുഫ്ഫാ ദർസ്
+          {splashContent.institutionSubtitle}
         </h2>
 
         {/* Tagline */}
         <p className="text-lg md:text-xl text-primary-foreground/80 mb-10 animate-fade-up animation-delay-600 leading-relaxed">
-          വിശ്വാസവും വിജ്ഞാനവും കരുത്താക്കുന്ന വിദ്യാഭ്യാസം
+          {splashContent.tagline}
         </p>
 
         {/* Enter Button */}
@@ -71,7 +81,7 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
             className="gold-bg text-primary font-semibold text-lg px-10 py-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-glow"
           >
             <span className="mr-2">🚪</span>
-            Open - സൈറ്റിലേക്ക് പ്രവേശിക്കുക
+            {splashContent.buttonText}
           </Button>
         </div>
 
