@@ -38,7 +38,7 @@ const Admin = () => {
   const { uploadImage, deleteImage, uploading } = useImageUpload();
   const { admissions, updateAdmission, deleteAdmission, newAdmissionCount } = useAdmissions();
   
-  const [activeTab, setActiveTab] = useState<"hero" | "about" | "courses" | "benefits" | "gallery" | "contact" | "map" | "footer" | "social" | "admissions">("hero");
+  const [activeTab, setActiveTab] = useState<"hero" | "about" | "courses" | "benefits" | "gallery" | "contact" | "map" | "footer" | "social" | "admissions" | "form">("hero");
   
   // Local editing state
   const [localContent, setLocalContent] = useState<WebsiteContent | null>(null);
@@ -324,6 +324,7 @@ const Admin = () => {
     { id: "map" as const, label: "മാപ്പ്", icon: MapPin },
     { id: "footer" as const, label: "ഫൂട്ടർ", icon: FileText },
     { id: "social" as const, label: "സോഷ്യൽ", icon: Share2 },
+    { id: "form" as const, label: "ഫോം സെറ്റിംഗ്സ്", icon: ClipboardList },
     { id: "admissions" as const, label: "അപേക്ഷകൾ", icon: ClipboardList, badge: newAdmissionCount },
   ];
 
@@ -781,6 +782,75 @@ const Admin = () => {
               {renderFieldEditor("social.youtube", "YouTube URL", localContent.social.youtube, () => handleSaveSocialField("youtube"))}
               {renderFieldEditor("social.instagram", "Instagram URL", localContent.social.instagram, () => handleSaveSocialField("instagram"))}
             </div>
+          </div>
+        )}
+
+        {/* Form Settings Tab */}
+        {activeTab === "form" && localContent.admissionForm && (
+          <div className="space-y-6">
+            <h2 className="font-display text-2xl font-semibold text-foreground">അഡ്മിഷൻ ഫോം സെറ്റിംഗ്സ്</h2>
+            
+            {/* Form Title & Description */}
+            <div className="space-y-4">
+              {renderFieldEditor("form.title", "ഫോം ടൈറ്റിൽ", localContent.admissionForm.title || '', async () => {
+                if (!localContent) return;
+                const updatedContent = {
+                  ...localContent,
+                  admissionForm: { ...localContent.admissionForm, title: tempValue }
+                };
+                setLocalContent(updatedContent);
+                setEditingField(null);
+                await handleSaveToDatabase(updatedContent);
+              })}
+              {renderFieldEditor("form.subtitle", "സബ്‌ടൈറ്റിൽ", localContent.admissionForm.subtitle || '', async () => {
+                if (!localContent) return;
+                const updatedContent = {
+                  ...localContent,
+                  admissionForm: { ...localContent.admissionForm, subtitle: tempValue }
+                };
+                setLocalContent(updatedContent);
+                setEditingField(null);
+                await handleSaveToDatabase(updatedContent);
+              })}
+            </div>
+
+            {/* Institution Rules */}
+            <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
+              <h3 className="font-semibold text-foreground mb-4">സ്ഥാപന നിയമങ്ങൾ (അച്ചടക്ക രേഖ)</h3>
+              <textarea
+                value={localContent.admissionForm.institutionRules || ''}
+                onChange={(e) => {
+                  const updatedContent = {
+                    ...localContent,
+                    admissionForm: { ...localContent.admissionForm, institutionRules: e.target.value }
+                  };
+                  setLocalContent(updatedContent);
+                }}
+                className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors resize-none"
+                rows={12}
+                placeholder="സ്ഥാപന നിയമങ്ങൾ ഇവിടെ എഴുതുക..."
+              />
+              <Button 
+                onClick={() => handleSaveToDatabase(localContent)} 
+                className="mt-4 rounded-lg" 
+                disabled={saving}
+              >
+                {saving ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Save className="w-4 h-4 mr-1" />}
+                നിയമങ്ങൾ സേവ് ചെയ്യുക
+              </Button>
+            </div>
+
+            {/* Approval Text */}
+            {renderFieldEditor("form.approvalText", "അംഗീകാര ടെക്സ്റ്റ്", localContent.admissionForm.approvalText || '', async () => {
+              if (!localContent) return;
+              const updatedContent = {
+                ...localContent,
+                admissionForm: { ...localContent.admissionForm, approvalText: tempValue }
+              };
+              setLocalContent(updatedContent);
+              setEditingField(null);
+              await handleSaveToDatabase(updatedContent);
+            })}
           </div>
         )}
 
