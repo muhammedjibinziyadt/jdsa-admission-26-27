@@ -7,6 +7,7 @@ import GallerySection from "@/components/GallerySection";
 import RouteMapSection from "@/components/RouteMapSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
+import SocialButtons from "@/components/SocialButtons";
 
 const Index = () => {
   return (
@@ -20,6 +21,14 @@ const Index = () => {
       <RouteMapSection />
       <ContactSection />
       <Footer />
+      <SocialButtons 
+        links={{
+          whatsapp: "919544124059",
+          facebook: "https://facebook.com/jawharathululoom",
+          youtube: "https://youtube.com/@jawharathululoom",
+          instagram: "https://instagram.com/jawharathululoom"
+        }}
+      />
     </main>
   );
 };
