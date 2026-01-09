@@ -1,6 +1,31 @@
 import { BookOpen, Heart, Users, Star } from "lucide-react";
 
-const features = [
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  BookOpen,
+  Heart,
+  Users,
+  Star,
+};
+
+interface AboutFeature {
+  title: string;
+  description: string;
+  icon?: string;
+}
+
+interface AboutContent {
+  title: string;
+  subtitle: string;
+  description: string;
+  features: AboutFeature[];
+  image?: string;
+}
+
+interface AboutSectionProps {
+  content: AboutContent;
+}
+
+const defaultFeatures = [
   {
     icon: BookOpen,
     title: "മതപരമായ വിദ്യാഭ്യാസം",
@@ -23,7 +48,14 @@ const features = [
   }
 ];
 
-const AboutSection = () => {
+const AboutSection = ({ content }: AboutSectionProps) => {
+  const features = content.features?.length > 0 
+    ? content.features.map((f, i) => ({
+        ...f,
+        icon: iconMap[f.icon || ''] || defaultFeatures[i % defaultFeatures.length].icon
+      }))
+    : defaultFeatures;
+
   return (
     <section id="about" className="py-24 lg:py-32 relative overflow-hidden cream-gradient">
       {/* Decorative Pattern */}
@@ -37,43 +69,45 @@ const AboutSection = () => {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-            ഞങ്ങളെക്കുറിച്ച്
+            {content.title || 'ഞങ്ങളെക്കുറിച്ച്'}
           </span>
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6">
             വിജ്ഞാനത്തിന്റെ 
             <span className="gold-text"> വെളിച്ചം</span>
           </h2>
           <p className="text-muted-foreground text-lg leading-relaxed">
-            ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസ് ഇസ്ലാമിക വിദ്യാഭ്യാസത്തിന്റെയും ആധുനിക 
-            കഴിവുകളുടെയും സമന്വയത്തിലൂടെ വിദ്യാർത്ഥികളെ ഭാവിയിലേക്ക് സജ്ജമാക്കുന്നു.
+            {content.description || 'ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസ് ഇസ്ലാമിക വിദ്യാഭ്യാസത്തിന്റെയും ആധുനിക കഴിവുകളുടെയും സമന്വയത്തിലൂടെ വിദ്യാർത്ഥികളെ ഭാവിയിലേക്ക് സജ്ജമാക്കുന്നു.'}
           </p>
         </div>
         
         {/* Features Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-          {features.map((feature, index) => (
-            <div 
-              key={feature.title}
-              className="group relative bg-card rounded-3xl p-8 shadow-soft card-hover border border-border/50"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              {/* Icon */}
-              <div className="w-14 h-14 rounded-2xl emerald-gradient flex items-center justify-center mb-6 shadow-soft group-hover:shadow-elevated transition-shadow group-hover:scale-110 duration-300">
-                <feature.icon className="w-7 h-7 text-primary-foreground" />
+          {features.map((feature, index) => {
+            const IconComponent = typeof feature.icon === 'function' ? feature.icon : BookOpen;
+            return (
+              <div 
+                key={feature.title}
+                className="group relative bg-card rounded-3xl p-8 shadow-soft card-hover border border-border/50"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                {/* Icon */}
+                <div className="w-14 h-14 rounded-2xl emerald-gradient flex items-center justify-center mb-6 shadow-soft group-hover:shadow-elevated transition-shadow group-hover:scale-110 duration-300">
+                  <IconComponent className="w-7 h-7 text-primary-foreground" />
+                </div>
+                
+                {/* Content */}
+                <h3 className="font-display text-xl font-semibold text-foreground mb-3">
+                  {feature.title}
+                </h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  {feature.description}
+                </p>
+                
+                {/* Decorative line */}
+                <div className="absolute bottom-0 left-8 right-8 h-1 rounded-full bg-gradient-to-r from-transparent via-gold/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
-              
-              {/* Content */}
-              <h3 className="font-display text-xl font-semibold text-foreground mb-3">
-                {feature.title}
-              </h3>
-              <p className="text-muted-foreground leading-relaxed">
-                {feature.description}
-              </p>
-              
-              {/* Decorative line */}
-              <div className="absolute bottom-0 left-8 right-8 h-1 rounded-full bg-gradient-to-r from-transparent via-gold/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
-          ))}
+            );
+          })}
         </div>
         
         {/* Mission Statement */}

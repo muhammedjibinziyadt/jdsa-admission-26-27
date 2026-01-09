@@ -1,29 +1,30 @@
-import { Shield, Brain, Award, HeartHandshake } from "lucide-react";
+import { Shield, Brain, Award, HeartHandshake, BookOpen, Star, Heart, Users } from "lucide-react";
 
-const benefits = [
-  {
-    icon: Shield,
-    title: "അച്ചടക്കം",
-    description: "ജീവിതത്തിന്റെ എല്ലാ മേഖലകളിലും അച്ചടക്കം പാലിക്കാനുള്ള കഴിവ്"
-  },
-  {
-    icon: Brain,
-    title: "വിജ്ഞാനം",
-    description: "മത-ലൗകിക വിദ്യകളിൽ ആഴത്തിലുള്ള പരിജ്ഞാനം"
-  },
-  {
-    icon: Award,
-    title: "ആത്മവിശ്വാസം",
-    description: "പൊതുസമൂഹത്തിൽ ആത്മവിശ്വാസത്തോടെ ഇടപെടാനുള്ള ശേഷി"
-  },
-  {
-    icon: HeartHandshake,
-    title: "സ്വഭാവഗുണം",
-    description: "ഇസ്ലാമിക മൂല്യങ്ങളിൽ അധിഷ്ഠിതമായ സ്വഭാവ രൂപീകരണം"
-  }
-];
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  Shield,
+  Brain,
+  Award,
+  HeartHandshake,
+  BookOpen,
+  Star,
+  Heart,
+  Users,
+};
 
-const StudentBenefits = () => {
+interface Benefit {
+  id: string;
+  title: string;
+  description: string;
+  icon?: string;
+}
+
+interface StudentBenefitsProps {
+  benefits: Benefit[];
+}
+
+const defaultIcons = [Shield, Brain, Award, HeartHandshake];
+
+const StudentBenefits = ({ benefits }: StudentBenefitsProps) => {
   return (
     <section className="py-24 lg:py-32 relative bg-muted/30 overflow-hidden">
       {/* Decorative Elements */}
@@ -49,25 +50,28 @@ const StudentBenefits = () => {
             
             {/* Benefits List */}
             <div className="grid sm:grid-cols-2 gap-6">
-              {benefits.map((benefit, index) => (
-                <div 
-                  key={benefit.title}
-                  className="flex items-start gap-4 group"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <div className="w-12 h-12 rounded-xl emerald-gradient flex items-center justify-center shadow-soft flex-shrink-0 group-hover:scale-110 transition-transform">
-                    <benefit.icon className="w-6 h-6 text-primary-foreground" />
+              {benefits.map((benefit, index) => {
+                const IconComponent = iconMap[benefit.icon || ''] || defaultIcons[index % defaultIcons.length];
+                return (
+                  <div 
+                    key={benefit.id}
+                    className="flex items-start gap-4 group"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <div className="w-12 h-12 rounded-xl emerald-gradient flex items-center justify-center shadow-soft flex-shrink-0 group-hover:scale-110 transition-transform">
+                      <IconComponent className="w-6 h-6 text-primary-foreground" />
+                    </div>
+                    <div>
+                      <h3 className="font-display text-lg font-semibold text-foreground mb-1">
+                        {benefit.title}
+                      </h3>
+                      <p className="text-muted-foreground text-sm leading-relaxed">
+                        {benefit.description}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-display text-lg font-semibold text-foreground mb-1">
-                      {benefit.title}
-                    </h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      {benefit.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
           
