@@ -1,14 +1,29 @@
 import { MapPin, Navigation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+interface Landmark {
+  id: string;
+  number: string;
+  title: string;
+  description: string;
+}
+
 interface MapContent {
   embedUrl: string;
   address: string;
+  landmarks?: Landmark[];
+  landmarksEnabled?: boolean;
 }
 
 interface RouteMapSectionProps {
   content: MapContent;
 }
+
+const defaultLandmarks: Landmark[] = [
+  { id: '1', number: '1', title: 'അടുത്തുള്ള ലാൻഡ്മാർക്ക്', description: 'പ്രധാന റോഡിൽ നിന്ന് 500 മീറ്റർ' },
+  { id: '2', number: '2', title: 'ബസ് സ്റ്റോപ്പ്', description: 'സമീപത്തുള്ള ബസ് സ്റ്റോപ്പ് 200 മീറ്റർ' },
+  { id: '3', number: '3', title: 'പാർക്കിംഗ്', description: 'സൗജന്യ പാർക്കിംഗ് സൗകര്യം ലഭ്യമാണ്' },
+];
 
 const RouteMapSection = ({ content }: RouteMapSectionProps) => {
   // Build embed URL from the Google Maps link
@@ -18,6 +33,10 @@ const RouteMapSection = ({ content }: RouteMapSectionProps) => {
     // Use the link from admin or default
     window.open(content.embedUrl || "https://maps.app.goo.gl/ZN8C3epBni6h3hKn9?g_st=aw", "_blank");
   };
+
+  // Use landmarks from content or defaults
+  const landmarks = content.landmarks && content.landmarks.length > 0 ? content.landmarks : defaultLandmarks;
+  const landmarksEnabled = content.landmarksEnabled !== false; // Default to true
 
   return (
     <section id="route-map" className="py-24 lg:py-32 relative bg-muted/30">
@@ -95,42 +114,29 @@ const RouteMapSection = ({ content }: RouteMapSectionProps) => {
           <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full bg-primary/5 blur-3xl" />
         </div>
 
-        {/* Landmarks */}
-        <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="bg-card rounded-2xl p-5 border border-border/50 shadow-soft">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                <span className="text-primary font-bold">1</span>
+        {/* Landmarks - Only show if enabled */}
+        {landmarksEnabled && landmarks.length > 0 && (
+          <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {landmarks.map((landmark, index) => (
+              <div 
+                key={landmark.id} 
+                className={`bg-card rounded-2xl p-5 border border-border/50 shadow-soft ${
+                  index === landmarks.length - 1 && landmarks.length % 3 === 1 ? 'sm:col-span-2 lg:col-span-1' : ''
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <span className="text-primary font-bold">{landmark.number}</span>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-foreground">{landmark.title}</h4>
+                    <p className="text-sm text-muted-foreground">{landmark.description}</p>
+                  </div>
+                </div>
               </div>
-              <div>
-                <h4 className="font-medium text-foreground">അടുത്തുള്ള ലാൻഡ്മാർക്ക്</h4>
-                <p className="text-sm text-muted-foreground">പ്രധാന റോഡിൽ നിന്ന് 500 മീറ്റർ</p>
-              </div>
-            </div>
+            ))}
           </div>
-          <div className="bg-card rounded-2xl p-5 border border-border/50 shadow-soft">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                <span className="text-primary font-bold">2</span>
-              </div>
-              <div>
-                <h4 className="font-medium text-foreground">ബസ് സ്റ്റോപ്പ്</h4>
-                <p className="text-sm text-muted-foreground">സമീപത്തുള്ള ബസ് സ്റ്റോപ്പ് 200 മീറ്റർ</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-card rounded-2xl p-5 border border-border/50 shadow-soft sm:col-span-2 lg:col-span-1">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                <span className="text-primary font-bold">3</span>
-              </div>
-              <div>
-                <h4 className="font-medium text-foreground">പാർക്കിംഗ്</h4>
-                <p className="text-sm text-muted-foreground">സൗജന്യ പാർക്കിംഗ് സൗകര്യം ലഭ്യമാണ്</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </section>
   );

@@ -1,5 +1,4 @@
-import { Phone, Mail, Clock, Send } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Phone, Mail, Clock } from "lucide-react";
 
 interface ContactContent {
   phone1: string;
@@ -34,7 +33,7 @@ const ContactSection = ({ content }: ContactSectionProps) => {
           </p>
         </div>
         
-        <div className="grid lg:grid-cols-2 gap-12">
+        <div className="max-w-2xl mx-auto">
           {/* Contact Info */}
           <div>
             {/* Main CTA Card */}
@@ -96,68 +95,6 @@ const ContactSection = ({ content }: ContactSectionProps) => {
                 <p className="text-muted-foreground text-sm">{content.timing}</p>
               </div>
             </div>
-          </div>
-          
-          {/* Enquiry Form */}
-          <div className="bg-card rounded-3xl p-8 lg:p-10 shadow-soft border border-border/50">
-            <h3 className="font-display text-2xl font-semibold text-foreground mb-6">
-              അഡ്മിഷൻ അന്വേഷണം
-            </h3>
-            
-            <form className="space-y-5">
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  വിദ്യാർത്ഥിയുടെ പേര്
-                </label>
-                <input 
-                  type="text"
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
-                  placeholder="പേര് ഇവിടെ ടൈപ്പ് ചെയ്യുക"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  രക്ഷിതാവിന്റെ പേര്
-                </label>
-                <input 
-                  type="text"
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
-                  placeholder="രക്ഷിതാവിന്റെ പേര്"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  ഫോൺ നമ്പർ
-                </label>
-                <input 
-                  type="tel"
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
-                  placeholder="+91 XXXXX XXXXX"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  സന്ദേശം
-                </label>
-                <textarea 
-                  rows={4}
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors resize-none"
-                  placeholder="നിങ്ങളുടെ സന്ദേശം..."
-                />
-              </div>
-              
-              <Button 
-                type="submit"
-                size="lg"
-                className="w-full gold-bg text-primary font-semibold py-6 rounded-xl shadow-gold hover:scale-[1.02] transition-all duration-300"
-              >
-                അന്വേഷണം അയക്കുക
-                <Send className="ml-2 w-5 h-5" />
-              </Button>
-            </form>
           </div>
         </div>
       </div>
