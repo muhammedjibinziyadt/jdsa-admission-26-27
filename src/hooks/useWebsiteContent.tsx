@@ -105,7 +105,13 @@ const defaultContent = {
   },
   map: {
     embedUrl: 'https://maps.app.goo.gl/ZN8C3epBni6h3hKn9?g_st=aw',
-    address: 'ജൗഹറത്തുൽ ഉലൂം സുഫ്ഫ ദർസ്'
+    address: 'ജൗഹറത്തുൽ ഉലൂം സുഫ്ഫ ദർസ്',
+    landmarks: [
+      { id: '1', number: '1', title: 'അടുത്തുള്ള ലാൻഡ്മാർക്ക്', description: 'പ്രധാന റോഡിൽ നിന്ന് 500 മീറ്റർ' },
+      { id: '2', number: '2', title: 'ബസ് സ്റ്റോപ്പ്', description: 'സമീപത്തുള്ള ബസ് സ്റ്റോപ്പ് 200 മീറ്റർ' },
+      { id: '3', number: '3', title: 'പാർക്കിംഗ്', description: 'സൗജന്യ പാർക്കിംഗ് സൗകര്യം ലഭ്യമാണ്' },
+    ],
+    landmarksEnabled: true
   },
   footer: {
     copyright: '© 2024 ജൗഹറത്തുൽ ഉലൂം സുഫ്ഫ ദർസ്. എല്ലാ അവകാശങ്ങളും നിക്ഷിപ്തം.',

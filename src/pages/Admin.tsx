@@ -758,6 +758,139 @@ const Admin = () => {
               {renderFieldEditor("map.embedUrl", "മാപ്പ് URL", localContent.map.embedUrl, () => handleSaveMapField("embedUrl"))}
               {renderFieldEditor("map.address", "വിലാസം", localContent.map.address, () => handleSaveMapField("address"), true)}
             </div>
+
+            {/* Landmarks Section */}
+            <div className="mt-8">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-display text-xl font-semibold text-foreground">ലാൻഡ്മാർക്കുകൾ (സ്റ്റെപ്സ്)</h3>
+                <div className="flex items-center gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={localContent.map.landmarksEnabled !== false}
+                      onChange={async (e) => {
+                        const updatedContent = {
+                          ...localContent,
+                          map: { ...localContent.map, landmarksEnabled: e.target.checked }
+                        };
+                        setLocalContent(updatedContent);
+                        await handleSaveToDatabase(updatedContent);
+                      }}
+                      className="rounded"
+                    />
+                    <span className="text-sm text-muted-foreground">ലാൻഡ്മാർക്കുകൾ കാണിക്കുക</span>
+                  </label>
+                  <Button 
+                    onClick={async () => {
+                      const landmarks = localContent.map.landmarks || [];
+                      const newLandmark = {
+                        id: String(Date.now()),
+                        number: String(landmarks.length + 1),
+                        title: 'പുതിയ ലാൻഡ്മാർക്ക്',
+                        description: 'വിവരണം ചേർക്കുക'
+                      };
+                      const updatedContent = {
+                        ...localContent,
+                        map: { ...localContent.map, landmarks: [...landmarks, newLandmark] }
+                      };
+                      setLocalContent(updatedContent);
+                      await handleSaveToDatabase(updatedContent);
+                    }} 
+                    className="rounded-xl" 
+                    disabled={saving}
+                  >
+                    <Plus className="w-4 h-4 mr-2" />ചേർക്കുക
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                {(localContent.map.landmarks || []).map((landmark: { id: string; number: string; title: string; description: string }, index: number) => (
+                  <div key={landmark.id} className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
+                    <div className="grid sm:grid-cols-4 gap-4">
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground mb-1 block">നമ്പർ</label>
+                        <input
+                          type="text"
+                          value={landmark.number}
+                          onChange={(e) => {
+                            const landmarks = [...(localContent.map.landmarks || [])];
+                            landmarks[index] = { ...landmark, number: e.target.value };
+                            setLocalContent({
+                              ...localContent,
+                              map: { ...localContent.map, landmarks }
+                            });
+                          }}
+                          className="w-full px-3 py-2 rounded-lg border border-border bg-background text-center font-bold"
+                        />
+                      </div>
+                      <div className="sm:col-span-2">
+                        <label className="text-sm font-medium text-muted-foreground mb-1 block">ടൈറ്റിൽ</label>
+                        <input
+                          type="text"
+                          value={landmark.title}
+                          onChange={(e) => {
+                            const landmarks = [...(localContent.map.landmarks || [])];
+                            landmarks[index] = { ...landmark, title: e.target.value };
+                            setLocalContent({
+                              ...localContent,
+                              map: { ...localContent.map, landmarks }
+                            });
+                          }}
+                          className="w-full px-3 py-2 rounded-lg border border-border bg-background"
+                        />
+                      </div>
+                      <div className="flex items-end gap-2">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="text-destructive"
+                          onClick={async () => {
+                            const landmarks = (localContent.map.landmarks || []).filter((_: unknown, i: number) => i !== index);
+                            const updatedContent = {
+                              ...localContent,
+                              map: { ...localContent.map, landmarks }
+                            };
+                            setLocalContent(updatedContent);
+                            await handleSaveToDatabase(updatedContent);
+                          }}
+                          disabled={saving}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="mt-3">
+                      <label className="text-sm font-medium text-muted-foreground mb-1 block">വിവരണം</label>
+                      <input
+                        type="text"
+                        value={landmark.description}
+                        onChange={(e) => {
+                          const landmarks = [...(localContent.map.landmarks || [])];
+                          landmarks[index] = { ...landmark, description: e.target.value };
+                          setLocalContent({
+                            ...localContent,
+                            map: { ...localContent.map, landmarks }
+                          });
+                        }}
+                        className="w-full px-3 py-2 rounded-lg border border-border bg-background"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              {(localContent.map.landmarks || []).length > 0 && (
+                <Button 
+                  onClick={() => handleSaveToDatabase(localContent)} 
+                  className="mt-4 rounded-lg" 
+                  disabled={saving}
+                >
+                  {saving ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Save className="w-4 h-4 mr-1" />}
+                  മാറ്റങ്ങൾ സേവ് ചെയ്യുക
+                </Button>
+              )}
+            </div>
           </div>
         )}
 

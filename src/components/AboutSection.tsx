@@ -110,18 +110,6 @@ const AboutSection = ({ content }: AboutSectionProps) => {
           })}
         </div>
         
-        {/* Mission Statement */}
-        <div className="mt-20 relative">
-          <div className="absolute inset-0 emerald-gradient rounded-3xl opacity-95" />
-          <div className="relative p-10 lg:p-16 text-center">
-            <blockquote className="font-display text-2xl md:text-3xl lg:text-4xl text-primary-foreground font-medium leading-relaxed mb-6">
-              "വിദ്യ അഭ്യസിക്കുന്നത് ഓരോ മുസ്ലിമിനും ഫർദാണ്"
-            </blockquote>
-            <cite className="text-gold-light text-lg font-medium not-italic">
-              — نبوی حدیث
-            </cite>
-          </div>
-        </div>
       </div>
     </section>
   );
