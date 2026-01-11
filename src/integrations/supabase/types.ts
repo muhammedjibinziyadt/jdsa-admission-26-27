@@ -110,6 +110,27 @@ export type Database = {
         }
         Relationships: []
       }
+      gallery_likes: {
+        Row: {
+          created_at: string
+          device_id: string
+          id: string
+          image_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_id: string
+          id?: string
+          image_id: string
+        }
+        Update: {
+          created_at?: string
+          device_id?: string
+          id?: string
+          image_id?: string
+        }
+        Relationships: []
+      }
       website_content: {
         Row: {
           content: Json
