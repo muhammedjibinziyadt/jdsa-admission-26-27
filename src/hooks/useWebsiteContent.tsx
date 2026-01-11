@@ -103,6 +103,10 @@ const defaultContent = {
     { id: '4', title: 'ധാർമ്മികത', description: 'സ്വഭാവ മഹിമയുടെ കേന്ദ്രം', icon: 'Heart' }
   ],
   gallery: [] as { id: string; url: string; alt: string }[],
+  gallerySettings: {
+    likesEnabled: true,
+    downloadEnabled: true
+  },
   contact: {
     phone1: '+91 95441 24059',
     phone2: '+91 82811 02606',

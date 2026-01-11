@@ -61,7 +61,7 @@ const Index = () => {
       {approvedApplications.length > 0 && (
         <ApprovedApplications applications={approvedApplications} />
       )}
-      <GallerySection images={content.gallery} />
+      <GallerySection images={content.gallery} settings={content.gallerySettings} />
       <RouteMapSection content={content.map} />
       <AdmissionFormSection />
       <ContactSection content={content.contact} />

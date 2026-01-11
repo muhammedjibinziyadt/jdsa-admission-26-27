@@ -233,15 +233,30 @@ const Admin = () => {
     await handleSaveToDatabase(updatedContent);
   };
 
-  // Gallery handlers with file upload
+  // Gallery handlers with file upload (supports multiple files)
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !localContent) return;
+    const files = e.target.files;
+    if (!files || files.length === 0 || !localContent) return;
 
-    const url = await uploadImage(file, 'gallery');
-    if (url) {
-      const newImage = { id: String(Date.now()), url, alt: newImageAlt || 'Gallery Image' };
-      const updatedContent = { ...localContent, gallery: [...localContent.gallery, newImage] };
+    const uploadPromises = Array.from(files).map(async (file, index) => {
+      const url = await uploadImage(file, 'gallery');
+      if (url) {
+        return { 
+          id: String(Date.now() + index), 
+          url, 
+          alt: newImageAlt || `Gallery Image ${localContent.gallery.length + index + 1}` 
+        };
+      }
+      return null;
+    });
+
+    const uploadedImages = (await Promise.all(uploadPromises)).filter(img => img !== null);
+    
+    if (uploadedImages.length > 0) {
+      const updatedContent = { 
+        ...localContent, 
+        gallery: [...localContent.gallery, ...uploadedImages] 
+      };
       setLocalContent(updatedContent);
       setNewImageAlt("");
       await handleSaveToDatabase(updatedContent);
@@ -742,6 +757,57 @@ const Admin = () => {
           <div className="space-y-6">
             <h2 className="font-display text-2xl font-semibold text-foreground">ഗാലറി സെക്ഷൻ</h2>
             
+            {/* Gallery Settings */}
+            <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
+              <h3 className="font-medium text-foreground mb-4">ഗാലറി സെറ്റിംഗ്സ്</h3>
+              <div className="flex flex-wrap gap-6">
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={localContent.gallerySettings?.likesEnabled !== false}
+                    onChange={async (e) => {
+                      const updatedContent = {
+                        ...localContent,
+                        gallerySettings: { 
+                          ...localContent.gallerySettings,
+                          likesEnabled: e.target.checked 
+                        }
+                      };
+                      setLocalContent(updatedContent);
+                      await handleSaveToDatabase(updatedContent);
+                    }}
+                    className="w-5 h-5 rounded border-border text-primary focus:ring-primary"
+                  />
+                  <div>
+                    <span className="text-foreground font-medium">ലൈക്ക് ബട്ടൺ</span>
+                    <p className="text-xs text-muted-foreground">ഇമേജുകൾക്ക് ലൈക്ക് ചെയ്യാൻ അനുവദിക്കുക</p>
+                  </div>
+                </label>
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={localContent.gallerySettings?.downloadEnabled !== false}
+                    onChange={async (e) => {
+                      const updatedContent = {
+                        ...localContent,
+                        gallerySettings: { 
+                          ...localContent.gallerySettings,
+                          downloadEnabled: e.target.checked 
+                        }
+                      };
+                      setLocalContent(updatedContent);
+                      await handleSaveToDatabase(updatedContent);
+                    }}
+                    className="w-5 h-5 rounded border-border text-primary focus:ring-primary"
+                  />
+                  <div>
+                    <span className="text-foreground font-medium">ഡൗൺലോഡ് ബട്ടൺ</span>
+                    <p className="text-xs text-muted-foreground">ഇമേജുകൾ ഡൗൺലോഡ് ചെയ്യാൻ അനുവദിക്കുക</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+            
             {/* Image Upload */}
             <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
               <h3 className="font-medium text-foreground mb-4">ഡിവൈസിൽ നിന്ന് ഇമേജ് അപ്‌ലോഡ് ചെയ്യുക</h3>
@@ -761,6 +827,7 @@ const Admin = () => {
                     onChange={handleImageUpload}
                     className="hidden"
                     id="gallery-upload"
+                    multiple
                   />
                   <label
                     htmlFor="gallery-upload"
@@ -774,25 +841,74 @@ const Admin = () => {
                     <span className="text-sm text-muted-foreground">
                       {uploading ? 'അപ്‌ലോഡ് ചെയ്യുന്നു...' : 'ക്ലിക്ക് ചെയ്ത് ഇമേജ് തിരഞ്ഞെടുക്കുക'}
                     </span>
-                    <span className="text-xs text-muted-foreground mt-1">JPG, PNG, WEBP</span>
+                    <span className="text-xs text-muted-foreground mt-1">JPG, PNG, WEBP (ഒന്നിലധികം തിരഞ്ഞെടുക്കാം)</span>
                   </label>
                 </div>
               </div>
             </div>
 
-            {/* Gallery Grid */}
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {localContent.gallery.map(image => (
-                <div key={image.id} className="group relative bg-card rounded-2xl overflow-hidden border border-border/50 shadow-soft">
-                  <img src={image.url} alt={image.alt} className="w-full aspect-video object-cover" />
-                  <div className="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                    <Button size="sm" variant="destructive" onClick={() => handleDeleteImage(image.id)} className="rounded-lg" disabled={saving}>
-                      <Trash2 className="w-4 h-4 mr-1" />ഡിലീറ്റ്
-                    </Button>
+            {/* Gallery Grid with Reorder */}
+            <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-medium text-foreground">അപ്‌ലോഡ് ചെയ്ത ഇമേജുകൾ ({localContent.gallery.length})</h3>
+                <p className="text-xs text-muted-foreground">ഓർഡർ മാറ്റാൻ ഇമേജുകൾ ഡ്രാഗ് ചെയ്യുക</p>
+              </div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {localContent.gallery.map((image, index) => (
+                  <div 
+                    key={image.id} 
+                    draggable
+                    onDragStart={(e) => {
+                      e.dataTransfer.setData('text/plain', index.toString());
+                      e.currentTarget.classList.add('opacity-50');
+                    }}
+                    onDragEnd={(e) => {
+                      e.currentTarget.classList.remove('opacity-50');
+                    }}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      e.currentTarget.classList.add('ring-2', 'ring-primary');
+                    }}
+                    onDragLeave={(e) => {
+                      e.currentTarget.classList.remove('ring-2', 'ring-primary');
+                    }}
+                    onDrop={async (e) => {
+                      e.preventDefault();
+                      e.currentTarget.classList.remove('ring-2', 'ring-primary');
+                      const fromIndex = parseInt(e.dataTransfer.getData('text/plain'));
+                      const toIndex = index;
+                      if (fromIndex !== toIndex) {
+                        const newGallery = [...localContent.gallery];
+                        const [movedItem] = newGallery.splice(fromIndex, 1);
+                        newGallery.splice(toIndex, 0, movedItem);
+                        const updatedContent = { ...localContent, gallery: newGallery };
+                        setLocalContent(updatedContent);
+                        await handleSaveToDatabase(updatedContent);
+                      }
+                    }}
+                    className="group relative bg-muted rounded-xl overflow-hidden border border-border/50 cursor-move transition-all"
+                  >
+                    <div className="absolute top-2 left-2 z-10 w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-medium">
+                      {index + 1}
+                    </div>
+                    <img src={image.url} alt={image.alt} className="w-full aspect-video object-cover" />
+                    <div className="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                      <Button size="sm" variant="destructive" onClick={() => handleDeleteImage(image.id)} className="rounded-lg" disabled={saving}>
+                        <Trash2 className="w-4 h-4 mr-1" />ഡിലീറ്റ്
+                      </Button>
+                    </div>
+                    <div className="p-3 bg-card">
+                      <p className="text-sm text-foreground truncate">{image.alt}</p>
+                    </div>
                   </div>
-                  <div className="p-4"><p className="text-sm text-foreground">{image.alt}</p></div>
+                ))}
+              </div>
+              {localContent.gallery.length === 0 && (
+                <div className="text-center py-12 text-muted-foreground">
+                  <ImageIcon className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                  <p>ഇമേജുകൾ ഇല്ല. മുകളിൽ നിന്ന് അപ്‌ലോഡ് ചെയ്യുക.</p>
                 </div>
-              ))}
+              )}
             </div>
           </div>
         )}
