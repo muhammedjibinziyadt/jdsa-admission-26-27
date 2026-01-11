@@ -534,6 +534,67 @@ const Admin = () => {
         {activeTab === "courses" && (
           <div className="space-y-6">
             <h2 className="font-display text-2xl font-semibold text-foreground">കോഴ്‌സ് സെക്ഷൻ</h2>
+            
+            {/* Course Section Settings */}
+            <div className="space-y-4">
+              <h3 className="font-display text-lg font-semibold text-foreground">സെക്ഷൻ സെറ്റിംഗ്സ്</h3>
+              {renderFieldEditor(
+                "coursesSection.title", 
+                "സെക്ഷൻ ടൈറ്റിൽ", 
+                localContent.coursesSection?.title || 'പഠന പാഠ്യന്തര വിഷയങ്ങൾ', 
+                async () => {
+                  if (!localContent) return;
+                  const updatedContent = {
+                    ...localContent,
+                    coursesSection: { 
+                      ...localContent.coursesSection, 
+                      title: tempValue 
+                    }
+                  };
+                  setLocalContent(updatedContent);
+                  setEditingField(null);
+                  await handleSaveToDatabase(updatedContent);
+                }
+              )}
+              {renderFieldEditor(
+                "coursesSection.subtitle", 
+                "സെക്ഷൻ സബ്‌ടൈറ്റിൽ (ബാഡ്ജ്)", 
+                localContent.coursesSection?.subtitle || 'പഠന പദ്ധതികൾ', 
+                async () => {
+                  if (!localContent) return;
+                  const updatedContent = {
+                    ...localContent,
+                    coursesSection: { 
+                      ...localContent.coursesSection, 
+                      subtitle: tempValue 
+                    }
+                  };
+                  setLocalContent(updatedContent);
+                  setEditingField(null);
+                  await handleSaveToDatabase(updatedContent);
+                }
+              )}
+              {renderFieldEditor(
+                "coursesSection.description", 
+                "സെക്ഷൻ വിവരണം", 
+                localContent.coursesSection?.description || 'സമഗ്രമായ വിദ്യാഭ്യാസ പദ്ധതിയിലൂടെ വിദ്യാർത്ഥികളെ എല്ലാ മേഖലകളിലും മികവുറ്റവരാക്കുന്നു', 
+                async () => {
+                  if (!localContent) return;
+                  const updatedContent = {
+                    ...localContent,
+                    coursesSection: { 
+                      ...localContent.coursesSection, 
+                      description: tempValue 
+                    }
+                  };
+                  setLocalContent(updatedContent);
+                  setEditingField(null);
+                  await handleSaveToDatabase(updatedContent);
+                },
+                true
+              )}
+            </div>
+            
             <div className="mt-8">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-display text-xl font-semibold text-foreground">കോഴ്‌സുകൾ</h3>

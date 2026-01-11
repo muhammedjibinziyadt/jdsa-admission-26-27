@@ -53,11 +53,18 @@ const defaultInstitutionRules = `സ്ഥാപനത്തിന്റെ അ�
 
 const defaultContent = {
   splash: {
-    buttonText: 'Click to Open Website',
-    buttonSubtitle: 'Tap to explore our institution',
-    institutionName: 'ജൗഹറത്തുൽ ഉലൂം',
-    institutionSubtitle: 'സുഫ്ഫ ദർസ്',
-    tagline: 'വിശ്വാസവും വിജ്ഞാനവും കരുത്താക്കുന്ന വിദ്യാഭ്യാസം'
+    buttonText: 'Click to Open',
+    buttonSubtitle: 'ഞങ്ങളുടെ വിദ്യാഭ്യാസ സ്ഥാപനം അറിയാൻ ടാപ് ചെയ്യുക',
+    institutionName: 'ജൗഹറത്തുൽ ഉലൂം സുഫ്ഫ ദർസ്',
+    institutionSubtitle: '',
+    tagline: 'വിശ്വാസവും വിജ്ഞാനവും കരുത്താക്കുന്ന വിദ്യാഭ്യാസം',
+    admissionStatus: 'അഡ്മിഷൻ ആരംഭിച്ചു',
+    enabled: true
+  },
+  coursesSection: {
+    title: 'പഠന പാഠ്യന്തര വിഷയങ്ങൾ',
+    subtitle: 'പഠന പദ്ധതികൾ',
+    description: 'സമഗ്രമായ വിദ്യാഭ്യാസ പദ്ധതിയിലൂടെ വിദ്യാർത്ഥികളെ എല്ലാ മേഖലകളിലും മികവുറ്റവരാക്കുന്നു'
   },
   hero: {
     title: 'ജൗഹറത്തുൽ ഉലൂം സുഫ്ഫ ദർസ്',

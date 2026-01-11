@@ -51,7 +51,12 @@ const Index = () => {
       <Navigation />
       <HeroSection content={content.hero} />
       <AboutSection content={content.about} />
-      <CoursesSection courses={content.courses} />
+      <CoursesSection 
+        courses={content.courses} 
+        sectionTitle={content.coursesSection?.title}
+        sectionSubtitle={content.coursesSection?.subtitle}
+        sectionDescription={content.coursesSection?.description}
+      />
       <StudentBenefits benefits={content.benefits} />
       {approvedApplications.length > 0 && (
         <ApprovedApplications applications={approvedApplications} />

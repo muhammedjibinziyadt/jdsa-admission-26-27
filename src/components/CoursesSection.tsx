@@ -23,6 +23,9 @@ interface Course {
 
 interface CoursesSectionProps {
   courses: Course[];
+  sectionTitle?: string;
+  sectionSubtitle?: string;
+  sectionDescription?: string;
 }
 
 const iconList = [
@@ -49,7 +52,12 @@ const colorList = [
   "from-orange-500 to-orange-700"
 ];
 
-const CoursesSection = ({ courses }: CoursesSectionProps) => {
+const CoursesSection = ({ 
+  courses, 
+  sectionTitle = 'പഠന പാഠ്യന്തര വിഷയങ്ങൾ',
+  sectionSubtitle = 'പഠന പദ്ധതികൾ',
+  sectionDescription = 'സമഗ്രമായ വിദ്യാഭ്യാസ പദ്ധതിയിലൂടെ വിദ്യാർത്ഥികളെ എല്ലാ മേഖലകളിലും മികവുറ്റവരാക്കുന്നു'
+}: CoursesSectionProps) => {
   const featuredCourses = courses.filter(c => c.featured);
   const regularCourses = courses.filter(c => !c.featured);
 
@@ -66,15 +74,13 @@ const CoursesSection = ({ courses }: CoursesSectionProps) => {
         <div className="text-center max-w-3xl mx-auto mb-16">
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gold/10 text-gold-dark text-sm font-medium mb-4">
             <Sparkles className="w-4 h-4" />
-            പഠന പദ്ധതികൾ
+            {sectionSubtitle}
           </span>
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6">
-            ഞങ്ങളുടെ 
-            <span className="gold-text"> കോഴ്‌സുകൾ</span>
+            {sectionTitle}
           </h2>
           <p className="text-muted-foreground text-lg leading-relaxed">
-            സമഗ്രമായ വിദ്യാഭ്യാസ പദ്ധതിയിലൂടെ വിദ്യാർത്ഥികളെ 
-            എല്ലാ മേഖലകളിലും മികവുറ്റവരാക്കുന്നു
+            {sectionDescription}
           </p>
         </div>
         
