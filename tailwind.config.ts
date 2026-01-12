@@ -62,24 +62,34 @@ export default {
   				border: 'hsl(var(--sidebar-border))',
   				ring: 'hsl(var(--sidebar-ring))'
   			},
-  			gold: {
-  				DEFAULT: 'hsl(38 78% 52%)',
-  				light: 'hsl(45 85% 60%)',
-  				dark: 'hsl(35 70% 45%)'
-  			},
-  			emerald: {
-  				DEFAULT: 'hsl(158 64% 22%)',
-  				light: 'hsl(158 50% 35%)',
-  				dark: 'hsl(158 70% 15%)'
-  			},
-  			cream: {
-  				DEFAULT: 'hsl(42 40% 97%)',
-  				dark: 'hsl(42 30% 94%)'
-  			},
-  			teal: {
-  				DEFAULT: 'hsl(174 50% 40%)',
-  				light: 'hsl(174 45% 50%)'
-  			}
+			/* Premium Navy Blue & Teal Theme */
+			navy: {
+				DEFAULT: 'hsl(210 60% 15%)',
+				light: 'hsl(210 55% 22%)',
+				dark: 'hsl(210 60% 10%)',
+				deep: 'hsl(210 60% 8%)'
+			},
+			teal: {
+				DEFAULT: 'hsl(187 65% 45%)',
+				light: 'hsl(187 55% 55%)',
+				dark: 'hsl(187 70% 35%)',
+				glow: 'hsl(187 65% 50%)'
+			},
+			gold: {
+				DEFAULT: 'hsl(43 75% 50%)',
+				light: 'hsl(45 80% 60%)',
+				dark: 'hsl(40 70% 42%)',
+				amber: 'hsl(38 85% 55%)'
+			},
+			ivory: {
+				DEFAULT: 'hsl(210 20% 98%)',
+				soft: 'hsl(210 15% 95%)'
+			},
+			slate: {
+				light: 'hsl(210 15% 85%)',
+				DEFAULT: 'hsl(210 15% 70%)',
+				dark: 'hsl(210 20% 55%)'
+			}
   		},
   		fontFamily: {
   			display: [
@@ -127,18 +137,20 @@ export default {
   			'2xl': '1.5rem',
   			'3xl': '2rem'
   		},
-  		boxShadow: {
-  			soft: '0 4px 20px -4px hsla(158, 40%, 20%, 0.12)',
-  			elevated: '0 12px 40px -8px hsla(158, 40%, 20%, 0.18)',
-  			gold: '0 8px 30px -6px hsla(38, 78%, 52%, 0.35)',
-  			'2xs': 'var(--shadow-2xs)',
-  			xs: 'var(--shadow-xs)',
-  			sm: 'var(--shadow-sm)',
-  			md: 'var(--shadow-md)',
-  			lg: 'var(--shadow-lg)',
-  			xl: 'var(--shadow-xl)',
-  			'2xl': 'var(--shadow-2xl)'
-  		},
+		boxShadow: {
+			soft: '0 4px 20px -4px hsla(210, 50%, 5%, 0.35)',
+			elevated: '0 12px 40px -8px hsla(210, 50%, 5%, 0.45)',
+			teal: '0 8px 30px -6px hsla(187, 65%, 45%, 0.3)',
+			gold: '0 8px 30px -6px hsla(43, 75%, 50%, 0.25)',
+			glow: '0 0 30px -5px hsla(187, 65%, 45%, 0.4)',
+			'2xs': 'var(--shadow-2xs)',
+			xs: 'var(--shadow-xs)',
+			sm: 'var(--shadow-sm)',
+			md: 'var(--shadow-md)',
+			lg: 'var(--shadow-lg)',
+			xl: 'var(--shadow-xl)',
+			'2xl': 'var(--shadow-2xl)'
+		},
   		keyframes: {
   			'accordion-down': {
   				from: {
