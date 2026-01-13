@@ -23,13 +23,17 @@ import {
   Check,
   Eye,
   EyeOff,
-  ClipboardList
+  ClipboardList,
+  Palette,
+  MousePointer,
+  ToggleLeft
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWebsiteContent, WebsiteContent } from "@/hooks/useWebsiteContent";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import { useAdmissions } from "@/hooks/useAdmissions";
+import { applyThemeToDOM } from "@/hooks/useSiteSettings";
 import AdminLogin from "@/components/AdminLogin";
 
 const Admin = () => {
@@ -38,7 +42,7 @@ const Admin = () => {
   const { uploadImage, deleteImage, uploading } = useImageUpload();
   const { admissions, updateAdmission, deleteAdmission, newAdmissionCount } = useAdmissions();
   
-  const [activeTab, setActiveTab] = useState<"hero" | "about" | "courses" | "benefits" | "gallery" | "contact" | "map" | "footer" | "social" | "admissions" | "form">("hero");
+  const [activeTab, setActiveTab] = useState<"hero" | "about" | "courses" | "benefits" | "gallery" | "contact" | "map" | "footer" | "social" | "admissions" | "form" | "splash" | "theme">("hero");
   
   // Local editing state
   const [localContent, setLocalContent] = useState<WebsiteContent | null>(null);
@@ -340,6 +344,8 @@ const Admin = () => {
     { id: "footer" as const, label: "ഫൂട്ടർ", icon: FileText },
     { id: "social" as const, label: "സോഷ്യൽ", icon: Share2 },
     { id: "form" as const, label: "ഫോം സെറ്റിംഗ്സ്", icon: ClipboardList },
+    { id: "splash" as const, label: "ലാൻഡിംഗ് സ്ക്രീൻ", icon: MousePointer },
+    { id: "theme" as const, label: "തീം & കളർ", icon: Palette },
     { id: "admissions" as const, label: "അപേക്ഷകൾ", icon: ClipboardList, badge: newAdmissionCount },
   ];
 
@@ -1282,6 +1288,295 @@ const Admin = () => {
             )}
           </div>
         )}
+
+        {/* Splash Screen Tab */}
+        {activeTab === "splash" && localContent.splash && (
+          <div className="space-y-6">
+            <h2 className="font-display text-2xl font-semibold text-foreground">ലാൻഡിംഗ് സ്ക്രീൻ സെറ്റിംഗ്സ്</h2>
+            
+            {/* Enable/Disable Toggle */}
+            <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-medium text-foreground">ലാൻഡിംഗ് സ്ക്രീൻ</h3>
+                  <p className="text-sm text-muted-foreground">വെബ്സൈറ്റ് തുറക്കുമ്പോൾ "Click to Open" സ്ക്രീൻ കാണിക്കുക</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={localContent.splash?.enabled !== false}
+                    onChange={async (e) => {
+                      const updatedContent = {
+                        ...localContent,
+                        splash: { ...localContent.splash, enabled: e.target.checked }
+                      };
+                      setLocalContent(updatedContent);
+                      await handleSaveToDatabase(updatedContent);
+                    }}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-muted rounded-full peer peer-checked:bg-primary peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                </label>
+              </div>
+            </div>
+
+            {/* Splash Content Fields */}
+            <div className="space-y-4">
+              {renderFieldEditor("splash.buttonText", "ബട്ടൺ ടെക്സ്റ്റ്", localContent.splash?.buttonText || 'Click to Open', async () => {
+                if (!localContent) return;
+                const updatedContent = {
+                  ...localContent,
+                  splash: { ...localContent.splash, buttonText: tempValue }
+                };
+                setLocalContent(updatedContent);
+                setEditingField(null);
+                await handleSaveToDatabase(updatedContent);
+              })}
+              
+              {renderFieldEditor("splash.buttonSubtitle", "ബട്ടൺ സബ്‌ടൈറ്റിൽ", localContent.splash?.buttonSubtitle || '', async () => {
+                if (!localContent) return;
+                const updatedContent = {
+                  ...localContent,
+                  splash: { ...localContent.splash, buttonSubtitle: tempValue }
+                };
+                setLocalContent(updatedContent);
+                setEditingField(null);
+                await handleSaveToDatabase(updatedContent);
+              }, true)}
+
+              {renderFieldEditor("splash.institutionName", "സ്ഥാപനത്തിന്റെ പേര്", localContent.splash?.institutionName || 'ജൗഹറത്തുൽ ഉലൂം സുഫ്ഫ ദർസ്', async () => {
+                if (!localContent) return;
+                const updatedContent = {
+                  ...localContent,
+                  splash: { ...localContent.splash, institutionName: tempValue }
+                };
+                setLocalContent(updatedContent);
+                setEditingField(null);
+                await handleSaveToDatabase(updatedContent);
+              })}
+
+              {renderFieldEditor("splash.institutionSubtitle", "സ്ഥാപനത്തിന്റെ സബ്‌ടൈറ്റിൽ", localContent.splash?.institutionSubtitle || '', async () => {
+                if (!localContent) return;
+                const updatedContent = {
+                  ...localContent,
+                  splash: { ...localContent.splash, institutionSubtitle: tempValue }
+                };
+                setLocalContent(updatedContent);
+                setEditingField(null);
+                await handleSaveToDatabase(updatedContent);
+              })}
+
+              {renderFieldEditor("splash.tagline", "ടാഗ്‌ലൈൻ", localContent.splash?.tagline || '', async () => {
+                if (!localContent) return;
+                const updatedContent = {
+                  ...localContent,
+                  splash: { ...localContent.splash, tagline: tempValue }
+                };
+                setLocalContent(updatedContent);
+                setEditingField(null);
+                await handleSaveToDatabase(updatedContent);
+              }, true)}
+
+              {renderFieldEditor("splash.admissionStatus", "അഡ്മിഷൻ സ്റ്റാറ്റസ് ബാഡ്ജ്", localContent.splash?.admissionStatus || '', async () => {
+                if (!localContent) return;
+                const updatedContent = {
+                  ...localContent,
+                  splash: { ...localContent.splash, admissionStatus: tempValue }
+                };
+                setLocalContent(updatedContent);
+                setEditingField(null);
+                await handleSaveToDatabase(updatedContent);
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Theme & Color Tab */}
+        {activeTab === "theme" && (
+          <div className="space-y-6">
+            <h2 className="font-display text-2xl font-semibold text-foreground">തീം & കളർ സെറ്റിംഗ്സ്</h2>
+            <p className="text-muted-foreground">വെബ്സൈറ്റിന്റെ കളറുകൾ ഇവിടെ മാറ്റാം. മാറ്റങ്ങൾ ഉടൻ ലൈവ് ആകും.</p>
+            
+            <ThemeEditorSection />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// Theme Editor Section Component
+const ThemeEditorSection = () => {
+  const [theme, setTheme] = useState({
+    primaryColor: '210 60% 15%',
+    secondaryColor: '187 65% 45%',
+    accentColor: '43 75% 50%',
+    backgroundColor: '210 55% 12%',
+    cardColor: '210 50% 16%',
+    textPrimary: '210 20% 98%',
+    textSecondary: '210 15% 70%',
+    borderColor: '210 40% 25%'
+  });
+  const [saving, setSaving] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const loadTheme = async () => {
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { data } = await supabase
+        .from('admin_settings')
+        .select('theme')
+        .eq('id', 'global')
+        .maybeSingle();
+      
+      if (data?.theme) {
+        setTheme(prev => ({ ...prev, ...(data.theme as typeof theme) }));
+      }
+      setLoaded(true);
+    };
+    loadTheme();
+  }, []);
+
+  const saveTheme = async () => {
+    setSaving(true);
+    try {
+      const { supabase } = await import('@/integrations/supabase/client');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (supabase.from('admin_settings') as any).upsert({
+        id: 'global',
+        theme,
+        updated_at: new Date().toISOString()
+      });
+      applyThemeToDOM(theme);
+    } catch (error) {
+      console.error('Error saving theme:', error);
+    }
+    setSaving(false);
+  };
+
+  const handleColorChange = (key: string, value: string) => {
+    const newTheme = { ...theme, [key]: value };
+    setTheme(newTheme);
+    // Apply immediately for preview
+    applyThemeToDOM(newTheme);
+  };
+
+  const presetThemes = [
+    { 
+      name: 'നേവി ബ്ലൂ (ഡിഫോൾട്ട്)', 
+      theme: {
+        primaryColor: '210 60% 15%',
+        secondaryColor: '187 65% 45%',
+        accentColor: '43 75% 50%',
+        backgroundColor: '210 55% 12%',
+        cardColor: '210 50% 16%',
+        textPrimary: '210 20% 98%',
+        textSecondary: '210 15% 70%',
+        borderColor: '210 40% 25%'
+      }
+    },
+    { 
+      name: 'എമറാൾഡ് ഗ്രീൻ', 
+      theme: {
+        primaryColor: '160 60% 20%',
+        secondaryColor: '160 50% 40%',
+        accentColor: '43 75% 50%',
+        backgroundColor: '160 40% 10%',
+        cardColor: '160 35% 15%',
+        textPrimary: '160 20% 98%',
+        textSecondary: '160 15% 70%',
+        borderColor: '160 30% 25%'
+      }
+    },
+    { 
+      name: 'റോയൽ പർപ്പിൾ', 
+      theme: {
+        primaryColor: '280 60% 20%',
+        secondaryColor: '280 50% 50%',
+        accentColor: '43 75% 50%',
+        backgroundColor: '280 40% 10%',
+        cardColor: '280 35% 15%',
+        textPrimary: '280 20% 98%',
+        textSecondary: '280 15% 70%',
+        borderColor: '280 30% 25%'
+      }
+    }
+  ];
+
+  if (!loaded) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  const colorFields = [
+    { key: 'primaryColor', label: 'പ്രൈമറി കളർ', desc: 'മെയിൻ ബ്രാൻഡ് കളർ' },
+    { key: 'secondaryColor', label: 'സെക്കൻഡറി കളർ (ടീൽ)', desc: 'ഹൈലൈറ്റുകളും ബട്ടണുകളും' },
+    { key: 'accentColor', label: 'ആക്സന്റ് കളർ (ഗോൾഡ്)', desc: 'ഹെഡിംഗ്സ്, ബാഡ്ജുകൾ' },
+    { key: 'backgroundColor', label: 'ബാക്ക്ഗ്രൗണ്ട്', desc: 'പേജ് ബാക്ക്ഗ്രൗണ്ട്' },
+    { key: 'cardColor', label: 'കാർഡ് കളർ', desc: 'കാർഡുകളുടെ ബാക്ക്ഗ്രൗണ്ട്' },
+    { key: 'textPrimary', label: 'പ്രൈമറി ടെക്സ്റ്റ്', desc: 'ഹെഡിംഗ്സ്, ബോഡി ടെക്സ്റ്റ്' },
+    { key: 'textSecondary', label: 'സെക്കൻഡറി ടെക്സ്റ്റ്', desc: 'സബ്‌ടൈറ്റിലുകൾ, മ്യൂട്ടഡ് ടെക്സ്റ്റ്' },
+    { key: 'borderColor', label: 'ബോർഡർ കളർ', desc: 'കാർഡ് ബോർഡറുകൾ' },
+  ];
+
+  return (
+    <div className="space-y-6">
+      {/* Preset Themes */}
+      <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
+        <h3 className="font-medium text-foreground mb-4">പ്രീസെറ്റ് തീമുകൾ</h3>
+        <div className="grid sm:grid-cols-3 gap-3">
+          {presetThemes.map((preset) => (
+            <button
+              key={preset.name}
+              onClick={() => {
+                setTheme(preset.theme);
+                applyThemeToDOM(preset.theme);
+              }}
+              className="p-4 rounded-xl border border-border hover:border-primary/50 transition-all text-left"
+            >
+              <div className="flex gap-1 mb-2">
+                <div className="w-4 h-4 rounded-full" style={{ background: `hsl(${preset.theme.primaryColor})` }} />
+                <div className="w-4 h-4 rounded-full" style={{ background: `hsl(${preset.theme.secondaryColor})` }} />
+                <div className="w-4 h-4 rounded-full" style={{ background: `hsl(${preset.theme.accentColor})` }} />
+              </div>
+              <span className="text-sm font-medium text-foreground">{preset.name}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Custom Colors */}
+      <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
+        <h3 className="font-medium text-foreground mb-4">കസ്റ്റം കളറുകൾ (HSL ഫോർമാറ്റ്)</h3>
+        <div className="grid sm:grid-cols-2 gap-4">
+          {colorFields.map((field) => (
+            <div key={field.key} className="space-y-2">
+              <label className="text-sm font-medium text-foreground">{field.label}</label>
+              <p className="text-xs text-muted-foreground">{field.desc}</p>
+              <div className="flex gap-2 items-center">
+                <div 
+                  className="w-10 h-10 rounded-lg border border-border flex-shrink-0" 
+                  style={{ background: `hsl(${theme[field.key as keyof typeof theme]})` }} 
+                />
+                <input
+                  type="text"
+                  value={theme[field.key as keyof typeof theme]}
+                  onChange={(e) => handleColorChange(field.key, e.target.value)}
+                  className="flex-1 px-3 py-2 rounded-lg border border-border bg-background text-sm"
+                  placeholder="210 60% 15%"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <Button onClick={saveTheme} className="mt-6 rounded-xl" disabled={saving}>
+          {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+          തീം സേവ് ചെയ്യുക
+        </Button>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X, Settings } from "lucide-react";
+import { WebsiteContent } from "@/hooks/useWebsiteContent";
 
 const navLinks = [
   { href: "#home", label: "ഹോം" },
@@ -12,9 +13,17 @@ const navLinks = [
   { href: "#contact", label: "ബന്ധപ്പെടുക" },
 ];
 
-const Navigation = () => {
+interface NavigationProps {
+  content?: WebsiteContent;
+}
+
+const Navigation = ({ content }: NavigationProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Get institution name from content or use default
+  const institutionName = content?.hero?.title || 'ജൗഹറത്തുൽ ഉലൂം';
+  const institutionSubtitle = content?.splash?.institutionSubtitle || 'സുഫ്ഫ ദർസ്';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,10 +61,10 @@ const Navigation = () => {
             </div>
             <div className="hidden sm:block">
               <span className={`font-display font-semibold text-lg block leading-tight ${isScrolled ? "text-foreground" : "text-primary-foreground"}`}>
-                ജൗഹറത്തുൽ ഉലൂം
+                {institutionName.split(' ').slice(0, 2).join(' ')}
               </span>
               <span className={`text-xs font-medium ${isScrolled ? "text-muted-foreground" : "text-primary-foreground/70"}`}>
-                സുഫ്ഫ ദർസ്
+                {institutionSubtitle}
               </span>
             </div>
           </button>
