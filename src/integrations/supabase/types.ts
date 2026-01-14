@@ -106,6 +106,7 @@ export type Database = {
           age: number | null
           approved: boolean | null
           birth_certificate_number: string | null
+          confirmation_document_url: string | null
           created_at: string
           date_of_birth: string | null
           gender: string | null
@@ -129,6 +130,7 @@ export type Database = {
           age?: number | null
           approved?: boolean | null
           birth_certificate_number?: string | null
+          confirmation_document_url?: string | null
           created_at?: string
           date_of_birth?: string | null
           gender?: string | null
@@ -152,6 +154,7 @@ export type Database = {
           age?: number | null
           approved?: boolean | null
           birth_certificate_number?: string | null
+          confirmation_document_url?: string | null
           created_at?: string
           date_of_birth?: string | null
           gender?: string | null
