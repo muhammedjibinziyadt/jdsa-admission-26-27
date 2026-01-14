@@ -25,8 +25,7 @@ import {
   EyeOff,
   ClipboardList,
   Palette,
-  MousePointer,
-  ToggleLeft
+  MousePointer
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWebsiteContent, WebsiteContent } from "@/hooks/useWebsiteContent";
@@ -35,6 +34,8 @@ import { useImageUpload } from "@/hooks/useImageUpload";
 import { useAdmissions } from "@/hooks/useAdmissions";
 import { applyThemeToDOM } from "@/hooks/useSiteSettings";
 import AdminLogin from "@/components/AdminLogin";
+import AdmissionsManager from "@/components/admin/AdmissionsManager";
+import SocialLinksEditor from "@/components/admin/SocialLinksEditor";
 
 const Admin = () => {
   const { isAuthenticated, loading: authLoading, login, logout } = useAdminAuth();
@@ -1091,13 +1092,8 @@ const Admin = () => {
         {/* Social Tab */}
         {activeTab === "social" && (
           <div className="space-y-6">
-            <h2 className="font-display text-2xl font-semibold text-foreground">സോഷ്യൽ മീഡിയ ലിങ്കുകൾ</h2>
-            <div className="space-y-4">
-              {renderFieldEditor("social.whatsapp", "WhatsApp നമ്പർ", localContent.social.whatsapp, () => handleSaveSocialField("whatsapp"))}
-              {renderFieldEditor("social.facebook", "Facebook URL", localContent.social.facebook, () => handleSaveSocialField("facebook"))}
-              {renderFieldEditor("social.youtube", "YouTube URL", localContent.social.youtube, () => handleSaveSocialField("youtube"))}
-              {renderFieldEditor("social.instagram", "Instagram URL", localContent.social.instagram, () => handleSaveSocialField("instagram"))}
-            </div>
+            <h2 className="font-display text-2xl font-semibold text-foreground">സോഷ്യൽ മീഡിയ ലിങ്കുകൾ (ഫൂട്ടറിൽ മാത്രം)</h2>
+            <SocialLinksEditor content={localContent} onSave={handleSaveToDatabase} saving={saving} />
           </div>
         )}
 
@@ -1174,118 +1170,11 @@ const Admin = () => {
         {activeTab === "admissions" && (
           <div className="space-y-6">
             <h2 className="font-display text-2xl font-semibold text-foreground">അഡ്മിഷൻ അപേക്ഷകൾ</h2>
-            
-            {admissions.length === 0 ? (
-              <div className="bg-card rounded-2xl p-8 border border-border/50 shadow-soft text-center">
-                <ClipboardList className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">അപേക്ഷകൾ ഇല്ല</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {admissions.map(admission => {
-                  // Parse additional_info for documents
-                  let additionalData: { documents?: { photo?: string; aadhaar?: string; birthCertificate?: string; tc?: string }; madarasaLevel?: string; madarasaName?: string; notes?: string } = {};
-                  try {
-                    if (admission.additional_info) {
-                      additionalData = JSON.parse(admission.additional_info);
-                    }
-                  } catch { additionalData = {}; }
-                  
-                  const docs = additionalData.documents || {};
-                  
-                  return (
-                    <div key={admission.id} className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
-                      <div className="flex flex-col gap-4">
-                        {/* Header with photo and basic info */}
-                        <div className="flex flex-col md:flex-row md:items-start gap-4">
-                          {admission.image_url && (
-                            <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 border-2 border-border">
-                              <img src={admission.image_url} alt={admission.student_name} className="w-full h-full object-cover" />
-                            </div>
-                          )}
-                          
-                          <div className="flex-1 space-y-2">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <h4 className="font-semibold text-foreground text-lg">{admission.student_name}</h4>
-                              {admission.approved ? (
-                                <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-xs flex items-center gap-1">
-                                  <Check className="w-3 h-3" /> അംഗീകരിച്ചു
-                                </span>
-                              ) : (
-                                <span className="px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700 text-xs">
-                                  കാത്തിരിക്കുന്നു
-                                </span>
-                              )}
-                            </div>
-                            
-                            <div className="grid sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
-                              <p><strong>രക്ഷിതാവ്:</strong> {admission.guardian_name}</p>
-                              <p><strong>ഫോൺ:</strong> {admission.guardian_phone}</p>
-                              <p><strong>വയസ്സ്:</strong> {admission.age || '-'}</p>
-                              {additionalData.madarasaLevel && <p><strong>മദ്രസ ലെവൽ:</strong> {additionalData.madarasaLevel}</p>}
-                              {additionalData.madarasaName && <p><strong>മദ്രസ:</strong> {additionalData.madarasaName}</p>}
-                              {admission.address && <p className="sm:col-span-2"><strong>വിലാസം:</strong> {admission.address}</p>}
-                            </div>
-                            
-                            <p className="text-xs text-muted-foreground">
-                              സമർപ്പിച്ചത്: {new Date(admission.created_at).toLocaleDateString('ml-IN')}
-                            </p>
-                          </div>
-                          
-                          {/* Actions */}
-                          <div className="flex gap-2 flex-shrink-0">
-                            <Button
-                              size="sm"
-                              variant={admission.approved ? "outline" : "default"}
-                              onClick={() => updateAdmission(admission.id, { approved: !admission.approved })}
-                              className="rounded-lg"
-                            >
-                              {admission.approved ? <><EyeOff className="w-4 h-4 mr-1" />മറയ്ക്കുക</> : <><Eye className="w-4 h-4 mr-1" />അംഗീകരിക്കുക</>}
-                            </Button>
-                            <Button size="sm" variant="ghost" className="text-destructive" onClick={() => deleteAdmission(admission.id)}>
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </div>
-                        
-                        {/* Documents Section */}
-                        {(docs.photo || docs.aadhaar || docs.birthCertificate || docs.tc) && (
-                          <div className="border-t border-border pt-4">
-                            <h5 className="text-sm font-medium text-foreground mb-3">📄 ഡോക്യുമെന്റുകൾ</h5>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                              {docs.photo && (
-                                <a href={docs.photo} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
-                                  <img src={docs.photo} alt="Photo" className="w-12 h-12 object-cover rounded mb-2" />
-                                  <span className="text-xs text-muted-foreground">ഫോട്ടോ</span>
-                                </a>
-                              )}
-                              {docs.aadhaar && (
-                                <a href={docs.aadhaar} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
-                                  <FileText className="w-8 h-8 text-primary mb-2" />
-                                  <span className="text-xs text-muted-foreground">ആധാർ</span>
-                                </a>
-                              )}
-                              {docs.birthCertificate && (
-                                <a href={docs.birthCertificate} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
-                                  <FileText className="w-8 h-8 text-primary mb-2" />
-                                  <span className="text-xs text-muted-foreground">ജനന സർട്ടിഫിക്കറ്റ്</span>
-                                </a>
-                              )}
-                              {docs.tc && (
-                                <a href={docs.tc} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
-                                  <FileText className="w-8 h-8 text-primary mb-2" />
-                                  <span className="text-xs text-muted-foreground">TC</span>
-                                </a>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+            <p className="text-muted-foreground">
+              അപേക്ഷകൾ ഡിലീറ്റ് ചെയ്താൽ വെബ്സൈറ്റിൽ നിന്നും ഡാറ്റാബേസിൽ നിന്നും സ്ഥിരമായി നീക്കം ചെയ്യപ്പെടും.
+              അംഗീകരിച്ച വിദ്യാർത്ഥികൾക്ക് "വിദ്യാർത്ഥി പാലിക്കേണ്ട കാര്യങ്ങൾ" ഡോക്യുമെന്റ് അപ്‌ലോഡ് ചെയ്യാം.
+            </p>
+            <AdmissionsManager />
           </div>
         )}
 
