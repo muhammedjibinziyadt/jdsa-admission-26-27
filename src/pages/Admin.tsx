@@ -25,7 +25,8 @@ import {
   EyeOff,
   ClipboardList,
   Palette,
-  MousePointer
+  MousePointer,
+  Mic
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWebsiteContent, WebsiteContent } from "@/hooks/useWebsiteContent";
@@ -36,6 +37,7 @@ import { applyThemeToDOM } from "@/hooks/useSiteSettings";
 import AdminLogin from "@/components/AdminLogin";
 import AdmissionsManager from "@/components/admin/AdmissionsManager";
 import SocialLinksEditor from "@/components/admin/SocialLinksEditor";
+import TrainingCategoriesEditor, { TrainingCategory } from "@/components/admin/TrainingCategoriesEditor";
 
 const Admin = () => {
   const { isAuthenticated, loading: authLoading, login, logout } = useAdminAuth();
@@ -43,7 +45,7 @@ const Admin = () => {
   const { uploadImage, deleteImage, uploading } = useImageUpload();
   const { admissions, updateAdmission, deleteAdmission, newAdmissionCount } = useAdmissions();
   
-  const [activeTab, setActiveTab] = useState<"hero" | "about" | "courses" | "benefits" | "gallery" | "contact" | "map" | "footer" | "social" | "admissions" | "form" | "splash" | "theme">("hero");
+  const [activeTab, setActiveTab] = useState<"hero" | "about" | "courses" | "training" | "benefits" | "gallery" | "contact" | "map" | "footer" | "social" | "admissions" | "form" | "splash" | "theme">("hero");
   
   // Local editing state
   const [localContent, setLocalContent] = useState<WebsiteContent | null>(null);
@@ -338,6 +340,7 @@ const Admin = () => {
     { id: "hero" as const, label: "ഹീറോ", icon: Home },
     { id: "about" as const, label: "അബൗട്ട്", icon: MessageSquare },
     { id: "courses" as const, label: "കോഴ്‌സുകൾ", icon: BookOpen },
+    { id: "training" as const, label: "പരിശീലനം", icon: Mic },
     { id: "benefits" as const, label: "നേട്ടങ്ങൾ", icon: Users },
     { id: "gallery" as const, label: "ഗാലറി", icon: ImageIcon },
     { id: "contact" as const, label: "കോൺടാക്ട്", icon: Phone },
@@ -694,6 +697,22 @@ const Admin = () => {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Training Categories Tab */}
+        {activeTab === "training" && localContent && (
+          <TrainingCategoriesEditor
+            categories={localContent.trainingCategories || []}
+            onSave={async (categories: TrainingCategory[]) => {
+              const updatedContent = {
+                ...localContent,
+                trainingCategories: categories
+              };
+              setLocalContent(updatedContent);
+              await handleSaveToDatabase(updatedContent);
+            }}
+            saving={saving}
+          />
         )}
 
         {/* Benefits Tab */}

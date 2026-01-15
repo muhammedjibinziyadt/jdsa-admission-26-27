@@ -89,12 +89,40 @@ const defaultContent = {
     { id: '1', title: 'സുഫ്ഫാ കോഴ്‌സിന് കീഴിലെ ദർസ്', subtitle: 'ഇസ്‌ലാമിക പഠനം', description: 'പരമ്പരാഗത ഇസ്‌ലാമിക വിദ്യാഭ്യാസം ആധുനിക രീതിയിൽ', image: '/placeholder.svg', syllabus: '', featured: true },
     { id: '2', title: 'ഖുർആൻ പഠനം', subtitle: 'എഴുത്തും വായനയും', description: 'ഖുർആൻ പാരായണവും എഴുത്തും പഠിക്കാം', image: '/placeholder.svg', syllabus: '', featured: true },
     { id: '3', title: 'കമ്പ്യൂട്ടർ പഠനം', subtitle: 'ഡിജിറ്റൽ സാക്ഷരത', description: 'ആധുനിക കമ്പ്യൂട്ടർ കഴിവുകൾ നേടാം', image: '/placeholder.svg', syllabus: '', featured: true },
-    { id: '4', title: 'എഴുത്ത് പഠനം', subtitle: 'Handwriting & Writing Skills', description: 'മനോഹരമായ കൈയെഴുത്ത് കഴിവുകൾ', image: '/placeholder.svg', syllabus: '', featured: false },
-    { id: '5', title: 'പ്രസംഗ പരിശീലനം', subtitle: 'Public Speaking & Dars Training', description: 'ആത്മവിശ്വാസത്തോടെ പ്രസംഗിക്കാൻ പഠിക്കാം', image: '/placeholder.svg', syllabus: '', featured: false },
-    { id: '6', title: 'ലൈബ്രറി സൗകര്യം', subtitle: 'വിജ്ഞാന ഭണ്ഡാരം', description: 'വിപുലമായ പുസ്തക ശേഖരം', image: '/placeholder.svg', syllabus: '', featured: false },
-    { id: '7', title: 'കാന്റീൻ സൗകര്യം', subtitle: 'ആരോഗ്യകരമായ ഭക്ഷണം', description: 'ശുദ്ധമായ ഭക്ഷണം ന്യായമായ വിലയിൽ', image: '/placeholder.svg', syllabus: '', featured: false },
-    { id: '8', title: 'വഅള് പരിശീലനം', subtitle: 'മത പ്രഭാഷണം', description: 'മത പ്രഭാഷണ കഴിവുകൾ വികസിപ്പിക്കാം', image: '/placeholder.svg', syllabus: '', featured: false },
-    { id: '9', title: 'വ്യക്തിത്വ വികസനം', subtitle: 'Personality Development', description: 'വിദ്യാർത്ഥികളുടെ സമഗ്ര വ്യക്തിത്വ വികസനം', image: '/placeholder.svg', syllabus: '', featured: false }
+    { id: '4', title: 'ലൈബ്രറി സൗകര്യം', subtitle: 'വിജ്ഞാന ഭണ്ഡാരം', description: 'വിപുലമായ പുസ്തക ശേഖരം', image: '/placeholder.svg', syllabus: '', featured: false },
+    { id: '5', title: 'കാന്റീൻ സൗകര്യം', subtitle: 'ആരോഗ്യകരമായ ഭക്ഷണം', description: 'ശുദ്ധമായ ഭക്ഷണം ന്യായമായ വിലയിൽ', image: '/placeholder.svg', syllabus: '', featured: false },
+    { id: '6', title: 'വഅള് പരിശീലനം', subtitle: 'മത പ്രഭാഷണം', description: 'മത പ്രഭാഷണ കഴിവുകൾ വികസിപ്പിക്കാം', image: '/placeholder.svg', syllabus: '', featured: false },
+    { id: '7', title: 'വ്യക്തിത്വ വികസനം', subtitle: 'Personality Development', description: 'വിദ്യാർത്ഥികളുടെ സമഗ്ര വ്യക്തിത്വ വികസനം', image: '/placeholder.svg', syllabus: '', featured: false }
+  ],
+  trainingCategories: [
+    {
+      id: 'speech-training',
+      name: 'പ്രസംഗ പരിശീലനം',
+      description: 'ആത്മവിശ്വാസത്തോടെ പ്രസംഗിക്കാൻ പഠിക്കാം',
+      icon: 'Mic',
+      enabled: true,
+      order: 1,
+      subjects: [
+        { id: 'speech-1', title: 'അറബി പ്രസംഗം', description: 'അറബി ഭാഷയിൽ പ്രസംഗ പരിശീലനം', order: 1 },
+        { id: 'speech-2', title: 'മലയാളം പ്രസംഗം', description: 'മലയാളത്തിൽ പ്രസംഗ പരിശീലനം', order: 2 },
+        { id: 'speech-3', title: 'ഇംഗ്ലീഷ് പ്രസംഗം', description: 'ഇംഗ്ലീഷ് ഭാഷയിൽ പ്രസംഗ പരിശീലനം', order: 3 },
+        { id: 'speech-4', title: 'ദർസ് പ്രസംഗം', description: 'മത പ്രഭാഷണ പരിശീലനം', order: 4 },
+      ]
+    },
+    {
+      id: 'writing-training',
+      name: 'എഴുത്ത് പരിശീലനം',
+      description: 'മനോഹരമായ കൈയെഴുത്ത് കഴിവുകൾ',
+      icon: 'PenTool',
+      enabled: true,
+      order: 2,
+      subjects: [
+        { id: 'writing-1', title: 'അറബി കാലിഗ്രഫി', description: 'അറബി എഴുത്ത് കല', order: 1 },
+        { id: 'writing-2', title: 'മലയാളം കൈയെഴുത്ത്', description: 'മലയാളം എഴുത്ത് പരിശീലനം', order: 2 },
+        { id: 'writing-3', title: 'ഇംഗ്ലീഷ് കൈയെഴുത്ത്', description: 'ഇംഗ്ലീഷ് എഴുത്ത് പരിശീലനം', order: 3 },
+        { id: 'writing-4', title: 'ക്രിയേറ്റീവ് റൈറ്റിംഗ്', description: 'സർഗ്ഗാത്മക എഴുത്ത് പരിശീലനം', order: 4 },
+      ]
+    }
   ],
   benefits: [
     { id: '1', title: 'അച്ചടക്കം', description: 'ജീവിതത്തിന്റെ അടിസ്ഥാനം', icon: 'Shield' },

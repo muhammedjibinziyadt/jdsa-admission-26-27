@@ -4,6 +4,7 @@ import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
 import CoursesSection from "@/components/CoursesSection";
+import TrainingCategoriesSection from "@/components/TrainingCategoriesSection";
 import StudentBenefits from "@/components/StudentBenefits";
 import GallerySection from "@/components/GallerySection";
 import RouteMapSection from "@/components/RouteMapSection";
@@ -61,6 +62,9 @@ const Index = () => {
         sectionSubtitle={content.coursesSection?.subtitle}
         sectionDescription={content.coursesSection?.description}
       />
+      {content.trainingCategories && content.trainingCategories.length > 0 && (
+        <TrainingCategoriesSection categories={content.trainingCategories} />
+      )}
       <StudentBenefits benefits={content.benefits} />
       {approvedApplications.length > 0 && (
         <ApprovedApplications applications={approvedApplications} />
