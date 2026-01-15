@@ -59,7 +59,10 @@ const defaultContent = {
     institutionSubtitle: '',
     tagline: 'വിശ്വാസവും വിജ്ഞാനവും കരുത്താക്കുന്ന വിദ്യാഭ്യാസം',
     admissionStatus: 'അഡ്മിഷൻ ആരംഭിച്ചു',
-    enabled: true
+    enabled: true,
+    celebrationEnabled: true,
+    celebrationDuration: 3,
+    celebrationIntensity: 'light'
   },
   coursesSection: {
     title: 'പഠന പാഠ്യന്തര വിഷയങ്ങൾ',

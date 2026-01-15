@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useWebsiteContent } from '@/hooks/useWebsiteContent';
+import { CelebrationAnimation } from './CelebrationAnimation';
 
 interface SplashScreenProps {
   onEnter: () => void;
@@ -133,6 +134,7 @@ const KnowledgeSparkles = () => (
 export function SplashScreen({ onEnter }: SplashScreenProps) {
   const [isExiting, setIsExiting] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
   const { content } = useWebsiteContent();
 
   useEffect(() => {
@@ -141,8 +143,20 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
   }, []);
 
   const handleEnter = () => {
-    setIsExiting(true);
-    setTimeout(onEnter, 600);
+    // Trigger celebration animation
+    setShowCelebration(true);
+    
+    // Start exit after a short delay to show celebration
+    setTimeout(() => {
+      setIsExiting(true);
+    }, 800);
+    
+    // Complete exit after celebration
+    setTimeout(onEnter, 2500);
+  };
+
+  const handleCelebrationComplete = () => {
+    setShowCelebration(false);
   };
 
   // Get splash content with defaults
@@ -153,7 +167,10 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
     institutionSubtitle: '',
     tagline: 'വിശ്വാസവും വിജ്ഞാനവും കരുത്താക്കുന്ന വിദ്യാഭ്യാസം',
     admissionStatus: 'അഡ്മിഷൻ ആരംഭിച്ചു',
-    enabled: true
+    enabled: true,
+    celebrationEnabled: true,
+    celebrationDuration: 3,
+    celebrationIntensity: 'light' as 'light' | 'medium'
   };
   
   const splashContent = { ...defaultSplash, ...content.splash };
@@ -161,9 +178,18 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
   if (splashContent.enabled === false) {
     return null;
   }
-
   return (
     <>
+      {/* Celebration Animation */}
+      {splashContent.celebrationEnabled !== false && (
+        <CelebrationAnimation
+          isActive={showCelebration}
+          duration={splashContent.celebrationDuration || 3}
+          intensity={(splashContent.celebrationIntensity as 'light' | 'medium') || 'light'}
+          onComplete={handleCelebrationComplete}
+        />
+      )}
+      
       <style>{`
         @keyframes floatBook {
           0%, 100% { transform: translateY(0) rotate(0deg); }
