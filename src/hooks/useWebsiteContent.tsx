@@ -62,7 +62,10 @@ const defaultContent = {
     enabled: true,
     celebrationEnabled: true,
     celebrationDuration: 3,
-    celebrationIntensity: 'light'
+    celebrationIntensity: 'light',
+    voiceEnabled: true,
+    voiceAudioUrl: '',
+    voiceText: 'ജൗഹറത്തുൽ ഉലൂം സുഫ്ഫ ദർസിലേക്ക് സ്വാഗതം'
   },
   coursesSection: {
     title: 'പഠന പാഠ്യന്തര വിഷയങ്ങൾ',

@@ -1368,6 +1368,149 @@ const Admin = () => {
                 </div>
               </div>
             </div>
+
+            {/* Voice Announcement Settings */}
+            <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft mt-6">
+              <h3 className="font-medium text-foreground mb-4">🔊 വോയ്‌സ് അനൗൺസ്‌മെന്റ്</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                "Click to Open" ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ ഒരു സ്വാഗത ശബ്ദ സന്ദേശം കേൾപ്പിക്കുക
+              </p>
+              
+              {/* Enable/Disable Voice */}
+              <div className="flex items-center justify-between mb-4 p-3 bg-muted/30 rounded-lg">
+                <div>
+                  <span className="font-medium text-sm">വോയ്‌സ് പ്രവർത്തനക്ഷമമാക്കുക</span>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={localContent.splash?.voiceEnabled !== false}
+                    onChange={async (e) => {
+                      const updatedContent = {
+                        ...localContent,
+                        splash: { ...localContent.splash, voiceEnabled: e.target.checked }
+                      };
+                      setLocalContent(updatedContent);
+                      await handleSaveToDatabase(updatedContent);
+                    }}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-muted rounded-full peer peer-checked:bg-primary peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                </label>
+              </div>
+
+              {/* Voice Text Display */}
+              <div className="mb-4 p-3 bg-muted/30 rounded-lg">
+                <label className="block text-sm font-medium mb-2">അനൗൺസ്‌മെന്റ് ടെക്സ്റ്റ്</label>
+                <p className="text-sm text-muted-foreground italic">
+                  "{localContent.splash?.voiceText || 'ജൗഹറത്തുൽ ഉലൂം സുഫ്ഫ ദർസിലേക്ക് സ്വാഗതം'}"
+                </p>
+              </div>
+
+              {/* Audio Upload Section */}
+              <div className="space-y-3">
+                <label className="block text-sm font-medium">ഓഡിയോ ഫയൽ അപ്‌ലോഡ് ചെയ്യുക (MP3/WAV)</label>
+                
+                {/* Current Audio Display */}
+                {localContent.splash?.voiceAudioUrl && (
+                  <div className="flex items-center gap-3 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                    <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                      <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-green-600">ഓഡിയോ ഫയൽ അപ്‌ലോഡ് ചെയ്‌തു</p>
+                      <p className="text-xs text-muted-foreground truncate max-w-[200px]">
+                        {localContent.splash.voiceAudioUrl.split('/').pop()}
+                      </p>
+                    </div>
+                    
+                    {/* Preview Button */}
+                    <button
+                      onClick={() => {
+                        const audio = new Audio(localContent.splash?.voiceAudioUrl);
+                        audio.volume = 0.8;
+                        audio.play().catch(console.error);
+                      }}
+                      className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
+                      title="പ്രിവ്യൂ"
+                    >
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </button>
+
+                    {/* Delete Button */}
+                    <button
+                      onClick={async () => {
+                        const updatedContent = {
+                          ...localContent,
+                          splash: { ...localContent.splash, voiceAudioUrl: '' }
+                        };
+                        setLocalContent(updatedContent);
+                        await handleSaveToDatabase(updatedContent);
+                      }}
+                      className="p-2 rounded-lg bg-destructive/10 hover:bg-destructive/20 text-destructive transition-colors"
+                      title="ഇല്ലാതാക്കുക"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+
+                {/* Upload Button */}
+                <div className="relative">
+                  <input
+                    type="file"
+                    accept="audio/mp3,audio/wav,audio/mpeg"
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      
+                      // Validate file type
+                      if (!file.type.includes('audio')) {
+                        alert('ദയവായി ഒരു ഓഡിയോ ഫയൽ തിരഞ്ഞെടുക്കുക (MP3/WAV)');
+                        return;
+                      }
+                      
+                      // Validate file size (max 5MB)
+                      if (file.size > 5 * 1024 * 1024) {
+                        alert('ഫയൽ വലുപ്പം 5MB-യിൽ കുറവായിരിക്കണം');
+                        return;
+                      }
+                      
+                      try {
+                        const uploadedUrl = await uploadImage(file, 'voice-announcements');
+                        if (uploadedUrl) {
+                          const updatedContent = {
+                            ...localContent,
+                            splash: { ...localContent.splash, voiceAudioUrl: uploadedUrl }
+                          };
+                          setLocalContent(updatedContent);
+                          await handleSaveToDatabase(updatedContent);
+                        }
+                      } catch (error) {
+                        console.error('Upload failed:', error);
+                        alert('അപ്‌ലോഡ് പരാജയപ്പെട്ടു');
+                      }
+                    }}
+                  />
+                  <div className="flex items-center justify-center gap-2 p-4 border-2 border-dashed border-border rounded-lg hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                    <Upload className="w-5 h-5 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground">
+                      {uploading ? 'അപ്‌ലോഡ് ചെയ്യുന്നു...' : 'ഓഡിയോ ഫയൽ തിരഞ്ഞെടുക്കുക'}
+                    </span>
+                  </div>
+                </div>
+
+                <p className="text-xs text-muted-foreground">
+                  പരമാവധി ഫയൽ വലുപ്പം: 5MB | ഫോർമാറ്റുകൾ: MP3, WAV
+                </p>
+              </div>
+            </div>
           </div>
         )}
 
