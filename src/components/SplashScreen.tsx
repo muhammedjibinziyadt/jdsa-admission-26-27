@@ -142,7 +142,27 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
     return () => clearTimeout(timer);
   }, []);
 
+  // Play welcome voice announcement
+  const playWelcomeVoice = async (audioUrl: string) => {
+    try {
+      const audio = new Audio(audioUrl);
+      audio.volume = 0.8;
+      await audio.play();
+    } catch (error) {
+      // If audio fails, silently continue - website should still open
+      console.log('Voice announcement failed to play:', error);
+    }
+  };
+
   const handleEnter = () => {
+    // Play voice announcement if enabled and audio URL exists
+    const voiceEnabled = splashContent.voiceEnabled !== false;
+    const voiceAudioUrl = splashContent.voiceAudioUrl;
+    
+    if (voiceEnabled && voiceAudioUrl) {
+      playWelcomeVoice(voiceAudioUrl);
+    }
+    
     // Trigger celebration animation
     setShowCelebration(true);
     
@@ -170,7 +190,10 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
     enabled: true,
     celebrationEnabled: true,
     celebrationDuration: 3,
-    celebrationIntensity: 'light' as 'light' | 'medium'
+    celebrationIntensity: 'light' as 'light' | 'medium',
+    voiceEnabled: true,
+    voiceAudioUrl: '',
+    voiceText: 'ജൗഹറത്തുൽ ഉലൂം സുഫ്ഫ ദർസിലേക്ക് സ്വാഗതം'
   };
   
   const splashContent = { ...defaultSplash, ...content.splash };
