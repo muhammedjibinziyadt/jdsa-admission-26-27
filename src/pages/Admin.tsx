@@ -36,6 +36,7 @@ import { applyThemeToDOM } from "@/hooks/useSiteSettings";
 import AdminLogin from "@/components/AdminLogin";
 import AdmissionsManager from "@/components/admin/AdmissionsManager";
 import SocialLinksEditor from "@/components/admin/SocialLinksEditor";
+import LearningItemsEditor from "@/components/admin/LearningItemsEditor";
 
 
 const Admin = () => {
@@ -553,148 +554,16 @@ const Admin = () => {
           </div>
         )}
 
-        {/* Courses Tab */}
-        {activeTab === "courses" && (
-          <div className="space-y-6">
-            <h2 className="font-display text-2xl font-semibold text-foreground">കോഴ്‌സ് സെക്ഷൻ</h2>
-            
-            {/* Course Section Settings */}
-            <div className="space-y-4">
-              <h3 className="font-display text-lg font-semibold text-foreground">സെക്ഷൻ സെറ്റിംഗ്സ്</h3>
-              {renderFieldEditor(
-                "coursesSection.title", 
-                "സെക്ഷൻ ടൈറ്റിൽ", 
-                localContent.coursesSection?.title || 'പഠന പാഠ്യന്തര വിഷയങ്ങൾ', 
-                async () => {
-                  if (!localContent) return;
-                  const updatedContent = {
-                    ...localContent,
-                    coursesSection: { 
-                      ...localContent.coursesSection, 
-                      title: tempValue 
-                    }
-                  };
-                  setLocalContent(updatedContent);
-                  setEditingField(null);
-                  await handleSaveToDatabase(updatedContent);
-                }
-              )}
-              {renderFieldEditor(
-                "coursesSection.subtitle", 
-                "സെക്ഷൻ സബ്‌ടൈറ്റിൽ (ബാഡ്ജ്)", 
-                localContent.coursesSection?.subtitle || 'പഠന പദ്ധതികൾ', 
-                async () => {
-                  if (!localContent) return;
-                  const updatedContent = {
-                    ...localContent,
-                    coursesSection: { 
-                      ...localContent.coursesSection, 
-                      subtitle: tempValue 
-                    }
-                  };
-                  setLocalContent(updatedContent);
-                  setEditingField(null);
-                  await handleSaveToDatabase(updatedContent);
-                }
-              )}
-              {renderFieldEditor(
-                "coursesSection.description", 
-                "സെക്ഷൻ വിവരണം", 
-                localContent.coursesSection?.description || 'സമഗ്രമായ വിദ്യാഭ്യാസ പദ്ധതിയിലൂടെ വിദ്യാർത്ഥികളെ എല്ലാ മേഖലകളിലും മികവുറ്റവരാക്കുന്നു', 
-                async () => {
-                  if (!localContent) return;
-                  const updatedContent = {
-                    ...localContent,
-                    coursesSection: { 
-                      ...localContent.coursesSection, 
-                      description: tempValue 
-                    }
-                  };
-                  setLocalContent(updatedContent);
-                  setEditingField(null);
-                  await handleSaveToDatabase(updatedContent);
-                },
-                true
-              )}
-            </div>
-            
-            <div className="mt-8">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-display text-xl font-semibold text-foreground">കോഴ്‌സുകൾ</h3>
-                <Button onClick={handleAddCourse} className="rounded-xl" disabled={saving}>
-                  <Plus className="w-4 h-4 mr-2" />പുതിയ കോഴ്‌സ്
-                </Button>
-              </div>
-              <div className="space-y-4">
-                {localContent.courses.map(course => (
-                  <div key={course.id} className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
-                    {editingCourse === course.id && tempCourse ? (
-                      <div className="space-y-4">
-                        <input
-                          type="text"
-                          value={tempCourse.title}
-                          onChange={(e) => setTempCourse({ ...tempCourse, title: e.target.value })}
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-background"
-                          placeholder="ടൈറ്റിൽ"
-                        />
-                        <input
-                          type="text"
-                          value={tempCourse.subtitle}
-                          onChange={(e) => setTempCourse({ ...tempCourse, subtitle: e.target.value })}
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-background"
-                          placeholder="സബ്‌ടൈറ്റിൽ"
-                        />
-                        <textarea
-                          value={tempCourse.description}
-                          onChange={(e) => setTempCourse({ ...tempCourse, description: e.target.value })}
-                          className="w-full px-4 py-3 rounded-xl border border-border bg-background resize-none"
-                          rows={2}
-                          placeholder="വിവരണം"
-                        />
-                        <label className="flex items-center gap-2">
-                          <input
-                            type="checkbox"
-                            checked={tempCourse.featured}
-                            onChange={(e) => setTempCourse({ ...tempCourse, featured: e.target.checked })}
-                            className="rounded"
-                          />
-                          <span className="text-sm">ഫീച്ചേഡ് കോഴ്‌സ്</span>
-                        </label>
-                        <div className="flex gap-2">
-                          <Button size="sm" onClick={handleSaveCourse} className="rounded-lg" disabled={saving}>
-                            {saving ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Save className="w-4 h-4 mr-1" />}
-                            സേവ്
-                          </Button>
-                          <Button size="sm" variant="outline" onClick={() => { setEditingCourse(null); setTempCourse(null); }} className="rounded-lg">
-                            <X className="w-4 h-4 mr-1" />റദ്ദാക്കുക
-                          </Button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex items-start justify-between gap-4">
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-semibold text-foreground">{course.title}</h4>
-                            {course.featured && <span className="px-2 py-0.5 rounded-full bg-primary/20 text-primary text-xs">Featured</span>}
-                          </div>
-                          {course.subtitle && <p className="text-sm text-muted-foreground">{course.subtitle}</p>}
-                          <p className="text-muted-foreground text-sm mt-1">{course.description}</p>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button size="sm" variant="ghost" onClick={() => handleEditCourse(course)}>
-                            <Edit3 className="w-4 h-4" />
-                          </Button>
-                          <Button size="sm" variant="ghost" className="text-destructive" onClick={() => handleDeleteCourse(course.id)} disabled={saving}>
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+        {/* Courses Tab - Now using LearningItemsEditor */}
+        {activeTab === "courses" && localContent && (
+          <LearningItemsEditor
+            localContent={localContent}
+            setLocalContent={setLocalContent}
+            handleSaveToDatabase={handleSaveToDatabase}
+            saving={saving}
+            renderFieldEditor={renderFieldEditor}
+            tempValue={tempValue}
+          />
         )}
 
 
