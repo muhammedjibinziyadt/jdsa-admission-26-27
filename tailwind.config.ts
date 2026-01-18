@@ -52,56 +52,54 @@ export default {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'
   			},
-  			sidebar: {
-  				DEFAULT: 'hsl(var(--sidebar-background))',
-  				foreground: 'hsl(var(--sidebar-foreground))',
-  				primary: 'hsl(var(--sidebar-primary))',
-  				'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-  				accent: 'hsl(var(--sidebar-accent))',
-  				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-  				border: 'hsl(var(--sidebar-border))',
-  				ring: 'hsl(var(--sidebar-ring))'
-  			},
-			/* Light Green Theme */
+			sidebar: {
+				DEFAULT: 'hsl(var(--sidebar-background))',
+				foreground: 'hsl(var(--sidebar-foreground))',
+				primary: 'hsl(var(--sidebar-primary))',
+				'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+				accent: 'hsl(var(--sidebar-accent))',
+				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+				border: 'hsl(var(--sidebar-border))',
+				ring: 'hsl(var(--sidebar-ring))'
+			},
+			/* Original Emerald Green & Warm Gold Theme */
 			navy: {
-				DEFAULT: 'hsl(90 85% 52%)',
-				light: 'hsl(90 70% 60%)',
-				dark: 'hsl(90 85% 45%)',
-				deep: 'hsl(90 85% 40%)'
+				DEFAULT: 'hsl(160, 35%, 18%)',
+				light: 'hsl(160, 40%, 25%)',
+				dark: 'hsl(160, 35%, 12%)',
+				deep: 'hsl(160, 35%, 10%)'
 			},
 			teal: {
-				DEFAULT: 'hsl(90 85% 52%)',
-				light: 'hsl(90 70% 65%)',
-				dark: 'hsl(90 85% 45%)',
-				glow: 'hsl(90 80% 55%)'
+				DEFAULT: 'hsl(170, 50%, 30%)',
+				light: 'hsl(170, 45%, 40%)',
+				dark: 'hsl(170, 55%, 25%)',
+				glow: 'hsl(170, 60%, 35%)'
 			},
 			gold: {
-				DEFAULT: 'hsl(90 85% 52%)',
-				light: 'hsl(90 70% 65%)',
-				dark: 'hsl(90 85% 45%)',
-				amber: 'hsl(90 80% 50%)'
+				DEFAULT: 'hsl(45, 90%, 55%)',
+				light: 'hsl(45, 100%, 70%)',
+				dark: 'hsl(45, 85%, 45%)',
+				amber: 'hsl(40, 85%, 50%)'
 			},
 			ivory: {
-				DEFAULT: 'hsl(0 0% 100%)',
-				soft: 'hsl(0 0% 98%)'
+				DEFAULT: 'hsl(45, 80%, 95%)',
+				soft: 'hsl(45, 60%, 92%)'
 			},
-			slate: {
-				light: 'hsl(90 30% 80%)',
-				DEFAULT: 'hsl(90 40% 50%)',
-				dark: 'hsl(90 50% 40%)'
+			emerald: {
+				DEFAULT: 'hsl(160, 35%, 18%)',
+				light: 'hsl(160, 40%, 25%)',
+				dark: 'hsl(160, 35%, 12%)'
 			}
   		},
   		fontFamily: {
   			display: [
-  				'Noto Sans',
+  				'Poppins',
   				'Noto Sans Malayalam',
-  				'Source Sans 3',
   				'sans-serif'
   			],
   			sans: [
-  				'Noto Sans',
+  				'Poppins',
   				'Noto Sans Malayalam',
-  				'Source Sans 3',
   				'ui-sans-serif',
   				'system-ui',
   				'-apple-system',
@@ -113,7 +111,7 @@ export default {
   				'sans-serif'
   			],
   			serif: [
-  				'Noto Naskh Arabic',
+  				'Amiri',
   				'Noto Sans Malayalam',
   				'ui-serif',
   				'Georgia',
@@ -141,11 +139,11 @@ export default {
   			'3xl': '2rem'
   		},
 		boxShadow: {
-			soft: '0 4px 20px -4px hsla(90, 50%, 40%, 0.15)',
-			elevated: '0 12px 40px -8px hsla(90, 50%, 40%, 0.2)',
-			teal: '0 8px 30px -6px hsla(90, 60%, 45%, 0.2)',
-			gold: '0 8px 30px -6px hsla(90, 60%, 45%, 0.15)',
-			glow: '0 0 30px -5px hsla(90, 60%, 50%, 0.15)',
+			soft: '0 4px 20px -4px hsla(160, 40%, 10%, 0.3)',
+			elevated: '0 12px 40px -8px hsla(160, 40%, 10%, 0.4)',
+			teal: '0 8px 30px -6px hsla(170, 60%, 35%, 0.3)',
+			gold: '0 8px 30px -6px hsla(45, 80%, 50%, 0.25)',
+			glow: '0 0 30px -5px hsla(45, 90%, 55%, 0.3)',
 			'2xs': 'var(--shadow-2xs)',
 			xs: 'var(--shadow-xs)',
 			sm: 'var(--shadow-sm)',
