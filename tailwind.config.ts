@@ -62,33 +62,33 @@ export default {
   				border: 'hsl(var(--sidebar-border))',
   				ring: 'hsl(var(--sidebar-ring))'
   			},
-			/* Premium White & Ivory Theme */
+			/* Light Green Theme */
 			navy: {
-				DEFAULT: 'hsl(220 15% 30%)',
-				light: 'hsl(220 12% 45%)',
-				dark: 'hsl(220 15% 20%)',
-				deep: 'hsl(220 15% 15%)'
+				DEFAULT: 'hsl(90 85% 52%)',
+				light: 'hsl(90 70% 60%)',
+				dark: 'hsl(90 85% 45%)',
+				deep: 'hsl(90 85% 40%)'
 			},
 			teal: {
-				DEFAULT: 'hsl(43 40% 60%)',
-				light: 'hsl(43 35% 70%)',
-				dark: 'hsl(43 45% 50%)',
-				glow: 'hsl(43 40% 65%)'
+				DEFAULT: 'hsl(90 85% 52%)',
+				light: 'hsl(90 70% 65%)',
+				dark: 'hsl(90 85% 45%)',
+				glow: 'hsl(90 80% 55%)'
 			},
 			gold: {
-				DEFAULT: 'hsl(43 40% 60%)',
-				light: 'hsl(45 45% 70%)',
-				dark: 'hsl(40 45% 50%)',
-				amber: 'hsl(38 50% 60%)'
+				DEFAULT: 'hsl(90 85% 52%)',
+				light: 'hsl(90 70% 65%)',
+				dark: 'hsl(90 85% 45%)',
+				amber: 'hsl(90 80% 50%)'
 			},
 			ivory: {
-				DEFAULT: 'hsl(40 25% 98%)',
-				soft: 'hsl(40 20% 95%)'
+				DEFAULT: 'hsl(0 0% 100%)',
+				soft: 'hsl(0 0% 98%)'
 			},
 			slate: {
-				light: 'hsl(220 15% 88%)',
-				DEFAULT: 'hsl(220 10% 55%)',
-				dark: 'hsl(220 15% 40%)'
+				light: 'hsl(90 30% 80%)',
+				DEFAULT: 'hsl(90 40% 50%)',
+				dark: 'hsl(90 50% 40%)'
 			}
   		},
   		fontFamily: {
@@ -141,11 +141,11 @@ export default {
   			'3xl': '2rem'
   		},
 		boxShadow: {
-			soft: '0 4px 20px -4px hsla(220, 15%, 50%, 0.08)',
-			elevated: '0 12px 40px -8px hsla(220, 15%, 50%, 0.12)',
-			teal: '0 8px 30px -6px hsla(43, 40%, 60%, 0.15)',
-			gold: '0 8px 30px -6px hsla(43, 50%, 60%, 0.12)',
-			glow: '0 0 30px -5px hsla(220, 15%, 50%, 0.1)',
+			soft: '0 4px 20px -4px hsla(90, 50%, 40%, 0.15)',
+			elevated: '0 12px 40px -8px hsla(90, 50%, 40%, 0.2)',
+			teal: '0 8px 30px -6px hsla(90, 60%, 45%, 0.2)',
+			gold: '0 8px 30px -6px hsla(90, 60%, 45%, 0.15)',
+			glow: '0 0 30px -5px hsla(90, 60%, 50%, 0.15)',
 			'2xs': 'var(--shadow-2xs)',
 			xs: 'var(--shadow-xs)',
 			sm: 'var(--shadow-sm)',
