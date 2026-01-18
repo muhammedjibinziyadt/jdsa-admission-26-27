@@ -3,158 +3,154 @@
 @tailwind utilities;
 
 /* Jawharathul Uloom Suffa Dars - Premium Islamic Education Design System */
-/* Deep Navy Blue & Teal Theme - All colors in HSL format */
+/* Cool Premium White Theme - Clean, Calm, Professional */
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&family=Noto+Sans+Malayalam:wght@300;400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
 
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
-
-@import url("https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap");
-
-@import url("https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&display=swap");
 
 @layer base {
   :root {
-    /* Primary - Deep Islamic Navy Blue (knowledge, depth, trust) */
-    --primary: 210 60% 15%;
-    --primary-foreground: 210 20% 98%;
+    /* Primary - Deep Neutral Grey (professional, scholarly) */
+    --primary: 220 15% 30%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Elegant Teal/Cyan (highlights, accents) */
-    --secondary: 187 65% 45%;
-    --secondary-foreground: 210 60% 10%;
+    /* Secondary - Soft Ivory/Cream (warmth, elegance) */
+    --secondary: 40 30% 96%;
+    --secondary-foreground: 220 15% 25%;
 
-    /* Background - Deep Navy Gradient Base */
-    --background: 210 55% 12%;
-    --foreground: 210 15% 92%;
+    /* Background - Cool White */
+    --background: 210 20% 99%;
+    --foreground: 220 15% 25%;
 
-    /* Card - Slightly lighter navy */
-    --card: 210 50% 16%;
-    --card-foreground: 210 15% 92%;
+    /* Card - Soft Ivory */
+    --card: 40 25% 98%;
+    --card-foreground: 220 15% 25%;
 
     /* Popover */
-    --popover: 210 50% 14%;
-    --popover-foreground: 210 15% 92%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 15% 25%;
 
-    /* Muted - Soft navy tone */
-    --muted: 210 45% 20%;
-    --muted-foreground: 210 15% 70%;
+    /* Muted - Light Cream */
+    --muted: 40 20% 95%;
+    --muted-foreground: 220 10% 45%;
 
-    /* Accent - Teal highlight */
-    --accent: 187 60% 40%;
-    --accent-foreground: 210 60% 10%;
+    /* Accent - Very Light Pale Gold (minimal) */
+    --accent: 43 35% 88%;
+    --accent-foreground: 220 15% 20%;
 
     /* Destructive */
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 65% 50%;
+    --destructive-foreground: 0 0% 100%;
 
-    /* Border & Input - Subtle navy borders */
-    --border: 210 40% 25%;
-    --input: 210 40% 22%;
-    --ring: 187 65% 45%;
+    /* Border & Input - Soft Light Grey */
+    --border: 220 15% 88%;
+    --input: 220 15% 92%;
+    --ring: 220 15% 40%;
 
     --radius: 0.75rem;
 
-    /* Custom Gradients - Navy & Teal */
-    --navy-gradient: linear-gradient(135deg, hsl(210 60% 12%), hsl(210 55% 18%));
-    --teal-gradient: linear-gradient(135deg, hsl(187 65% 40%), hsl(187 55% 50%));
-    --gold-gradient: linear-gradient(135deg, hsl(43 75% 50%), hsl(45 80% 60%));
-    --hero-overlay: linear-gradient(135deg, hsla(210, 60%, 8%, 0.95), hsla(210, 50%, 15%, 0.88));
-    --section-gradient: linear-gradient(180deg, hsl(210 55% 10%), hsl(210 50% 14%));
+    /* Custom Gradients - Subtle White/Ivory */
+    --navy-gradient: linear-gradient(135deg, hsl(40 25% 98%), hsl(40 20% 95%));
+    --teal-gradient: linear-gradient(135deg, hsl(40 30% 96%), hsl(40 25% 93%));
+    --gold-gradient: linear-gradient(135deg, hsl(43 40% 75%), hsl(45 45% 80%));
+    --hero-overlay: linear-gradient(135deg, hsla(0, 0%, 100%, 0.92), hsla(40, 25%, 98%, 0.88));
+    --section-gradient: linear-gradient(180deg, hsl(210 20% 99%), hsl(40 25% 97%));
 
-    /* Premium Shadows */
-    --shadow-soft: 0 4px 20px -4px hsla(210, 50%, 5%, 0.4);
-    --shadow-elevated: 0 12px 40px -8px hsla(210, 50%, 5%, 0.5);
-    --shadow-teal: 0 8px 30px -6px hsla(187, 65%, 45%, 0.3);
-    --shadow-gold: 0 8px 30px -6px hsla(43, 75%, 50%, 0.25);
-    --shadow-glow: 0 0 30px -5px hsla(187, 65%, 45%, 0.4);
+    /* Premium Shadows - Soft & Subtle */
+    --shadow-soft: 0 4px 20px -4px hsla(220, 15%, 50%, 0.08);
+    --shadow-elevated: 0 12px 40px -8px hsla(220, 15%, 50%, 0.12);
+    --shadow-teal: 0 8px 30px -6px hsla(43, 40%, 60%, 0.15);
+    --shadow-gold: 0 8px 30px -6px hsla(43, 50%, 60%, 0.12);
+    --shadow-glow: 0 0 30px -5px hsla(220, 15%, 50%, 0.1);
 
     /* Sidebar */
-    --sidebar-background: 210 55% 10%;
-    --sidebar-foreground: 210 15% 92%;
-    --sidebar-primary: 187 65% 45%;
-    --sidebar-primary-foreground: 210 60% 10%;
-    --sidebar-accent: 210 45% 22%;
-    --sidebar-accent-foreground: 210 15% 92%;
-    --sidebar-border: 210 40% 25%;
-    --sidebar-ring: 187 65% 45%;
-    --chart-1: 187 65% 45%;
-    --chart-2: 43 75% 50%;
-    --chart-3: 210 50% 35%;
-    --chart-4: 160 50% 40%;
-    --chart-5: 280 50% 50%;
-    --sidebar: 210 55% 10%;
-    --font-sans: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-    --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
-    --font-mono: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-    --shadow-2xs: 0 1px 2px 0px hsla(210, 50%, 5%, 0.3);
-    --shadow-xs: 0 2px 4px 0px hsla(210, 50%, 5%, 0.35);
-    --shadow-sm: 0 4px 6px -1px hsla(210, 50%, 5%, 0.4);
-    --shadow: 0 6px 10px -2px hsla(210, 50%, 5%, 0.45);
-    --shadow-md: 0 10px 15px -3px hsla(210, 50%, 5%, 0.5);
-    --shadow-lg: 0 15px 25px -5px hsla(210, 50%, 5%, 0.55);
-    --shadow-xl: 0 20px 40px -8px hsla(210, 50%, 5%, 0.6);
-    --shadow-2xl: 0 30px 60px -12px hsla(210, 50%, 5%, 0.7);
+    --sidebar-background: 40 25% 98%;
+    --sidebar-foreground: 220 15% 25%;
+    --sidebar-primary: 220 15% 30%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 40 20% 94%;
+    --sidebar-accent-foreground: 220 15% 25%;
+    --sidebar-border: 220 15% 88%;
+    --sidebar-ring: 220 15% 40%;
+    --chart-1: 220 15% 40%;
+    --chart-2: 43 40% 60%;
+    --chart-3: 200 15% 50%;
+    --chart-4: 160 20% 50%;
+    --chart-5: 280 15% 55%;
+    --sidebar: 40 25% 98%;
+    --font-sans: 'Noto Sans', 'Noto Sans Malayalam', 'Source Sans 3', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-serif: 'Noto Naskh Arabic', 'Noto Sans Malayalam', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    --shadow-2xs: 0 1px 2px 0px hsla(220, 15%, 50%, 0.05);
+    --shadow-xs: 0 2px 4px 0px hsla(220, 15%, 50%, 0.06);
+    --shadow-sm: 0 4px 6px -1px hsla(220, 15%, 50%, 0.08);
+    --shadow: 0 6px 10px -2px hsla(220, 15%, 50%, 0.1);
+    --shadow-md: 0 10px 15px -3px hsla(220, 15%, 50%, 0.12);
+    --shadow-lg: 0 15px 25px -5px hsla(220, 15%, 50%, 0.14);
+    --shadow-xl: 0 20px 40px -8px hsla(220, 15%, 50%, 0.16);
+    --shadow-2xl: 0 30px 60px -12px hsla(220, 15%, 50%, 0.2);
     --tracking-normal: 0em;
     --spacing: 0.25rem;
   }
 
   .dark {
-    /* Dark mode uses same premium navy theme (already dark) */
-    --background: 210 60% 8%;
-    --foreground: 210 15% 95%;
+    /* Dark mode - Elegant dark grey theme */
+    --background: 220 15% 12%;
+    --foreground: 220 10% 92%;
 
-    --card: 210 55% 12%;
-    --card-foreground: 210 15% 95%;
+    --card: 220 15% 16%;
+    --card-foreground: 220 10% 92%;
 
-    --popover: 210 55% 10%;
-    --popover-foreground: 210 15% 95%;
+    --popover: 220 15% 14%;
+    --popover-foreground: 220 10% 92%;
 
-    --primary: 187 65% 50%;
-    --primary-foreground: 210 60% 8%;
+    --primary: 43 40% 70%;
+    --primary-foreground: 220 15% 12%;
 
-    --secondary: 210 45% 25%;
-    --secondary-foreground: 210 15% 95%;
+    --secondary: 220 12% 22%;
+    --secondary-foreground: 220 10% 92%;
 
-    --muted: 210 45% 18%;
-    --muted-foreground: 210 15% 65%;
+    --muted: 220 12% 20%;
+    --muted-foreground: 220 10% 65%;
 
-    --accent: 187 60% 45%;
-    --accent-foreground: 210 60% 8%;
+    --accent: 43 35% 55%;
+    --accent-foreground: 220 15% 12%;
 
-    --destructive: 0 62% 40%;
+    --destructive: 0 55% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 210 40% 22%;
-    --input: 210 40% 18%;
-    --ring: 187 65% 50%;
+    --border: 220 12% 25%;
+    --input: 220 12% 20%;
+    --ring: 43 40% 65%;
 
-    --hero-overlay: linear-gradient(135deg, hsla(210, 60%, 5%, 0.97), hsla(210, 50%, 10%, 0.92));
+    --hero-overlay: linear-gradient(135deg, hsla(220, 15%, 8%, 0.95), hsla(220, 12%, 14%, 0.90));
 
-    --chart-1: 187 65% 50%;
-    --chart-2: 43 75% 55%;
-    --chart-3: 210 50% 40%;
-    --chart-4: 160 50% 45%;
-    --chart-5: 280 50% 55%;
+    --chart-1: 43 40% 65%;
+    --chart-2: 200 20% 55%;
+    --chart-3: 220 15% 45%;
+    --chart-4: 160 20% 50%;
+    --chart-5: 280 20% 55%;
 
-    --sidebar: 210 60% 6%;
-    --sidebar-foreground: 210 15% 95%;
-    --sidebar-primary: 187 65% 50%;
-    --sidebar-primary-foreground: 210 60% 8%;
-    --sidebar-accent: 210 45% 18%;
-    --sidebar-accent-foreground: 210 15% 95%;
-    --sidebar-border: 210 40% 22%;
-    --sidebar-ring: 187 65% 50%;
+    --sidebar: 220 15% 10%;
+    --sidebar-foreground: 220 10% 92%;
+    --sidebar-primary: 43 40% 70%;
+    --sidebar-primary-foreground: 220 15% 12%;
+    --sidebar-accent: 220 12% 20%;
+    --sidebar-accent-foreground: 220 10% 92%;
+    --sidebar-border: 220 12% 25%;
+    --sidebar-ring: 43 40% 65%;
 
     --radius: 0.75rem;
 
-    --shadow-2xs: 0 1px 2px 0px hsla(210, 50%, 2%, 0.4);
-    --shadow-xs: 0 2px 4px 0px hsla(210, 50%, 2%, 0.45);
-    --shadow-sm: 0 4px 6px -1px hsla(210, 50%, 2%, 0.5);
-    --shadow: 0 6px 10px -2px hsla(210, 50%, 2%, 0.55);
-    --shadow-md: 0 10px 15px -3px hsla(210, 50%, 2%, 0.6);
-    --shadow-lg: 0 15px 25px -5px hsla(210, 50%, 2%, 0.65);
-    --shadow-xl: 0 20px 40px -8px hsla(210, 50%, 2%, 0.7);
-    --shadow-2xl: 0 30px 60px -12px hsla(210, 50%, 2%, 0.8);
+    --shadow-2xs: 0 1px 2px 0px hsla(220, 15%, 5%, 0.3);
+    --shadow-xs: 0 2px 4px 0px hsla(220, 15%, 5%, 0.35);
+    --shadow-sm: 0 4px 6px -1px hsla(220, 15%, 5%, 0.4);
+    --shadow: 0 6px 10px -2px hsla(220, 15%, 5%, 0.45);
+    --shadow-md: 0 10px 15px -3px hsla(220, 15%, 5%, 0.5);
+    --shadow-lg: 0 15px 25px -5px hsla(220, 15%, 5%, 0.55);
+    --shadow-xl: 0 20px 40px -8px hsla(220, 15%, 5%, 0.6);
+    --shadow-2xl: 0 30px 60px -12px hsla(220, 15%, 5%, 0.7);
   }
 }
 
@@ -169,88 +165,89 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(180deg, hsl(210 55% 10%) 0%, hsl(210 50% 14%) 50%, hsl(210 55% 12%) 100%);
+    font-family: 'Noto Sans', 'Noto Sans Malayalam', 'Source Sans 3', sans-serif;
+    background: hsl(210 20% 99%);
     min-height: 100vh;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Noto Sans', 'Noto Sans Malayalam', 'Source Sans 3', sans-serif;
+    font-weight: 600;
   }
 }
 
 @layer components {
-  /* Hero section styling - Navy overlay */
+  /* Hero section styling - Light overlay */
   .hero-gradient {
     background: var(--hero-overlay);
   }
 
-  /* Gold text for emphasis */
+  /* Gold text for emphasis - Subtle warm tone */
   .gold-text {
-    background: var(--gold-gradient);
+    background: linear-gradient(135deg, hsl(43 45% 45%), hsl(45 50% 55%));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .gold-border {
-    border-color: hsl(43 75% 50%);
+    border-color: hsl(43 35% 75%);
   }
 
   .gold-bg {
     background: var(--gold-gradient);
   }
 
-  /* Teal gradient for accents */
+  /* Teal gradient - now soft ivory */
   .teal-gradient {
     background: var(--teal-gradient);
   }
 
-  /* Navy gradient for sections */
+  /* Navy gradient - now soft cream */
   .navy-gradient {
     background: var(--navy-gradient);
   }
 
-  /* Legacy emerald support - now maps to teal */
+  /* Legacy emerald support */
   .emerald-gradient {
     background: var(--teal-gradient);
   }
 
   .cream-gradient {
-    background: linear-gradient(180deg, hsl(210 50% 16%), hsl(210 45% 20%));
+    background: linear-gradient(180deg, hsl(40 25% 98%), hsl(40 20% 95%));
   }
 
-  /* Flowing shape decorations */
+  /* Flowing shape decorations - Subtle */
   .flowing-shape {
     position: absolute;
     border-radius: 50%;
     filter: blur(80px);
-    opacity: 0.3;
+    opacity: 0.15;
   }
 
   .flowing-shape-1 {
-    background: hsl(187 65% 45% / 0.2);
+    background: hsl(43 40% 80% / 0.3);
   }
 
   .flowing-shape-2 {
-    background: hsl(43 75% 50% / 0.15);
+    background: hsl(220 15% 85% / 0.25);
   }
 
   .flowing-shape-3 {
-    background: hsl(210 50% 30% / 0.25);
+    background: hsl(40 30% 90% / 0.3);
   }
 
-  /* Card hover effects with teal glow */
+  /* Card hover effects - Subtle shadow */
   .card-hover {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .card-hover:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-elevated), var(--shadow-teal);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-elevated);
   }
 
-  /* Premium button glow effect */
+  /* Premium button glow effect - Subtle */
   .btn-glow {
     position: relative;
     overflow: hidden;
@@ -261,7 +258,7 @@
     content: '';
     position: absolute;
     inset: -2px;
-    background: linear-gradient(135deg, hsl(187 65% 45%), hsl(187 55% 55%));
+    background: linear-gradient(135deg, hsl(220 15% 35%), hsl(220 15% 45%));
     border-radius: inherit;
     z-index: -1;
     opacity: 0;
@@ -273,24 +270,24 @@
   }
 
   .btn-glow:hover {
-    box-shadow: var(--shadow-glow);
+    box-shadow: var(--shadow-soft);
   }
 
-  /* Decorative Islamic pattern - Navy themed */
+  /* Decorative Islamic pattern - Light grey */
   .islamic-pattern {
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30z' fill='none' stroke='%231FA2B8' stroke-opacity='0.08' stroke-width='1'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30z' fill='none' stroke='%23C9B896' stroke-opacity='0.15' stroke-width='1'/%3E%3C/svg%3E");
   }
 
   /* Section divider wave */
   .section-wave {
-    background: linear-gradient(180deg, transparent 0%, hsl(210 55% 12%) 100%);
+    background: linear-gradient(180deg, transparent 0%, hsl(40 25% 97%) 100%);
   }
 
-  /* Glass morphism effect */
+  /* Glass morphism effect - Light version */
   .glass-card {
-    background: hsla(210, 50%, 18%, 0.6);
+    background: hsla(0, 0%, 100%, 0.85);
     backdrop-filter: blur(12px);
-    border: 1px solid hsla(210, 40%, 30%, 0.5);
+    border: 1px solid hsla(220, 15%, 88%, 0.8);
   }
 }
 
@@ -378,10 +375,10 @@
 
   @keyframes glow {
     0%, 100% {
-      box-shadow: 0 0 20px hsla(187, 65%, 45%, 0.3);
+      box-shadow: 0 0 20px hsla(220, 15%, 50%, 0.1);
     }
     50% {
-      box-shadow: 0 0 40px hsla(187, 65%, 45%, 0.5);
+      box-shadow: 0 0 40px hsla(220, 15%, 50%, 0.15);
     }
   }
 

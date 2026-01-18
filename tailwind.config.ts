@@ -62,42 +62,46 @@ export default {
   				border: 'hsl(var(--sidebar-border))',
   				ring: 'hsl(var(--sidebar-ring))'
   			},
-			/* Premium Navy Blue & Teal Theme */
+			/* Premium White & Ivory Theme */
 			navy: {
-				DEFAULT: 'hsl(210 60% 15%)',
-				light: 'hsl(210 55% 22%)',
-				dark: 'hsl(210 60% 10%)',
-				deep: 'hsl(210 60% 8%)'
+				DEFAULT: 'hsl(220 15% 30%)',
+				light: 'hsl(220 12% 45%)',
+				dark: 'hsl(220 15% 20%)',
+				deep: 'hsl(220 15% 15%)'
 			},
 			teal: {
-				DEFAULT: 'hsl(187 65% 45%)',
-				light: 'hsl(187 55% 55%)',
-				dark: 'hsl(187 70% 35%)',
-				glow: 'hsl(187 65% 50%)'
+				DEFAULT: 'hsl(43 40% 60%)',
+				light: 'hsl(43 35% 70%)',
+				dark: 'hsl(43 45% 50%)',
+				glow: 'hsl(43 40% 65%)'
 			},
 			gold: {
-				DEFAULT: 'hsl(43 75% 50%)',
-				light: 'hsl(45 80% 60%)',
-				dark: 'hsl(40 70% 42%)',
-				amber: 'hsl(38 85% 55%)'
+				DEFAULT: 'hsl(43 40% 60%)',
+				light: 'hsl(45 45% 70%)',
+				dark: 'hsl(40 45% 50%)',
+				amber: 'hsl(38 50% 60%)'
 			},
 			ivory: {
-				DEFAULT: 'hsl(210 20% 98%)',
-				soft: 'hsl(210 15% 95%)'
+				DEFAULT: 'hsl(40 25% 98%)',
+				soft: 'hsl(40 20% 95%)'
 			},
 			slate: {
-				light: 'hsl(210 15% 85%)',
-				DEFAULT: 'hsl(210 15% 70%)',
-				dark: 'hsl(210 20% 55%)'
+				light: 'hsl(220 15% 88%)',
+				DEFAULT: 'hsl(220 10% 55%)',
+				dark: 'hsl(220 15% 40%)'
 			}
   		},
   		fontFamily: {
   			display: [
-  				'Playfair Display',
-  				'serif'
+  				'Noto Sans',
+  				'Noto Sans Malayalam',
+  				'Source Sans 3',
+  				'sans-serif'
   			],
   			sans: [
-  				'Space Grotesk',
+  				'Noto Sans',
+  				'Noto Sans Malayalam',
+  				'Source Sans 3',
   				'ui-sans-serif',
   				'system-ui',
   				'-apple-system',
@@ -106,11 +110,11 @@ export default {
   				'Roboto',
   				'Helvetica Neue',
   				'Arial',
-  				'Noto Sans',
   				'sans-serif'
   			],
   			serif: [
-  				'Lora',
+  				'Noto Naskh Arabic',
+  				'Noto Sans Malayalam',
   				'ui-serif',
   				'Georgia',
   				'Cambria',
@@ -119,7 +123,6 @@ export default {
   				'serif'
   			],
   			mono: [
-  				'Space Mono',
   				'ui-monospace',
   				'SFMono-Regular',
   				'Menlo',
@@ -138,11 +141,11 @@ export default {
   			'3xl': '2rem'
   		},
 		boxShadow: {
-			soft: '0 4px 20px -4px hsla(210, 50%, 5%, 0.35)',
-			elevated: '0 12px 40px -8px hsla(210, 50%, 5%, 0.45)',
-			teal: '0 8px 30px -6px hsla(187, 65%, 45%, 0.3)',
-			gold: '0 8px 30px -6px hsla(43, 75%, 50%, 0.25)',
-			glow: '0 0 30px -5px hsla(187, 65%, 45%, 0.4)',
+			soft: '0 4px 20px -4px hsla(220, 15%, 50%, 0.08)',
+			elevated: '0 12px 40px -8px hsla(220, 15%, 50%, 0.12)',
+			teal: '0 8px 30px -6px hsla(43, 40%, 60%, 0.15)',
+			gold: '0 8px 30px -6px hsla(43, 50%, 60%, 0.12)',
+			glow: '0 0 30px -5px hsla(220, 15%, 50%, 0.1)',
 			'2xs': 'var(--shadow-2xs)',
 			xs: 'var(--shadow-xs)',
 			sm: 'var(--shadow-sm)',
