@@ -23,14 +23,21 @@ import {
   Check,
   Eye,
   EyeOff,
-  ClipboardList
+  ClipboardList,
+  Palette,
+  MousePointer,
+  Mic
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWebsiteContent, WebsiteContent } from "@/hooks/useWebsiteContent";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import { useAdmissions } from "@/hooks/useAdmissions";
+import { applyThemeToDOM } from "@/hooks/useSiteSettings";
 import AdminLogin from "@/components/AdminLogin";
+import AdmissionsManager from "@/components/admin/AdmissionsManager";
+import SocialLinksEditor from "@/components/admin/SocialLinksEditor";
+import TrainingCategoriesEditor, { TrainingCategory } from "@/components/admin/TrainingCategoriesEditor";
 
 const Admin = () => {
   const { isAuthenticated, loading: authLoading, login, logout } = useAdminAuth();
@@ -38,7 +45,7 @@ const Admin = () => {
   const { uploadImage, deleteImage, uploading } = useImageUpload();
   const { admissions, updateAdmission, deleteAdmission, newAdmissionCount } = useAdmissions();
   
-  const [activeTab, setActiveTab] = useState<"hero" | "about" | "courses" | "benefits" | "gallery" | "contact" | "map" | "footer" | "social" | "admissions" | "form">("hero");
+  const [activeTab, setActiveTab] = useState<"hero" | "about" | "courses" | "training" | "benefits" | "gallery" | "contact" | "map" | "footer" | "social" | "admissions" | "form" | "splash" | "theme">("hero");
   
   // Local editing state
   const [localContent, setLocalContent] = useState<WebsiteContent | null>(null);
@@ -333,6 +340,7 @@ const Admin = () => {
     { id: "hero" as const, label: "ഹീറോ", icon: Home },
     { id: "about" as const, label: "അബൗട്ട്", icon: MessageSquare },
     { id: "courses" as const, label: "കോഴ്‌സുകൾ", icon: BookOpen },
+    { id: "training" as const, label: "പരിശീലനം", icon: Mic },
     { id: "benefits" as const, label: "നേട്ടങ്ങൾ", icon: Users },
     { id: "gallery" as const, label: "ഗാലറി", icon: ImageIcon },
     { id: "contact" as const, label: "കോൺടാക്ട്", icon: Phone },
@@ -340,6 +348,8 @@ const Admin = () => {
     { id: "footer" as const, label: "ഫൂട്ടർ", icon: FileText },
     { id: "social" as const, label: "സോഷ്യൽ", icon: Share2 },
     { id: "form" as const, label: "ഫോം സെറ്റിംഗ്സ്", icon: ClipboardList },
+    { id: "splash" as const, label: "ലാൻഡിംഗ് സ്ക്രീൻ", icon: MousePointer },
+    { id: "theme" as const, label: "തീം & കളർ", icon: Palette },
     { id: "admissions" as const, label: "അപേക്ഷകൾ", icon: ClipboardList, badge: newAdmissionCount },
   ];
 
@@ -687,6 +697,22 @@ const Admin = () => {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Training Categories Tab */}
+        {activeTab === "training" && localContent && (
+          <TrainingCategoriesEditor
+            categories={localContent.trainingCategories || []}
+            onSave={async (categories: TrainingCategory[]) => {
+              const updatedContent = {
+                ...localContent,
+                trainingCategories: categories
+              };
+              setLocalContent(updatedContent);
+              await handleSaveToDatabase(updatedContent);
+            }}
+            saving={saving}
+          />
         )}
 
         {/* Benefits Tab */}
@@ -1085,13 +1111,8 @@ const Admin = () => {
         {/* Social Tab */}
         {activeTab === "social" && (
           <div className="space-y-6">
-            <h2 className="font-display text-2xl font-semibold text-foreground">സോഷ്യൽ മീഡിയ ലിങ്കുകൾ</h2>
-            <div className="space-y-4">
-              {renderFieldEditor("social.whatsapp", "WhatsApp നമ്പർ", localContent.social.whatsapp, () => handleSaveSocialField("whatsapp"))}
-              {renderFieldEditor("social.facebook", "Facebook URL", localContent.social.facebook, () => handleSaveSocialField("facebook"))}
-              {renderFieldEditor("social.youtube", "YouTube URL", localContent.social.youtube, () => handleSaveSocialField("youtube"))}
-              {renderFieldEditor("social.instagram", "Instagram URL", localContent.social.instagram, () => handleSaveSocialField("instagram"))}
-            </div>
+            <h2 className="font-display text-2xl font-semibold text-foreground">സോഷ്യൽ മീഡിയ ലിങ്കുകൾ (ഫൂട്ടറിൽ മാത്രം)</h2>
+            <SocialLinksEditor content={localContent} onSave={handleSaveToDatabase} saving={saving} />
           </div>
         )}
 
@@ -1168,120 +1189,391 @@ const Admin = () => {
         {activeTab === "admissions" && (
           <div className="space-y-6">
             <h2 className="font-display text-2xl font-semibold text-foreground">അഡ്മിഷൻ അപേക്ഷകൾ</h2>
-            
-            {admissions.length === 0 ? (
-              <div className="bg-card rounded-2xl p-8 border border-border/50 shadow-soft text-center">
-                <ClipboardList className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">അപേക്ഷകൾ ഇല്ല</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {admissions.map(admission => {
-                  // Parse additional_info for documents
-                  let additionalData: { documents?: { photo?: string; aadhaar?: string; birthCertificate?: string; tc?: string }; madarasaLevel?: string; madarasaName?: string; notes?: string } = {};
-                  try {
-                    if (admission.additional_info) {
-                      additionalData = JSON.parse(admission.additional_info);
-                    }
-                  } catch { additionalData = {}; }
-                  
-                  const docs = additionalData.documents || {};
-                  
-                  return (
-                    <div key={admission.id} className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
-                      <div className="flex flex-col gap-4">
-                        {/* Header with photo and basic info */}
-                        <div className="flex flex-col md:flex-row md:items-start gap-4">
-                          {admission.image_url && (
-                            <div className="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 border-2 border-border">
-                              <img src={admission.image_url} alt={admission.student_name} className="w-full h-full object-cover" />
-                            </div>
-                          )}
-                          
-                          <div className="flex-1 space-y-2">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <h4 className="font-semibold text-foreground text-lg">{admission.student_name}</h4>
-                              {admission.approved ? (
-                                <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-xs flex items-center gap-1">
-                                  <Check className="w-3 h-3" /> അംഗീകരിച്ചു
-                                </span>
-                              ) : (
-                                <span className="px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700 text-xs">
-                                  കാത്തിരിക്കുന്നു
-                                </span>
-                              )}
-                            </div>
-                            
-                            <div className="grid sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
-                              <p><strong>രക്ഷിതാവ്:</strong> {admission.guardian_name}</p>
-                              <p><strong>ഫോൺ:</strong> {admission.guardian_phone}</p>
-                              <p><strong>വയസ്സ്:</strong> {admission.age || '-'}</p>
-                              {additionalData.madarasaLevel && <p><strong>മദ്രസ ലെവൽ:</strong> {additionalData.madarasaLevel}</p>}
-                              {additionalData.madarasaName && <p><strong>മദ്രസ:</strong> {additionalData.madarasaName}</p>}
-                              {admission.address && <p className="sm:col-span-2"><strong>വിലാസം:</strong> {admission.address}</p>}
-                            </div>
-                            
-                            <p className="text-xs text-muted-foreground">
-                              സമർപ്പിച്ചത്: {new Date(admission.created_at).toLocaleDateString('ml-IN')}
-                            </p>
-                          </div>
-                          
-                          {/* Actions */}
-                          <div className="flex gap-2 flex-shrink-0">
-                            <Button
-                              size="sm"
-                              variant={admission.approved ? "outline" : "default"}
-                              onClick={() => updateAdmission(admission.id, { approved: !admission.approved })}
-                              className="rounded-lg"
-                            >
-                              {admission.approved ? <><EyeOff className="w-4 h-4 mr-1" />മറയ്ക്കുക</> : <><Eye className="w-4 h-4 mr-1" />അംഗീകരിക്കുക</>}
-                            </Button>
-                            <Button size="sm" variant="ghost" className="text-destructive" onClick={() => deleteAdmission(admission.id)}>
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </div>
-                        
-                        {/* Documents Section */}
-                        {(docs.photo || docs.aadhaar || docs.birthCertificate || docs.tc) && (
-                          <div className="border-t border-border pt-4">
-                            <h5 className="text-sm font-medium text-foreground mb-3">📄 ഡോക്യുമെന്റുകൾ</h5>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                              {docs.photo && (
-                                <a href={docs.photo} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
-                                  <img src={docs.photo} alt="Photo" className="w-12 h-12 object-cover rounded mb-2" />
-                                  <span className="text-xs text-muted-foreground">ഫോട്ടോ</span>
-                                </a>
-                              )}
-                              {docs.aadhaar && (
-                                <a href={docs.aadhaar} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
-                                  <FileText className="w-8 h-8 text-primary mb-2" />
-                                  <span className="text-xs text-muted-foreground">ആധാർ</span>
-                                </a>
-                              )}
-                              {docs.birthCertificate && (
-                                <a href={docs.birthCertificate} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
-                                  <FileText className="w-8 h-8 text-primary mb-2" />
-                                  <span className="text-xs text-muted-foreground">ജനന സർട്ടിഫിക്കറ്റ്</span>
-                                </a>
-                              )}
-                              {docs.tc && (
-                                <a href={docs.tc} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors">
-                                  <FileText className="w-8 h-8 text-primary mb-2" />
-                                  <span className="text-xs text-muted-foreground">TC</span>
-                                </a>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+            <p className="text-muted-foreground">
+              അപേക്ഷകൾ ഡിലീറ്റ് ചെയ്താൽ വെബ്സൈറ്റിൽ നിന്നും ഡാറ്റാബേസിൽ നിന്നും സ്ഥിരമായി നീക്കം ചെയ്യപ്പെടും.
+              അംഗീകരിച്ച വിദ്യാർത്ഥികൾക്ക് "വിദ്യാർത്ഥി പാലിക്കേണ്ട കാര്യങ്ങൾ" ഡോക്യുമെന്റ് അപ്‌ലോഡ് ചെയ്യാം.
+            </p>
+            <AdmissionsManager />
           </div>
         )}
+
+        {/* Splash Screen Tab */}
+        {activeTab === "splash" && localContent.splash && (
+          <div className="space-y-6">
+            <h2 className="font-display text-2xl font-semibold text-foreground">ലാൻഡിംഗ് സ്ക്രീൻ സെറ്റിംഗ്സ്</h2>
+            
+            {/* Enable/Disable Toggle */}
+            <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-medium text-foreground">ലാൻഡിംഗ് സ്ക്രീൻ</h3>
+                  <p className="text-sm text-muted-foreground">വെബ്സൈറ്റ് തുറക്കുമ്പോൾ "Click to Open" സ്ക്രീൻ കാണിക്കുക</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={localContent.splash?.enabled !== false}
+                    onChange={async (e) => {
+                      const updatedContent = {
+                        ...localContent,
+                        splash: { ...localContent.splash, enabled: e.target.checked }
+                      };
+                      setLocalContent(updatedContent);
+                      await handleSaveToDatabase(updatedContent);
+                    }}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-muted rounded-full peer peer-checked:bg-primary peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                </label>
+              </div>
+            </div>
+
+            {/* Splash Content Fields */}
+            <div className="space-y-4">
+              {renderFieldEditor("splash.buttonText", "ബട്ടൺ ടെക്സ്റ്റ്", localContent.splash?.buttonText || 'Click to Open', async () => {
+                if (!localContent) return;
+                const updatedContent = {
+                  ...localContent,
+                  splash: { ...localContent.splash, buttonText: tempValue }
+                };
+                setLocalContent(updatedContent);
+                setEditingField(null);
+                await handleSaveToDatabase(updatedContent);
+              })}
+              
+              {renderFieldEditor("splash.buttonSubtitle", "ബട്ടൺ സബ്‌ടൈറ്റിൽ", localContent.splash?.buttonSubtitle || '', async () => {
+                if (!localContent) return;
+                const updatedContent = {
+                  ...localContent,
+                  splash: { ...localContent.splash, buttonSubtitle: tempValue }
+                };
+                setLocalContent(updatedContent);
+                setEditingField(null);
+                await handleSaveToDatabase(updatedContent);
+              }, true)}
+
+              {renderFieldEditor("splash.institutionName", "സ്ഥാപനത്തിന്റെ പേര്", localContent.splash?.institutionName || 'ജൗഹറത്തുൽ ഉലൂം സുഫ്ഫ ദർസ്', async () => {
+                if (!localContent) return;
+                const updatedContent = {
+                  ...localContent,
+                  splash: { ...localContent.splash, institutionName: tempValue }
+                };
+                setLocalContent(updatedContent);
+                setEditingField(null);
+                await handleSaveToDatabase(updatedContent);
+              })}
+
+              {renderFieldEditor("splash.institutionSubtitle", "സ്ഥാപനത്തിന്റെ സബ്‌ടൈറ്റിൽ", localContent.splash?.institutionSubtitle || '', async () => {
+                if (!localContent) return;
+                const updatedContent = {
+                  ...localContent,
+                  splash: { ...localContent.splash, institutionSubtitle: tempValue }
+                };
+                setLocalContent(updatedContent);
+                setEditingField(null);
+                await handleSaveToDatabase(updatedContent);
+              })}
+
+              {renderFieldEditor("splash.tagline", "ടാഗ്‌ലൈൻ", localContent.splash?.tagline || '', async () => {
+                if (!localContent) return;
+                const updatedContent = {
+                  ...localContent,
+                  splash: { ...localContent.splash, tagline: tempValue }
+                };
+                setLocalContent(updatedContent);
+                setEditingField(null);
+                await handleSaveToDatabase(updatedContent);
+              }, true)}
+
+              {renderFieldEditor("splash.admissionStatus", "അഡ്മിഷൻ സ്റ്റാറ്റസ് ബാഡ്ജ്", localContent.splash?.admissionStatus || '', async () => {
+                if (!localContent) return;
+                const updatedContent = {
+                  ...localContent,
+                  splash: { ...localContent.splash, admissionStatus: tempValue }
+                };
+                setLocalContent(updatedContent);
+                setEditingField(null);
+                await handleSaveToDatabase(updatedContent);
+              })}
+            </div>
+
+            {/* Celebration Animation Settings */}
+            <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft mt-6">
+              <h3 className="font-medium text-foreground mb-4">🎉 സെലിബ്രേഷൻ ആനിമേഷൻ</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                "Click to Open" ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ ഒരു മനോഹരമായ സ്വാഗത ആനിമേഷൻ കാണിക്കുക
+              </p>
+              
+              {/* Enable/Disable Celebration */}
+              <div className="flex items-center justify-between mb-4 p-3 bg-muted/30 rounded-lg">
+                <div>
+                  <span className="font-medium text-sm">ആനിമേഷൻ പ്രവർത്തനക്ഷമമാക്കുക</span>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={localContent.splash?.celebrationEnabled !== false}
+                    onChange={async (e) => {
+                      const updatedContent = {
+                        ...localContent,
+                        splash: { ...localContent.splash, celebrationEnabled: e.target.checked }
+                      };
+                      setLocalContent(updatedContent);
+                      await handleSaveToDatabase(updatedContent);
+                    }}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-muted rounded-full peer peer-checked:bg-primary peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                </label>
+              </div>
+
+              {/* Duration Selector */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-2">ദൈർഘ്യം (സെക്കൻഡുകൾ)</label>
+                <div className="flex gap-2">
+                  {[2, 3, 4].map((sec) => (
+                    <button
+                      key={sec}
+                      onClick={async () => {
+                        const updatedContent = {
+                          ...localContent,
+                          splash: { ...localContent.splash, celebrationDuration: sec }
+                        };
+                        setLocalContent(updatedContent);
+                        await handleSaveToDatabase(updatedContent);
+                      }}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        (localContent.splash?.celebrationDuration || 3) === sec
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-muted hover:bg-muted/80'
+                      }`}
+                    >
+                      {sec}s
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Intensity Selector */}
+              <div>
+                <label className="block text-sm font-medium mb-2">തീവ്രത</label>
+                <div className="flex gap-2">
+                  {[
+                    { value: 'light', label: 'ലൈറ്റ്', description: 'കുറച്ച് പാർട്ടിക്കിൾസ്' },
+                    { value: 'medium', label: 'മീഡിയം', description: 'കൂടുതൽ പാർട്ടിക്കിൾസ്' }
+                  ].map((option) => (
+                    <button
+                      key={option.value}
+                      onClick={async () => {
+                        const updatedContent = {
+                          ...localContent,
+                          splash: { ...localContent.splash, celebrationIntensity: option.value }
+                        };
+                        setLocalContent(updatedContent);
+                        await handleSaveToDatabase(updatedContent);
+                      }}
+                      className={`flex-1 px-4 py-3 rounded-lg text-sm transition-colors border ${
+                        (localContent.splash?.celebrationIntensity || 'light') === option.value
+                          ? 'bg-primary/10 border-primary text-primary'
+                          : 'bg-muted border-transparent hover:bg-muted/80'
+                      }`}
+                    >
+                      <div className="font-medium">{option.label}</div>
+                      <div className="text-xs text-muted-foreground">{option.description}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Theme & Color Tab */}
+        {activeTab === "theme" && (
+          <div className="space-y-6">
+            <h2 className="font-display text-2xl font-semibold text-foreground">തീം & കളർ സെറ്റിംഗ്സ്</h2>
+            <p className="text-muted-foreground">വെബ്സൈറ്റിന്റെ കളറുകൾ ഇവിടെ മാറ്റാം. മാറ്റങ്ങൾ ഉടൻ ലൈവ് ആകും.</p>
+            
+            <ThemeEditorSection />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// Theme Editor Section Component
+const ThemeEditorSection = () => {
+  const [theme, setTheme] = useState({
+    primaryColor: '210 60% 15%',
+    secondaryColor: '187 65% 45%',
+    accentColor: '43 75% 50%',
+    backgroundColor: '210 55% 12%',
+    cardColor: '210 50% 16%',
+    textPrimary: '210 20% 98%',
+    textSecondary: '210 15% 70%',
+    borderColor: '210 40% 25%'
+  });
+  const [saving, setSaving] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const loadTheme = async () => {
+      const { supabase } = await import('@/integrations/supabase/client');
+      const { data } = await supabase
+        .from('admin_settings')
+        .select('theme')
+        .eq('id', 'global')
+        .maybeSingle();
+      
+      if (data?.theme) {
+        setTheme(prev => ({ ...prev, ...(data.theme as typeof theme) }));
+      }
+      setLoaded(true);
+    };
+    loadTheme();
+  }, []);
+
+  const saveTheme = async () => {
+    setSaving(true);
+    try {
+      const { supabase } = await import('@/integrations/supabase/client');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (supabase.from('admin_settings') as any).upsert({
+        id: 'global',
+        theme,
+        updated_at: new Date().toISOString()
+      });
+      applyThemeToDOM(theme);
+    } catch (error) {
+      console.error('Error saving theme:', error);
+    }
+    setSaving(false);
+  };
+
+  const handleColorChange = (key: string, value: string) => {
+    const newTheme = { ...theme, [key]: value };
+    setTheme(newTheme);
+    // Apply immediately for preview
+    applyThemeToDOM(newTheme);
+  };
+
+  const presetThemes = [
+    { 
+      name: 'നേവി ബ്ലൂ (ഡിഫോൾട്ട്)', 
+      theme: {
+        primaryColor: '210 60% 15%',
+        secondaryColor: '187 65% 45%',
+        accentColor: '43 75% 50%',
+        backgroundColor: '210 55% 12%',
+        cardColor: '210 50% 16%',
+        textPrimary: '210 20% 98%',
+        textSecondary: '210 15% 70%',
+        borderColor: '210 40% 25%'
+      }
+    },
+    { 
+      name: 'എമറാൾഡ് ഗ്രീൻ', 
+      theme: {
+        primaryColor: '160 60% 20%',
+        secondaryColor: '160 50% 40%',
+        accentColor: '43 75% 50%',
+        backgroundColor: '160 40% 10%',
+        cardColor: '160 35% 15%',
+        textPrimary: '160 20% 98%',
+        textSecondary: '160 15% 70%',
+        borderColor: '160 30% 25%'
+      }
+    },
+    { 
+      name: 'റോയൽ പർപ്പിൾ', 
+      theme: {
+        primaryColor: '280 60% 20%',
+        secondaryColor: '280 50% 50%',
+        accentColor: '43 75% 50%',
+        backgroundColor: '280 40% 10%',
+        cardColor: '280 35% 15%',
+        textPrimary: '280 20% 98%',
+        textSecondary: '280 15% 70%',
+        borderColor: '280 30% 25%'
+      }
+    }
+  ];
+
+  if (!loaded) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  const colorFields = [
+    { key: 'primaryColor', label: 'പ്രൈമറി കളർ', desc: 'മെയിൻ ബ്രാൻഡ് കളർ' },
+    { key: 'secondaryColor', label: 'സെക്കൻഡറി കളർ (ടീൽ)', desc: 'ഹൈലൈറ്റുകളും ബട്ടണുകളും' },
+    { key: 'accentColor', label: 'ആക്സന്റ് കളർ (ഗോൾഡ്)', desc: 'ഹെഡിംഗ്സ്, ബാഡ്ജുകൾ' },
+    { key: 'backgroundColor', label: 'ബാക്ക്ഗ്രൗണ്ട്', desc: 'പേജ് ബാക്ക്ഗ്രൗണ്ട്' },
+    { key: 'cardColor', label: 'കാർഡ് കളർ', desc: 'കാർഡുകളുടെ ബാക്ക്ഗ്രൗണ്ട്' },
+    { key: 'textPrimary', label: 'പ്രൈമറി ടെക്സ്റ്റ്', desc: 'ഹെഡിംഗ്സ്, ബോഡി ടെക്സ്റ്റ്' },
+    { key: 'textSecondary', label: 'സെക്കൻഡറി ടെക്സ്റ്റ്', desc: 'സബ്‌ടൈറ്റിലുകൾ, മ്യൂട്ടഡ് ടെക്സ്റ്റ്' },
+    { key: 'borderColor', label: 'ബോർഡർ കളർ', desc: 'കാർഡ് ബോർഡറുകൾ' },
+  ];
+
+  return (
+    <div className="space-y-6">
+      {/* Preset Themes */}
+      <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
+        <h3 className="font-medium text-foreground mb-4">പ്രീസെറ്റ് തീമുകൾ</h3>
+        <div className="grid sm:grid-cols-3 gap-3">
+          {presetThemes.map((preset) => (
+            <button
+              key={preset.name}
+              onClick={() => {
+                setTheme(preset.theme);
+                applyThemeToDOM(preset.theme);
+              }}
+              className="p-4 rounded-xl border border-border hover:border-primary/50 transition-all text-left"
+            >
+              <div className="flex gap-1 mb-2">
+                <div className="w-4 h-4 rounded-full" style={{ background: `hsl(${preset.theme.primaryColor})` }} />
+                <div className="w-4 h-4 rounded-full" style={{ background: `hsl(${preset.theme.secondaryColor})` }} />
+                <div className="w-4 h-4 rounded-full" style={{ background: `hsl(${preset.theme.accentColor})` }} />
+              </div>
+              <span className="text-sm font-medium text-foreground">{preset.name}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Custom Colors */}
+      <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
+        <h3 className="font-medium text-foreground mb-4">കസ്റ്റം കളറുകൾ (HSL ഫോർമാറ്റ്)</h3>
+        <div className="grid sm:grid-cols-2 gap-4">
+          {colorFields.map((field) => (
+            <div key={field.key} className="space-y-2">
+              <label className="text-sm font-medium text-foreground">{field.label}</label>
+              <p className="text-xs text-muted-foreground">{field.desc}</p>
+              <div className="flex gap-2 items-center">
+                <div 
+                  className="w-10 h-10 rounded-lg border border-border flex-shrink-0" 
+                  style={{ background: `hsl(${theme[field.key as keyof typeof theme]})` }} 
+                />
+                <input
+                  type="text"
+                  value={theme[field.key as keyof typeof theme]}
+                  onChange={(e) => handleColorChange(field.key, e.target.value)}
+                  className="flex-1 px-3 py-2 rounded-lg border border-border bg-background text-sm"
+                  placeholder="210 60% 15%"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <Button onClick={saveTheme} className="mt-6 rounded-xl" disabled={saving}>
+          {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+          തീം സേവ് ചെയ്യുക
+        </Button>
       </div>
     </div>
   );
