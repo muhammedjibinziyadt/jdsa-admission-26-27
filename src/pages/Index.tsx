@@ -9,6 +9,7 @@ import GallerySection from "@/components/GallerySection";
 import RouteMapSection from "@/components/RouteMapSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
+import SocialButtons from "@/components/SocialButtons";
 import ApprovedApplications from "@/components/ApprovedApplications";
 import AdmissionFormSection from "@/components/AdmissionFormSection";
 import { useWebsiteContent } from "@/hooks/useWebsiteContent";
@@ -19,7 +20,7 @@ const Index = () => {
   const [showSplash, setShowSplash] = useState(true);
   const { content, loading } = useWebsiteContent();
   const { getApprovedAdmissions } = useAdmissions();
-  const { settings: siteSettings } = useSiteSettings();
+  const { settings: siteSettings } = useSiteSettings(); // This applies theme on load
 
   useEffect(() => {
     const entered = sessionStorage.getItem('hasEntered');
@@ -69,7 +70,8 @@ const Index = () => {
       <RouteMapSection content={content.map} />
       <AdmissionFormSection />
       <ContactSection content={content.contact} />
-      <Footer content={content.footer} contact={content.contact} social={content.social} />
+      <Footer content={content.footer} contact={content.contact} />
+      <SocialButtons links={content.social} />
     </main>
   );
 };
