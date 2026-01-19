@@ -9,16 +9,17 @@ import GallerySection from "@/components/GallerySection";
 import RouteMapSection from "@/components/RouteMapSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
-import SocialButtons from "@/components/SocialButtons";
 import ApprovedApplications from "@/components/ApprovedApplications";
 import AdmissionFormSection from "@/components/AdmissionFormSection";
 import { useWebsiteContent } from "@/hooks/useWebsiteContent";
 import { useAdmissions } from "@/hooks/useAdmissions";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const Index = () => {
   const [showSplash, setShowSplash] = useState(true);
   const { content, loading } = useWebsiteContent();
   const { getApprovedAdmissions } = useAdmissions();
+  const { settings: siteSettings } = useSiteSettings();
 
   useEffect(() => {
     const entered = sessionStorage.getItem('hasEntered');
@@ -27,12 +28,15 @@ const Index = () => {
     }
   }, []);
 
+  // Check if splash screen is disabled
+  const splashEnabled = content?.splash?.enabled !== false;
+
   const handleEnter = () => {
     sessionStorage.setItem('hasEntered', 'true');
     setShowSplash(false);
   };
 
-  if (showSplash) {
+  if (showSplash && splashEnabled) {
     return <SplashScreen onEnter={handleEnter} />;
   }
 
@@ -47,8 +51,8 @@ const Index = () => {
   const approvedApplications = getApprovedAdmissions();
 
   return (
-    <main className="min-h-screen">
-      <Navigation />
+    <main className={`min-h-screen ${siteSettings.animations_enabled ? '' : 'no-animations'}`}>
+      <Navigation content={content} />
       <HeroSection content={content.hero} />
       <AboutSection content={content.about} />
       <CoursesSection 
@@ -65,8 +69,7 @@ const Index = () => {
       <RouteMapSection content={content.map} />
       <AdmissionFormSection />
       <ContactSection content={content.contact} />
-      <Footer content={content.footer} contact={content.contact} />
-      <SocialButtons links={content.social} />
+      <Footer content={content.footer} contact={content.contact} social={content.social} />
     </main>
   );
 };
