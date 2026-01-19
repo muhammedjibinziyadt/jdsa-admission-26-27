@@ -57,7 +57,7 @@ const Index = () => {
       <HeroSection content={content.hero} />
       <AboutSection content={content.about} />
       <CoursesSection 
-        learningItems={content.learningItems} 
+        courses={content.courses} 
         sectionTitle={content.coursesSection?.title}
         sectionSubtitle={content.coursesSection?.subtitle}
         sectionDescription={content.coursesSection?.description}

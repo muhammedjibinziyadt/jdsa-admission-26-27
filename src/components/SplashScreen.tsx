@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useWebsiteContent } from '@/hooks/useWebsiteContent';
 import { CelebrationAnimation } from './CelebrationAnimation';
 
@@ -136,10 +136,50 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
   const { content } = useWebsiteContent();
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const audioLoadedRef = useRef(false);
 
-  // Get splash content with defaults - moved up so it's available for preloading
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoaded(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Play welcome voice announcement
+  const playWelcomeVoice = async (audioUrl: string) => {
+    try {
+      const audio = new Audio(audioUrl);
+      audio.volume = 0.8;
+      await audio.play();
+    } catch (error) {
+      // If audio fails, silently continue - website should still open
+      console.log('Voice announcement failed to play:', error);
+    }
+  };
+
+  const handleEnter = () => {
+    // Play voice announcement if enabled and audio URL exists
+    const voiceEnabled = splashContent.voiceEnabled !== false;
+    const voiceAudioUrl = splashContent.voiceAudioUrl;
+    
+    if (voiceEnabled && voiceAudioUrl) {
+      playWelcomeVoice(voiceAudioUrl);
+    }
+    
+    // Trigger celebration animation
+    setShowCelebration(true);
+    
+    // Start exit after a short delay to show celebration
+    setTimeout(() => {
+      setIsExiting(true);
+    }, 800);
+    
+    // Complete exit after celebration
+    setTimeout(onEnter, 2500);
+  };
+
+  const handleCelebrationComplete = () => {
+    setShowCelebration(false);
+  };
+
+  // Get splash content with defaults
   const defaultSplash = {
     buttonText: 'Click to Open',
     buttonSubtitle: 'ഞങ്ങളുടെ വിദ്യാഭ്യാസ സ്ഥാപനം അറിയാൻ ടാപ് ചെയ്യുക',
@@ -157,92 +197,6 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
   };
   
   const splashContent = { ...defaultSplash, ...content.splash };
-
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoaded(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Preload audio when component mounts and voice is enabled
-  useEffect(() => {
-    const voiceEnabled = splashContent.voiceEnabled !== false;
-    const voiceAudioUrl = splashContent.voiceAudioUrl;
-    
-    if (voiceEnabled && voiceAudioUrl) {
-      // Create and preload audio element
-      const audio = new Audio();
-      audio.preload = 'auto';
-      audio.volume = 0.8;
-      
-      audio.addEventListener('canplaythrough', () => {
-        audioLoadedRef.current = true;
-        console.log('Voice audio preloaded successfully');
-      });
-      
-      audio.addEventListener('error', (e) => {
-        console.log('Voice audio preload error:', e);
-        audioLoadedRef.current = false;
-      });
-      
-      audio.src = voiceAudioUrl;
-      audioRef.current = audio;
-      
-      // Cleanup on unmount
-      return () => {
-        if (audioRef.current) {
-          audioRef.current.pause();
-          audioRef.current = null;
-        }
-      };
-    }
-  }, [splashContent.voiceEnabled, splashContent.voiceAudioUrl]);
-
-  // Handle click with direct audio play (required for mobile browsers)
-  const handleEnter = useCallback(() => {
-    const voiceEnabled = splashContent.voiceEnabled !== false;
-    const voiceAudioUrl = splashContent.voiceAudioUrl;
-    
-    // Play audio synchronously in user gesture handler for mobile compatibility
-    if (voiceEnabled && voiceAudioUrl) {
-      try {
-        // Use preloaded audio if available, otherwise create new
-        const audio = audioRef.current || new Audio(voiceAudioUrl);
-        audio.volume = 0.8;
-        audio.currentTime = 0; // Reset to start
-        
-        // Play immediately - this is directly in click handler (user gesture)
-        const playPromise = audio.play();
-        
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              console.log('Voice announcement started playing');
-            })
-            .catch((error) => {
-              // Log error but don't block website opening
-              console.log('Voice announcement play failed:', error.message);
-            });
-        }
-      } catch (error) {
-        console.log('Voice audio error:', error);
-      }
-    }
-    
-    // Trigger celebration animation
-    setShowCelebration(true);
-    
-    // Start exit after a short delay to show celebration and let audio start
-    setTimeout(() => {
-      setIsExiting(true);
-    }, 800);
-    
-    // Complete exit after celebration
-    setTimeout(onEnter, 2500);
-  }, [splashContent.voiceEnabled, splashContent.voiceAudioUrl, onEnter]);
-
-  const handleCelebrationComplete = () => {
-    setShowCelebration(false);
-  };
 
   if (splashContent.enabled === false) {
     return null;

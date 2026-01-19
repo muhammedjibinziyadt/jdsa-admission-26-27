@@ -3,155 +3,158 @@
 @tailwind utilities;
 
 /* Jawharathul Uloom Suffa Dars - Premium Islamic Education Design System */
-/* Original Emerald Green & Warm Gold Theme */
+/* Deep Navy Blue & Teal Theme - All colors in HSL format */
 
-@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Sans+Malayalam:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
 @layer base {
   :root {
-    /* Original Emerald Green Background */
-    --background: 160 35% 18%;
-    --foreground: 45 100% 96%;
+    /* Primary - Deep Islamic Navy Blue (knowledge, depth, trust) */
+    --primary: 210 60% 15%;
+    --primary-foreground: 210 20% 98%;
 
-    /* Card - Slightly lighter emerald */
-    --card: 160 40% 22%;
-    --card-foreground: 45 100% 96%;
+    /* Secondary - Elegant Teal/Cyan (highlights, accents) */
+    --secondary: 187 65% 45%;
+    --secondary-foreground: 210 60% 10%;
+
+    /* Background - Deep Navy Gradient Base */
+    --background: 210 55% 12%;
+    --foreground: 210 15% 92%;
+
+    /* Card - Slightly lighter navy */
+    --card: 210 50% 16%;
+    --card-foreground: 210 15% 92%;
 
     /* Popover */
-    --popover: 160 40% 20%;
-    --popover-foreground: 45 100% 96%;
+    --popover: 210 50% 14%;
+    --popover-foreground: 210 15% 92%;
 
-    /* Primary - Warm Gold */
-    --primary: 45 90% 55%;
-    --primary-foreground: 160 35% 15%;
+    /* Muted - Soft navy tone */
+    --muted: 210 45% 20%;
+    --muted-foreground: 210 15% 70%;
 
-    /* Secondary - Lighter emerald */
-    --secondary: 160 30% 28%;
-    --secondary-foreground: 45 100% 96%;
-
-    /* Muted */
-    --muted: 160 25% 25%;
-    --muted-foreground: 45 30% 75%;
-
-    /* Accent - Gold */
-    --accent: 45 85% 50%;
-    --accent-foreground: 160 35% 15%;
+    /* Accent - Teal highlight */
+    --accent: 187 60% 40%;
+    --accent-foreground: 210 60% 10%;
 
     /* Destructive */
-    --destructive: 0 62.8% 50%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
 
-    /* Border & Input */
-    --border: 160 30% 30%;
-    --input: 160 30% 30%;
-    --ring: 45 90% 55%;
+    /* Border & Input - Subtle navy borders */
+    --border: 210 40% 25%;
+    --input: 210 40% 22%;
+    --ring: 187 65% 45%;
 
     --radius: 0.75rem;
 
-    /* Custom Gradients - Original */
-    --navy-gradient: linear-gradient(135deg, hsl(160, 35%, 18%), hsl(160, 40%, 22%));
-    --teal-gradient: linear-gradient(135deg, hsl(170, 50%, 30%), hsl(160, 40%, 25%));
-    --gold-gradient: linear-gradient(135deg, hsl(45, 90%, 55%), hsl(40, 85%, 50%));
-    --hero-overlay: linear-gradient(135deg, hsla(160, 35%, 15%, 0.92), hsla(160, 40%, 18%, 0.88));
-    --section-gradient: linear-gradient(180deg, hsl(160, 35%, 18%), hsl(160, 38%, 20%));
+    /* Custom Gradients - Navy & Teal */
+    --navy-gradient: linear-gradient(135deg, hsl(210 60% 12%), hsl(210 55% 18%));
+    --teal-gradient: linear-gradient(135deg, hsl(187 65% 40%), hsl(187 55% 50%));
+    --gold-gradient: linear-gradient(135deg, hsl(43 75% 50%), hsl(45 80% 60%));
+    --hero-overlay: linear-gradient(135deg, hsla(210, 60%, 8%, 0.95), hsla(210, 50%, 15%, 0.88));
+    --section-gradient: linear-gradient(180deg, hsl(210 55% 10%), hsl(210 50% 14%));
 
     /* Premium Shadows */
-    --shadow-soft: 0 4px 20px -4px hsla(160, 40%, 10%, 0.3);
-    --shadow-elevated: 0 12px 40px -8px hsla(160, 40%, 10%, 0.4);
-    --shadow-teal: 0 8px 30px -6px hsla(170, 60%, 35%, 0.3);
-    --shadow-gold: 0 8px 30px -6px hsla(45, 80%, 50%, 0.25);
-    --shadow-glow: 0 0 30px -5px hsla(45, 90%, 55%, 0.3);
+    --shadow-soft: 0 4px 20px -4px hsla(210, 50%, 5%, 0.4);
+    --shadow-elevated: 0 12px 40px -8px hsla(210, 50%, 5%, 0.5);
+    --shadow-teal: 0 8px 30px -6px hsla(187, 65%, 45%, 0.3);
+    --shadow-gold: 0 8px 30px -6px hsla(43, 75%, 50%, 0.25);
+    --shadow-glow: 0 0 30px -5px hsla(187, 65%, 45%, 0.4);
 
     /* Sidebar */
-    --sidebar-background: 160 35% 15%;
-    --sidebar-foreground: 45 100% 96%;
-    --sidebar-primary: 45 90% 55%;
-    --sidebar-primary-foreground: 160 35% 15%;
-    --sidebar-accent: 160 30% 25%;
-    --sidebar-accent-foreground: 45 100% 96%;
-    --sidebar-border: 160 30% 28%;
-    --sidebar-ring: 45 90% 55%;
-
-    /* Charts */
-    --chart-1: 45 90% 55%;
-    --chart-2: 160 40% 35%;
-    --chart-3: 45 70% 45%;
-    --chart-4: 160 35% 40%;
-    --chart-5: 45 60% 40%;
-
-    --sidebar: 160 35% 15%;
-    --font-sans: 'Poppins', 'Noto Sans Malayalam', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    --font-serif: 'Amiri', 'Noto Sans Malayalam', ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
-    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-    --shadow-2xs: 0 1px 2px 0px hsla(160, 40%, 10%, 0.15);
-    --shadow-xs: 0 2px 4px 0px hsla(160, 40%, 10%, 0.2);
-    --shadow-sm: 0 4px 6px -1px hsla(160, 40%, 10%, 0.25);
-    --shadow: 0 6px 10px -2px hsla(160, 40%, 10%, 0.3);
-    --shadow-md: 0 10px 15px -3px hsla(160, 40%, 10%, 0.35);
-    --shadow-lg: 0 15px 25px -5px hsla(160, 40%, 10%, 0.4);
-    --shadow-xl: 0 20px 40px -8px hsla(160, 40%, 10%, 0.45);
-    --shadow-2xl: 0 30px 60px -12px hsla(160, 40%, 10%, 0.5);
+    --sidebar-background: 210 55% 10%;
+    --sidebar-foreground: 210 15% 92%;
+    --sidebar-primary: 187 65% 45%;
+    --sidebar-primary-foreground: 210 60% 10%;
+    --sidebar-accent: 210 45% 22%;
+    --sidebar-accent-foreground: 210 15% 92%;
+    --sidebar-border: 210 40% 25%;
+    --sidebar-ring: 187 65% 45%;
+    --chart-1: 187 65% 45%;
+    --chart-2: 43 75% 50%;
+    --chart-3: 210 50% 35%;
+    --chart-4: 160 50% 40%;
+    --chart-5: 280 50% 50%;
+    --sidebar: 210 55% 10%;
+    --font-sans: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+    --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+    --font-mono: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    --shadow-2xs: 0 1px 2px 0px hsla(210, 50%, 5%, 0.3);
+    --shadow-xs: 0 2px 4px 0px hsla(210, 50%, 5%, 0.35);
+    --shadow-sm: 0 4px 6px -1px hsla(210, 50%, 5%, 0.4);
+    --shadow: 0 6px 10px -2px hsla(210, 50%, 5%, 0.45);
+    --shadow-md: 0 10px 15px -3px hsla(210, 50%, 5%, 0.5);
+    --shadow-lg: 0 15px 25px -5px hsla(210, 50%, 5%, 0.55);
+    --shadow-xl: 0 20px 40px -8px hsla(210, 50%, 5%, 0.6);
+    --shadow-2xl: 0 30px 60px -12px hsla(210, 50%, 5%, 0.7);
     --tracking-normal: 0em;
     --spacing: 0.25rem;
   }
 
   .dark {
-    /* Dark mode - Same emerald theme */
-    --background: 160 35% 12%;
-    --foreground: 45 100% 96%;
+    /* Dark mode uses same premium navy theme (already dark) */
+    --background: 210 60% 8%;
+    --foreground: 210 15% 95%;
 
-    --card: 160 40% 18%;
-    --card-foreground: 45 100% 96%;
+    --card: 210 55% 12%;
+    --card-foreground: 210 15% 95%;
 
-    --popover: 160 40% 16%;
-    --popover-foreground: 45 100% 96%;
+    --popover: 210 55% 10%;
+    --popover-foreground: 210 15% 95%;
 
-    --primary: 45 90% 55%;
-    --primary-foreground: 160 35% 15%;
+    --primary: 187 65% 50%;
+    --primary-foreground: 210 60% 8%;
 
-    --secondary: 160 30% 22%;
-    --secondary-foreground: 45 100% 96%;
+    --secondary: 210 45% 25%;
+    --secondary-foreground: 210 15% 95%;
 
-    --muted: 160 25% 20%;
-    --muted-foreground: 45 30% 70%;
+    --muted: 210 45% 18%;
+    --muted-foreground: 210 15% 65%;
 
-    --accent: 45 85% 50%;
-    --accent-foreground: 160 35% 15%;
+    --accent: 187 60% 45%;
+    --accent-foreground: 210 60% 8%;
 
-    --destructive: 0 55% 45%;
+    --destructive: 0 62% 40%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 160 30% 25%;
-    --input: 160 30% 22%;
-    --ring: 45 90% 55%;
+    --border: 210 40% 22%;
+    --input: 210 40% 18%;
+    --ring: 187 65% 50%;
 
-    --hero-overlay: linear-gradient(135deg, hsla(160, 35%, 10%, 0.95), hsla(160, 40%, 12%, 0.90));
+    --hero-overlay: linear-gradient(135deg, hsla(210, 60%, 5%, 0.97), hsla(210, 50%, 10%, 0.92));
 
-    --chart-1: 45 90% 55%;
-    --chart-2: 160 40% 35%;
-    --chart-3: 45 70% 45%;
-    --chart-4: 160 35% 40%;
-    --chart-5: 45 60% 40%;
+    --chart-1: 187 65% 50%;
+    --chart-2: 43 75% 55%;
+    --chart-3: 210 50% 40%;
+    --chart-4: 160 50% 45%;
+    --chart-5: 280 50% 55%;
 
-    --sidebar: 160 35% 12%;
-    --sidebar-foreground: 45 100% 96%;
-    --sidebar-primary: 45 90% 55%;
-    --sidebar-primary-foreground: 160 35% 15%;
-    --sidebar-accent: 160 30% 20%;
-    --sidebar-accent-foreground: 45 100% 96%;
-    --sidebar-border: 160 30% 25%;
-    --sidebar-ring: 45 90% 55%;
+    --sidebar: 210 60% 6%;
+    --sidebar-foreground: 210 15% 95%;
+    --sidebar-primary: 187 65% 50%;
+    --sidebar-primary-foreground: 210 60% 8%;
+    --sidebar-accent: 210 45% 18%;
+    --sidebar-accent-foreground: 210 15% 95%;
+    --sidebar-border: 210 40% 22%;
+    --sidebar-ring: 187 65% 50%;
 
     --radius: 0.75rem;
 
-    --shadow-2xs: 0 1px 2px 0px hsla(160, 40%, 5%, 0.3);
-    --shadow-xs: 0 2px 4px 0px hsla(160, 40%, 5%, 0.35);
-    --shadow-sm: 0 4px 6px -1px hsla(160, 40%, 5%, 0.4);
-    --shadow: 0 6px 10px -2px hsla(160, 40%, 5%, 0.45);
-    --shadow-md: 0 10px 15px -3px hsla(160, 40%, 5%, 0.5);
-    --shadow-lg: 0 15px 25px -5px hsla(160, 40%, 5%, 0.55);
-    --shadow-xl: 0 20px 40px -8px hsla(160, 40%, 5%, 0.6);
-    --shadow-2xl: 0 30px 60px -12px hsla(160, 40%, 5%, 0.7);
+    --shadow-2xs: 0 1px 2px 0px hsla(210, 50%, 2%, 0.4);
+    --shadow-xs: 0 2px 4px 0px hsla(210, 50%, 2%, 0.45);
+    --shadow-sm: 0 4px 6px -1px hsla(210, 50%, 2%, 0.5);
+    --shadow: 0 6px 10px -2px hsla(210, 50%, 2%, 0.55);
+    --shadow-md: 0 10px 15px -3px hsla(210, 50%, 2%, 0.6);
+    --shadow-lg: 0 15px 25px -5px hsla(210, 50%, 2%, 0.65);
+    --shadow-xl: 0 20px 40px -8px hsla(210, 50%, 2%, 0.7);
+    --shadow-2xl: 0 30px 60px -12px hsla(210, 50%, 2%, 0.8);
   }
 }
 
@@ -166,89 +169,88 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Poppins', 'Noto Sans Malayalam', sans-serif;
-    background: hsl(160 35% 18%);
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(180deg, hsl(210 55% 10%) 0%, hsl(210 50% 14%) 50%, hsl(210 55% 12%) 100%);
     min-height: 100vh;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', 'Noto Sans Malayalam', sans-serif;
-    font-weight: 600;
+    font-family: 'Playfair Display', serif;
   }
 }
 
 @layer components {
-  /* Hero section styling - Emerald overlay */
+  /* Hero section styling - Navy overlay */
   .hero-gradient {
     background: var(--hero-overlay);
   }
 
   /* Gold text for emphasis */
   .gold-text {
-    background: linear-gradient(135deg, hsl(45 90% 55%), hsl(40 85% 50%));
+    background: var(--gold-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
   .gold-border {
-    border-color: hsl(45 80% 55%);
+    border-color: hsl(43 75% 50%);
   }
 
   .gold-bg {
     background: var(--gold-gradient);
   }
 
-  /* Teal gradient */
+  /* Teal gradient for accents */
   .teal-gradient {
     background: var(--teal-gradient);
   }
 
-  /* Navy gradient - Emerald */
+  /* Navy gradient for sections */
   .navy-gradient {
     background: var(--navy-gradient);
   }
 
-  /* Emerald gradient */
+  /* Legacy emerald support - now maps to teal */
   .emerald-gradient {
-    background: linear-gradient(135deg, hsl(160, 35%, 18%), hsl(160, 40%, 25%));
+    background: var(--teal-gradient);
   }
 
   .cream-gradient {
-    background: linear-gradient(180deg, hsl(45 80% 92%), hsl(45 70% 88%));
+    background: linear-gradient(180deg, hsl(210 50% 16%), hsl(210 45% 20%));
   }
 
-  /* Flowing shape decorations - Emerald & Gold */
+  /* Flowing shape decorations */
   .flowing-shape {
     position: absolute;
     border-radius: 50%;
     filter: blur(80px);
-    opacity: 0.15;
+    opacity: 0.3;
   }
 
   .flowing-shape-1 {
-    background: hsl(170 50% 40% / 0.3);
+    background: hsl(187 65% 45% / 0.2);
   }
 
   .flowing-shape-2 {
-    background: hsl(45 80% 55% / 0.25);
+    background: hsl(43 75% 50% / 0.15);
   }
 
   .flowing-shape-3 {
-    background: hsl(160 40% 30% / 0.3);
+    background: hsl(210 50% 30% / 0.25);
   }
 
-  /* Card hover effects */
+  /* Card hover effects with teal glow */
   .card-hover {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .card-hover:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-elevated);
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-elevated), var(--shadow-teal);
   }
 
-  /* Premium button glow effect - Gold */
+  /* Premium button glow effect */
   .btn-glow {
     position: relative;
     overflow: hidden;
@@ -259,7 +261,7 @@
     content: '';
     position: absolute;
     inset: -2px;
-    background: linear-gradient(135deg, hsl(45 90% 55%), hsl(40 85% 50%));
+    background: linear-gradient(135deg, hsl(187 65% 45%), hsl(187 55% 55%));
     border-radius: inherit;
     z-index: -1;
     opacity: 0;
@@ -271,24 +273,24 @@
   }
 
   .btn-glow:hover {
-    box-shadow: var(--shadow-gold);
+    box-shadow: var(--shadow-glow);
   }
 
-  /* Decorative Islamic pattern - Gold */
+  /* Decorative Islamic pattern - Navy themed */
   .islamic-pattern {
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30z' fill='none' stroke='%23D4AF37' stroke-opacity='0.15' stroke-width='1'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30z' fill='none' stroke='%231FA2B8' stroke-opacity='0.08' stroke-width='1'/%3E%3C/svg%3E");
   }
 
   /* Section divider wave */
   .section-wave {
-    background: linear-gradient(180deg, transparent 0%, hsl(160 35% 18%) 100%);
+    background: linear-gradient(180deg, transparent 0%, hsl(210 55% 12%) 100%);
   }
 
-  /* Glass morphism effect - Emerald tint */
+  /* Glass morphism effect */
   .glass-card {
-    background: hsla(160, 40%, 22%, 0.85);
+    background: hsla(210, 50%, 18%, 0.6);
     backdrop-filter: blur(12px);
-    border: 1px solid hsla(45, 80%, 55%, 0.2);
+    border: 1px solid hsla(210, 40%, 30%, 0.5);
   }
 }
 
@@ -376,10 +378,10 @@
 
   @keyframes glow {
     0%, 100% {
-      box-shadow: 0 0 20px hsla(45, 80%, 55%, 0.2);
+      box-shadow: 0 0 20px hsla(187, 65%, 45%, 0.3);
     }
     50% {
-      box-shadow: 0 0 40px hsla(45, 80%, 55%, 0.35);
+      box-shadow: 0 0 40px hsla(187, 65%, 45%, 0.5);
     }
   }
 
