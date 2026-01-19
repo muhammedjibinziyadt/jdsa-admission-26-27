@@ -14,30 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      admin_activity_logs: {
-        Row: {
-          action: string
-          admin_username: string
-          created_at: string
-          details: Json | null
-          id: string
-        }
-        Insert: {
-          action: string
-          admin_username: string
-          created_at?: string
-          details?: Json | null
-          id?: string
-        }
-        Update: {
-          action?: string
-          admin_username?: string
-          created_at?: string
-          details?: Json | null
-          id?: string
-        }
-        Relationships: []
-      }
       admin_credentials: {
         Row: {
           created_at: string
@@ -62,42 +38,6 @@ export type Database = {
         }
         Relationships: []
       }
-      admin_settings: {
-        Row: {
-          animations_enabled: boolean
-          id: string
-          layout: Json
-          maintenance_mode: boolean
-          seo: Json
-          theme: Json
-          typography: Json
-          updated_at: string
-          updated_by: string | null
-        }
-        Insert: {
-          animations_enabled?: boolean
-          id?: string
-          layout?: Json
-          maintenance_mode?: boolean
-          seo?: Json
-          theme?: Json
-          typography?: Json
-          updated_at?: string
-          updated_by?: string | null
-        }
-        Update: {
-          animations_enabled?: boolean
-          id?: string
-          layout?: Json
-          maintenance_mode?: boolean
-          seo?: Json
-          theme?: Json
-          typography?: Json
-          updated_at?: string
-          updated_by?: string | null
-        }
-        Relationships: []
-      }
       admissions: {
         Row: {
           aadhaar_number: string | null
@@ -106,7 +46,6 @@ export type Database = {
           age: number | null
           approved: boolean | null
           birth_certificate_number: string | null
-          confirmation_document_url: string | null
           created_at: string
           date_of_birth: string | null
           gender: string | null
@@ -130,7 +69,6 @@ export type Database = {
           age?: number | null
           approved?: boolean | null
           birth_certificate_number?: string | null
-          confirmation_document_url?: string | null
           created_at?: string
           date_of_birth?: string | null
           gender?: string | null
@@ -154,7 +92,6 @@ export type Database = {
           age?: number | null
           approved?: boolean | null
           birth_certificate_number?: string | null
-          confirmation_document_url?: string | null
           created_at?: string
           date_of_birth?: string | null
           gender?: string | null
@@ -194,30 +131,6 @@ export type Database = {
         }
         Relationships: []
       }
-      user_roles: {
-        Row: {
-          created_at: string
-          created_by: string | null
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
-        }
-        Relationships: []
-      }
       website_content: {
         Row: {
           content: Json
@@ -241,16 +154,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
-      app_role: "super_admin" | "admin" | "moderator"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -377,8 +284,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      app_role: ["super_admin", "admin", "moderator"],
-    },
+    Enums: {},
   },
 } as const

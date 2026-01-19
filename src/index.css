@@ -393,10 +393,4 @@
       opacity: 0.7;
     }
   }
-
-  /* Disable animations when admin setting is off */
-  .no-animations * {
-    animation: none !important;
-    transition: none !important;
-  }
 }
