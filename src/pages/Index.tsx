@@ -65,8 +65,7 @@ const Index = () => {
       <RouteMapSection content={content.map} />
       <AdmissionFormSection />
       <ContactSection content={content.contact} />
-      <Footer content={content.footer} contact={content.contact} />
-      <SocialButtons links={content.social} />
+      <Footer content={content.footer} contact={content.contact} social={content.social} />
     </main>
   );
 };
