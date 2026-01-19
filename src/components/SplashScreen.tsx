@@ -111,7 +111,7 @@ const NotebookLines = ({ className = "" }: { className?: string }) => (
   </svg>
 );
 
-// Knowledge Sparkles Component - Updated to teal/gold theme
+// Knowledge Sparkles Component
 const KnowledgeSparkles = () => (
   <div className="absolute inset-0 overflow-hidden pointer-events-none">
     {[...Array(8)].map((_, i) => (
@@ -121,7 +121,7 @@ const KnowledgeSparkles = () => (
         style={{
           left: `${10 + i * 12}%`,
           top: `${15 + (i % 4) * 20}%`,
-          background: i % 2 === 0 ? 'hsla(187, 65%, 50%, 0.5)' : 'hsla(43, 75%, 55%, 0.4)',
+          background: 'hsla(145, 60%, 70%, 0.4)',
           animation: `sparkle 4s ease-in-out infinite`,
           animationDelay: `${i * 0.6}s`
         }}
@@ -186,7 +186,7 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
         
         @keyframes sparkle {
           0%, 100% { opacity: 0.2; transform: scale(1); }
-          50% { opacity: 0.8; transform: scale(1.8); }
+          50% { opacity: 0.7; transform: scale(1.8); }
         }
         
         @keyframes drawLine {
@@ -213,18 +213,13 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
         }
 
         @keyframes pulse-glow {
-          0%, 100% { box-shadow: 0 0 20px hsla(187, 65%, 45%, 0.3), 0 4px 15px hsla(210, 55%, 15%, 0.4); }
-          50% { box-shadow: 0 0 35px hsla(187, 65%, 45%, 0.5), 0 4px 20px hsla(210, 55%, 15%, 0.5); }
+          0%, 100% { box-shadow: 0 0 20px hsla(145, 60%, 50%, 0.3), 0 4px 15px hsla(145, 55%, 35%, 0.4); }
+          50% { box-shadow: 0 0 35px hsla(145, 60%, 50%, 0.5), 0 4px 20px hsla(145, 55%, 35%, 0.5); }
         }
 
         @keyframes badge-pulse {
           0%, 100% { transform: scale(1); }
           50% { transform: scale(1.05); }
-        }
-
-        @keyframes shimmer {
-          0% { background-position: -200% 0; }
-          100% { background-position: 200% 0; }
         }
       `}</style>
 
@@ -233,21 +228,21 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
           isExiting ? 'opacity-0' : 'opacity-100'
         }`}
       >
-        {/* Deep navy blue gradient background */}
+        {/* Dark green gradient background */}
         <div 
           className={`absolute inset-0 transition-all duration-600 ${
             isExiting ? 'backdrop-blur-none' : 'backdrop-blur-md'
           }`}
           style={{ 
-            background: 'linear-gradient(135deg, hsl(210, 60%, 8%) 0%, hsl(210, 55%, 14%) 50%, hsl(210, 50%, 12%) 100%)'
+            background: 'linear-gradient(135deg, hsl(145, 45%, 15%) 0%, hsl(150, 40%, 20%) 50%, hsl(145, 50%, 18%) 100%)'
           }}
         />
 
-        {/* Animated teal & gold blob decorations */}
+        {/* Animated green blob decorations */}
         <div 
           className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full"
           style={{ 
-            background: 'radial-gradient(circle, hsla(187, 65%, 45%, 0.2) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, hsla(145, 55%, 40%, 0.25) 0%, transparent 70%)',
             animation: 'blobMove 18s ease-in-out infinite',
             filter: 'blur(60px)'
           }}
@@ -255,7 +250,7 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
         <div 
           className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full"
           style={{ 
-            background: 'radial-gradient(circle, hsla(43, 75%, 50%, 0.15) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, hsla(150, 50%, 45%, 0.2) 0%, transparent 70%)',
             animation: 'blobMove 22s ease-in-out infinite reverse',
             filter: 'blur(70px)'
           }}
@@ -263,7 +258,7 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
         <div 
           className="absolute top-1/3 left-1/4 w-[300px] h-[300px] rounded-full"
           style={{ 
-            background: 'radial-gradient(circle, hsla(187, 55%, 50%, 0.12) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, hsla(140, 50%, 50%, 0.15) 0%, transparent 70%)',
             animation: 'blobMove 15s ease-in-out infinite',
             animationDelay: '-7s',
             filter: 'blur(50px)'
@@ -273,11 +268,11 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
         {/* Educational decorative elements */}
         {isLoaded && !isExiting && (
           <>
-            <FloatingBook className="w-16 h-16 top-[12%] left-[8%] text-teal-light/25" delay={0} />
-            <FloatingBook className="w-12 h-12 bottom-[18%] right-[6%] text-gold-light/20" delay={2.5} />
-            <AnimatedPencil className="w-12 h-12 top-[22%] right-[12%] text-teal-light/20" />
-            <GraduationCap className="w-20 h-20 bottom-[12%] left-[10%] text-gold-light/15" />
-            <NotebookLines className="w-28 h-16 top-[55%] right-[4%] text-teal-light/15" />
+            <FloatingBook className="w-16 h-16 top-[12%] left-[8%] text-white/20" delay={0} />
+            <FloatingBook className="w-12 h-12 bottom-[18%] right-[6%] text-white/15" delay={2.5} />
+            <AnimatedPencil className="w-12 h-12 top-[22%] right-[12%] text-white/15" />
+            <GraduationCap className="w-20 h-20 bottom-[12%] left-[10%] text-white/15" />
+            <NotebookLines className="w-28 h-16 top-[55%] right-[4%] text-white/10" />
             <KnowledgeSparkles />
           </>
         )}
@@ -296,37 +291,36 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
           <div 
             className="relative overflow-hidden rounded-3xl"
             style={{
-              background: 'linear-gradient(145deg, hsla(210, 50%, 18%, 0.95) 0%, hsla(210, 55%, 14%, 0.98) 100%)',
-              boxShadow: '0 30px 100px -15px hsla(210, 60%, 5%, 0.7), 0 15px 40px -10px hsla(210, 50%, 10%, 0.5)',
-              border: '1px solid hsla(187, 50%, 40%, 0.2)'
+              background: 'linear-gradient(145deg, hsla(0, 0%, 100%, 0.98) 0%, hsla(145, 20%, 98%, 0.95) 100%)',
+              boxShadow: '0 30px 100px -15px hsla(145, 60%, 10%, 0.6), 0 15px 40px -10px hsla(145, 40%, 15%, 0.4)'
             }}
           >
-            {/* Teal gradient header with decorative elements */}
+            {/* Green gradient header with decorative elements */}
             <div 
               className="relative h-36 overflow-hidden"
               style={{
-                background: 'linear-gradient(145deg, hsl(187, 60%, 38%) 0%, hsl(187, 55%, 32%) 50%, hsl(210, 50%, 25%) 100%)'
+                background: 'linear-gradient(145deg, hsl(145, 50%, 35%) 0%, hsl(150, 45%, 28%) 50%, hsl(145, 55%, 38%) 100%)'
               }}
             >
               {/* Decorative circles */}
               <div 
                 className="absolute -top-24 -right-24 w-64 h-64 rounded-full"
                 style={{ 
-                  background: 'radial-gradient(circle, hsla(187, 65%, 55%, 0.35) 0%, transparent 70%)',
+                  background: 'radial-gradient(circle, hsla(145, 55%, 50%, 0.4) 0%, transparent 70%)',
                   animation: 'blobMove 12s ease-in-out infinite'
                 }}
               />
               <div 
                 className="absolute -top-12 right-16 w-44 h-44 rounded-full"
                 style={{ 
-                  background: 'radial-gradient(circle, hsla(43, 75%, 55%, 0.25) 0%, transparent 70%)',
+                  background: 'radial-gradient(circle, hsla(150, 50%, 55%, 0.35) 0%, transparent 70%)',
                   animation: 'blobMove 15s ease-in-out infinite reverse'
                 }}
               />
               <div 
                 className="absolute top-8 left-8 w-36 h-36 rounded-full"
                 style={{ 
-                  background: 'radial-gradient(circle, hsla(187, 55%, 60%, 0.2) 0%, transparent 70%)',
+                  background: 'radial-gradient(circle, hsla(140, 55%, 60%, 0.25) 0%, transparent 70%)',
                   animation: 'blobMove 10s ease-in-out infinite',
                   animationDelay: '-4s'
                 }}
@@ -335,14 +329,12 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
               {/* Centered book icon */}
               <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
                 <div 
-                  className="w-20 h-20 rounded-2xl flex items-center justify-center"
+                  className="w-20 h-20 rounded-2xl flex items-center justify-center bg-white"
                   style={{
-                    background: 'linear-gradient(145deg, hsl(210, 50%, 16%), hsl(210, 55%, 12%))',
-                    boxShadow: '0 10px 30px -8px hsla(210, 50%, 5%, 0.6), 0 0 20px hsla(187, 65%, 45%, 0.2)',
-                    border: '1px solid hsla(187, 50%, 40%, 0.3)'
+                    boxShadow: '0 10px 30px -8px hsla(145, 50%, 25%, 0.5)'
                   }}
                 >
-                  <svg viewBox="0 0 32 32" className="w-10 h-10" style={{ color: 'hsl(187, 65%, 50%)' }}>
+                  <svg viewBox="0 0 32 32" className="w-10 h-10" style={{ color: 'hsl(145, 50%, 35%)' }}>
                     <path 
                       d="M4 6v20c0 1 1 2 2 2h20c1 0 2-1 2-2V6c0-1-1-2-2-2H6c-1 0-2 1-2 2z" 
                       fill="none" 
@@ -367,18 +359,13 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
               {splashContent.admissionStatus && (
                 <div className="flex justify-center mb-4">
                   <span 
-                    className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-semibold"
+                    className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-semibold text-white"
                     style={{ 
-                      background: 'linear-gradient(135deg, hsl(43, 75%, 50%) 0%, hsl(45, 80%, 55%) 100%)',
-                      color: 'hsl(210, 60%, 10%)',
-                      animation: 'badge-pulse 3s ease-in-out infinite',
-                      boxShadow: '0 4px 15px hsla(43, 75%, 50%, 0.3)'
+                      background: 'linear-gradient(135deg, hsl(145, 55%, 40%) 0%, hsl(150, 50%, 35%) 100%)',
+                      animation: 'badge-pulse 3s ease-in-out infinite'
                     }}
                   >
-                    <span 
-                      className="w-2 h-2 rounded-full animate-pulse"
-                      style={{ background: 'hsl(210, 60%, 15%)' }}
-                    ></span>
+                    <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
                     {splashContent.admissionStatus}
                   </span>
                 </div>
@@ -387,7 +374,7 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
               {/* Institution name */}
               <h1 
                 className="text-2xl md:text-3xl font-bold text-center mb-2 leading-tight"
-                style={{ color: 'hsl(210, 20%, 95%)' }}
+                style={{ color: 'hsl(145, 35%, 22%)' }}
               >
                 {splashContent.institutionName}
               </h1>
@@ -395,7 +382,7 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
               {splashContent.institutionSubtitle && (
                 <h2 
                   className="text-lg md:text-xl text-center mb-2"
-                  style={{ color: 'hsl(187, 60%, 55%)' }}
+                  style={{ color: 'hsl(145, 40%, 35%)' }}
                 >
                   {splashContent.institutionSubtitle}
                 </h2>
@@ -405,13 +392,13 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
               {splashContent.tagline && (
                 <p 
                   className="text-center text-sm mb-8 leading-relaxed"
-                  style={{ color: 'hsl(210, 15%, 70%)' }}
+                  style={{ color: 'hsl(0, 0%, 45%)' }}
                 >
                   {splashContent.tagline}
                 </p>
               )}
 
-              {/* Premium Teal Button with glow */}
+              {/* Professional Green Button with glow */}
               <button
                 onClick={handleEnter}
                 className="group relative w-full overflow-hidden rounded-xl transition-all duration-300 active:scale-[0.97]"
@@ -420,13 +407,13 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
                 <div 
                   className="relative py-4 px-6 transition-all duration-300 group-hover:brightness-110"
                   style={{
-                    background: 'linear-gradient(180deg, hsl(187, 60%, 45%) 0%, hsl(187, 65%, 38%) 100%)',
-                    boxShadow: 'inset 0 1px 0 hsla(0, 0%, 100%, 0.2), inset 0 -1px 0 hsla(187, 70%, 25%, 0.3)'
+                    background: 'linear-gradient(180deg, hsl(145, 50%, 42%) 0%, hsl(145, 55%, 35%) 100%)',
+                    boxShadow: 'inset 0 1px 0 hsla(0, 0%, 100%, 0.25), inset 0 -1px 0 hsla(145, 60%, 20%, 0.2)'
                   }}
                 >
                   {/* Inner highlight */}
                   <div 
-                    className="absolute inset-x-4 top-1 h-1/4 rounded-full opacity-30"
+                    className="absolute inset-x-4 top-1 h-1/4 rounded-full opacity-40"
                     style={{ background: 'linear-gradient(180deg, white, transparent)' }}
                   />
                   
@@ -451,9 +438,8 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
                   href="tel:+919544124059" 
                   className="flex items-center gap-1.5 px-4 py-2 rounded-full transition-all duration-200 hover:scale-105"
                   style={{ 
-                    backgroundColor: 'hsla(187, 50%, 35%, 0.2)',
-                    color: 'hsl(187, 55%, 60%)',
-                    border: '1px solid hsla(187, 50%, 40%, 0.3)'
+                    backgroundColor: 'hsl(145, 25%, 94%)',
+                    color: 'hsl(145, 40%, 30%)'
                   }}
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -465,9 +451,8 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
                   href="tel:+918281102606" 
                   className="flex items-center gap-1.5 px-4 py-2 rounded-full transition-all duration-200 hover:scale-105"
                   style={{ 
-                    backgroundColor: 'hsla(187, 50%, 35%, 0.2)',
-                    color: 'hsl(187, 55%, 60%)',
-                    border: '1px solid hsla(187, 50%, 40%, 0.3)'
+                    backgroundColor: 'hsl(145, 25%, 94%)',
+                    color: 'hsl(145, 40%, 30%)'
                   }}
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -476,16 +461,6 @@ export function SplashScreen({ onEnter }: SplashScreenProps) {
                   <span className="text-sm font-medium">+91 82811 02606</span>
                 </a>
               </div>
-
-              {/* Subtitle text */}
-              {splashContent.buttonSubtitle && (
-                <p 
-                  className="text-center text-xs mt-4"
-                  style={{ color: 'hsl(210, 15%, 55%)' }}
-                >
-                  {splashContent.buttonSubtitle}
-                </p>
-              )}
             </div>
           </div>
         </div>
