@@ -38,7 +38,7 @@ const Admin = () => {
   const { uploadImage, deleteImage, uploading } = useImageUpload();
   const { admissions, updateAdmission, deleteAdmission, newAdmissionCount } = useAdmissions();
   
-  const [activeTab, setActiveTab] = useState<"hero" | "about" | "courses" | "benefits" | "gallery" | "contact" | "map" | "footer" | "social" | "admissions" | "form">("hero");
+  const [activeTab, setActiveTab] = useState<"hero" | "about" | "courses" | "benefits" | "gallery" | "suffa" | "contact" | "map" | "footer" | "social" | "admissions" | "form">("hero");
   
   // Local editing state
   const [localContent, setLocalContent] = useState<WebsiteContent | null>(null);
@@ -335,6 +335,7 @@ const Admin = () => {
     { id: "courses" as const, label: "കോഴ്‌സുകൾ", icon: BookOpen },
     { id: "benefits" as const, label: "നേട്ടങ്ങൾ", icon: Users },
     { id: "gallery" as const, label: "ഗാലറി", icon: ImageIcon },
+    { id: "suffa" as const, label: "സുഫ്ഫ", icon: BookOpen },
     { id: "contact" as const, label: "കോൺടാക്ട്", icon: Phone },
     { id: "map" as const, label: "മാപ്പ്", icon: MapPin },
     { id: "footer" as const, label: "ഫൂട്ടർ", icon: FileText },
@@ -909,6 +910,101 @@ const Admin = () => {
                   <p>ഇമേജുകൾ ഇല്ല. മുകളിൽ നിന്ന് അപ്‌ലോഡ് ചെയ്യുക.</p>
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* Suffa Tab */}
+        {activeTab === "suffa" && (
+          <div className="space-y-6">
+            <h2 className="font-display text-2xl font-semibold text-foreground">സുഫ്ഫ പേജ് സെറ്റിംഗ്സ്</h2>
+            <div className="space-y-4">
+              {renderFieldEditor("suffa.title", "ടൈറ്റിൽ", localContent.suffa?.title || 'സുഫ്ഫ', async () => {
+                const updatedContent = {
+                  ...localContent,
+                  suffa: { ...localContent.suffa, title: tempValue }
+                };
+                setLocalContent(updatedContent);
+                setEditingField(null);
+                await handleSaveToDatabase(updatedContent);
+              })}
+              {renderFieldEditor("suffa.subtitle", "സബ്‌ടൈറ്റിൽ", localContent.suffa?.subtitle || '', async () => {
+                const updatedContent = {
+                  ...localContent,
+                  suffa: { ...localContent.suffa, subtitle: tempValue }
+                };
+                setLocalContent(updatedContent);
+                setEditingField(null);
+                await handleSaveToDatabase(updatedContent);
+              })}
+              {renderFieldEditor("suffa.description", "വിവരണം", localContent.suffa?.description || '', async () => {
+                const updatedContent = {
+                  ...localContent,
+                  suffa: { ...localContent.suffa, description: tempValue }
+                };
+                setLocalContent(updatedContent);
+                setEditingField(null);
+                await handleSaveToDatabase(updatedContent);
+              }, true)}
+            </div>
+
+            {/* Suffa Image Upload */}
+            <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft mt-6">
+              <h3 className="font-medium text-foreground mb-4">സുഫ്ഫ പേജ് ഇമേജുകൾ</h3>
+              <div className="space-y-4">
+                <div className="flex gap-4">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={async (e) => {
+                      const files = e.target.files;
+                      if (!files || files.length === 0) return;
+                      const uploadPromises = Array.from(files).map(async (file, index) => {
+                        const url = await uploadImage(file, 'suffa');
+                        if (url) {
+                          return { id: String(Date.now() + index), url, alt: `Suffa Image ${(localContent.suffa?.images || []).length + index + 1}` };
+                        }
+                        return null;
+                      });
+                      const uploadedImages = (await Promise.all(uploadPromises)).filter(img => img !== null);
+                      if (uploadedImages.length > 0) {
+                        const updatedContent = {
+                          ...localContent,
+                          suffa: { ...localContent.suffa, images: [...(localContent.suffa?.images || []), ...uploadedImages] }
+                        };
+                        setLocalContent(updatedContent);
+                        await handleSaveToDatabase(updatedContent);
+                      }
+                      e.target.value = '';
+                    }}
+                    className="hidden"
+                    id="suffa-upload"
+                    multiple
+                  />
+                  <label htmlFor="suffa-upload" className="flex-1 flex flex-col items-center justify-center p-6 border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-primary/50 transition-colors">
+                    {uploading ? <Loader2 className="w-8 h-8 text-primary animate-spin mb-2" /> : <Upload className="w-8 h-8 text-muted-foreground mb-2" />}
+                    <span className="text-sm text-muted-foreground">{uploading ? 'അപ്‌ലോഡ് ചെയ്യുന്നു...' : 'ഇമേജുകൾ അപ്‌ലോഡ് ചെയ്യുക'}</span>
+                  </label>
+                </div>
+              </div>
+              <div className="grid sm:grid-cols-3 gap-4 mt-4">
+                {(localContent.suffa?.images || []).map((image: { id: string; url: string; alt: string }) => (
+                  <div key={image.id} className="group relative bg-muted rounded-xl overflow-hidden">
+                    <img src={image.url} alt={image.alt} className="w-full aspect-video object-cover" />
+                    <div className="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <Button size="sm" variant="destructive" onClick={async () => {
+                        await deleteImage(image.url);
+                        const updatedImages = (localContent.suffa?.images || []).filter((img: { id: string }) => img.id !== image.id);
+                        const updatedContent = { ...localContent, suffa: { ...localContent.suffa, images: updatedImages } };
+                        setLocalContent(updatedContent);
+                        await handleSaveToDatabase(updatedContent);
+                      }} className="rounded-lg" disabled={saving}>
+                        <Trash2 className="w-4 h-4 mr-1" />ഡിലീറ്റ്
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}

@@ -1,20 +1,23 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Settings } from "lucide-react";
 
 const navLinks = [
-  { href: "#home", label: "ഹോം" },
-  { href: "#about", label: "ഞങ്ങളെക്കുറിച്ച്" },
-  { href: "#courses", label: "കോഴ്‌സുകൾ" },
-  { href: "#gallery", label: "ഗാലറി" },
-  { href: "#route-map", label: "റൂട്ട് മാപ്പ്" },
-  { href: "#admission-form", label: "അഡ്മിഷൻ" },
-  { href: "#contact", label: "ബന്ധപ്പെടുക" },
+  { href: "#home", label: "ഹോം", isSection: true },
+  { href: "#about", label: "ഞങ്ങളെക്കുറിച്ച്", isSection: true },
+  { href: "#courses", label: "കോഴ്‌സുകൾ", isSection: true },
+  { href: "/suffa", label: "സുഫ്ഫ", isSection: false },
+  { href: "#gallery", label: "ഗാലറി", isSection: true },
+  { href: "#route-map", label: "റൂട്ട് മാപ്പ്", isSection: true },
+  { href: "#admission-form", label: "അഡ്മിഷൻ", isSection: true },
+  { href: "#contact", label: "ബന്ധപ്പെടുക", isSection: true },
 ];
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,11 +27,31 @@ const Navigation = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-      setIsMobileMenuOpen(false);
+  const handleNavClick = (link: typeof navLinks[0]) => {
+    setIsMobileMenuOpen(false);
+    
+    if (!link.isSection) {
+      // It's a page link, navigate directly
+      navigate(link.href);
+      return;
+    }
+
+    // It's a section link
+    if (location.pathname !== '/') {
+      // Navigate to home first, then scroll
+      navigate('/');
+      setTimeout(() => {
+        const element = document.querySelector(link.href);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
+    } else {
+      // Already on home, just scroll
+      const element = document.querySelector(link.href);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
     }
   };
 
@@ -44,7 +67,7 @@ const Navigation = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <button
-            onClick={() => scrollToSection("#home")}
+            onClick={() => handleNavClick({ href: "#home", label: "ഹോം", isSection: true })}
             className="flex items-center gap-3 group"
           >
             <div className="w-12 h-12 rounded-xl emerald-gradient flex items-center justify-center shadow-soft group-hover:shadow-elevated transition-shadow">
@@ -65,7 +88,7 @@ const Navigation = () => {
             {navLinks.map((link) => (
               <button
                 key={link.href}
-                onClick={() => scrollToSection(link.href)}
+                onClick={() => handleNavClick(link)}
                 className={`px-4 py-2 rounded-xl font-medium transition-all duration-300 hover:bg-primary/10 ${
                   isScrolled
                     ? "text-foreground hover:text-primary"
@@ -107,7 +130,7 @@ const Navigation = () => {
               {navLinks.map((link) => (
                 <button
                   key={link.href}
-                  onClick={() => scrollToSection(link.href)}
+                  onClick={() => handleNavClick(link)}
                   className="block w-full text-left px-4 py-3 rounded-xl font-medium text-foreground hover:bg-muted hover:text-primary transition-all"
                 >
                   {link.label}
