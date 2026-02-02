@@ -61,6 +61,11 @@ const defaultContent = {
     admissionStatus: 'അഡ്മിഷൻ ആരംഭിച്ചു',
     enabled: true
   },
+  heroSlider: {
+    images: [] as { id: string; url: string; alt: string }[],
+    autoPlayInterval: 5000,
+    enabled: true
+  },
   coursesSection: {
     title: 'പഠന പാഠ്യന്തര വിഷയങ്ങൾ',
     subtitle: 'പഠന പദ്ധതികൾ',

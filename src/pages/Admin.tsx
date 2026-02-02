@@ -23,7 +23,9 @@ import {
   Check,
   Eye,
   EyeOff,
-  ClipboardList
+  ClipboardList,
+  Play,
+  GripVertical
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWebsiteContent, WebsiteContent } from "@/hooks/useWebsiteContent";
@@ -38,7 +40,7 @@ const Admin = () => {
   const { uploadImage, deleteImage, uploading } = useImageUpload();
   const { admissions, updateAdmission, deleteAdmission, newAdmissionCount } = useAdmissions();
   
-  const [activeTab, setActiveTab] = useState<"hero" | "about" | "courses" | "benefits" | "gallery" | "suffa" | "contact" | "map" | "footer" | "social" | "admissions" | "form">("hero");
+  const [activeTab, setActiveTab] = useState<"hero" | "slider" | "about" | "courses" | "benefits" | "gallery" | "suffa" | "contact" | "map" | "footer" | "social" | "admissions" | "form">("hero");
   
   // Local editing state
   const [localContent, setLocalContent] = useState<WebsiteContent | null>(null);
@@ -51,9 +53,11 @@ const Admin = () => {
   const [editingBenefit, setEditingBenefit] = useState<string | null>(null);
   const [tempBenefit, setTempBenefit] = useState<WebsiteContent['benefits'][0] | null>(null);
   const [newImageAlt, setNewImageAlt] = useState("");
+  const [newSliderImageAlt, setNewSliderImageAlt] = useState("");
   const [saving, setSaving] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const sliderFileInputRef = useRef<HTMLInputElement>(null);
 
   // Sync local content with database content
   useEffect(() => {
@@ -276,6 +280,60 @@ const Admin = () => {
     await handleSaveToDatabase(updatedContent);
   };
 
+  // Slider handlers with file upload (supports multiple files)
+  const handleSliderImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0 || !localContent) return;
+
+    const uploadPromises = Array.from(files).map(async (file, index) => {
+      const url = await uploadImage(file, 'slider');
+      if (url) {
+        return { 
+          id: String(Date.now() + index), 
+          url, 
+          alt: newSliderImageAlt || `Slider Image ${(localContent.heroSlider?.images?.length || 0) + index + 1}` 
+        };
+      }
+      return null;
+    });
+
+    const uploadedImages = (await Promise.all(uploadPromises)).filter(img => img !== null);
+    
+    if (uploadedImages.length > 0) {
+      const existingImages = localContent.heroSlider?.images || [];
+      const updatedContent = { 
+        ...localContent, 
+        heroSlider: {
+          ...localContent.heroSlider,
+          images: [...existingImages, ...uploadedImages],
+          enabled: true
+        }
+      };
+      setLocalContent(updatedContent);
+      setNewSliderImageAlt("");
+      await handleSaveToDatabase(updatedContent);
+    }
+    if (sliderFileInputRef.current) sliderFileInputRef.current.value = '';
+  };
+
+  const handleDeleteSliderImage = async (id: string) => {
+    if (!localContent) return;
+    const image = localContent.heroSlider?.images?.find(img => img.id === id);
+    if (image) {
+      await deleteImage(image.url);
+    }
+    const updatedImages = localContent.heroSlider?.images?.filter(img => img.id !== id) || [];
+    const updatedContent = { 
+      ...localContent, 
+      heroSlider: {
+        ...localContent.heroSlider,
+        images: updatedImages
+      }
+    };
+    setLocalContent(updatedContent);
+    await handleSaveToDatabase(updatedContent);
+  };
+
   // Contact handlers
   const handleSaveContactField = async (field: keyof WebsiteContent['contact']) => {
     if (!localContent) return;
@@ -331,6 +389,7 @@ const Admin = () => {
 
   const tabs = [
     { id: "hero" as const, label: "ഹീറോ", icon: Home },
+    { id: "slider" as const, label: "സ്ലൈഡർ", icon: Play },
     { id: "about" as const, label: "അബൗട്ട്", icon: MessageSquare },
     { id: "courses" as const, label: "കോഴ്‌സുകൾ", icon: BookOpen },
     { id: "benefits" as const, label: "നേട്ടങ്ങൾ", icon: Users },
@@ -472,6 +531,178 @@ const Admin = () => {
               {renderFieldEditor("hero.phone1", "ഫോൺ 1", localContent.hero.phone1, () => handleSaveHeroField("phone1"))}
               {renderFieldEditor("hero.phone2", "ഫോൺ 2", localContent.hero.phone2, () => handleSaveHeroField("phone2"))}
               {renderFieldEditor("hero.ctaText", "CTA ബട്ടൺ ടെക്സ്റ്റ്", localContent.hero.ctaText, () => handleSaveHeroField("ctaText"))}
+            </div>
+          </div>
+        )}
+
+        {/* Slider Tab */}
+        {activeTab === "slider" && (
+          <div className="space-y-6">
+            <h2 className="font-display text-2xl font-semibold text-foreground">ഹീറോ സ്ലൈഡർ</h2>
+            
+            {/* Slider Settings */}
+            <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
+              <h3 className="font-medium text-foreground mb-4">സ്ലൈഡർ സെറ്റിംഗ്സ്</h3>
+              <div className="flex flex-wrap gap-6">
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={localContent.heroSlider?.enabled !== false}
+                    onChange={async (e) => {
+                      const updatedContent = {
+                        ...localContent,
+                        heroSlider: { 
+                          ...localContent.heroSlider,
+                          enabled: e.target.checked 
+                        }
+                      };
+                      setLocalContent(updatedContent);
+                      await handleSaveToDatabase(updatedContent);
+                    }}
+                    className="w-5 h-5 rounded border-border text-primary focus:ring-primary"
+                  />
+                  <div>
+                    <span className="text-foreground font-medium">സ്ലൈഡർ എനേബിൾ ചെയ്യുക</span>
+                    <p className="text-xs text-muted-foreground">ഇമേജുകൾ ഉണ്ടെങ്കിൽ ഹീറോ സെക്ഷനു പകരം സ്ലൈഡർ കാണിക്കും</p>
+                  </div>
+                </label>
+                <div className="flex items-center gap-3">
+                  <label className="text-foreground font-medium">ഓട്ടോപ്ലേ ഇന്റർവൽ (സെക്കന്റ്):</label>
+                  <select
+                    value={(localContent.heroSlider?.autoPlayInterval || 5000) / 1000}
+                    onChange={async (e) => {
+                      const updatedContent = {
+                        ...localContent,
+                        heroSlider: { 
+                          ...localContent.heroSlider,
+                          autoPlayInterval: parseInt(e.target.value) * 1000 
+                        }
+                      };
+                      setLocalContent(updatedContent);
+                      await handleSaveToDatabase(updatedContent);
+                    }}
+                    className="px-4 py-2 rounded-xl border border-border bg-background"
+                  >
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="10">10</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            {/* Slider Image Upload */}
+            <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
+              <h3 className="font-medium text-foreground mb-4">സ്ലൈഡർ ഇമേജ് അപ്‌ലോഡ് ചെയ്യുക</h3>
+              <div className="space-y-4">
+                <input
+                  type="text"
+                  placeholder="ഇമേജ് വിവരണം (Alt Text)"
+                  value={newSliderImageAlt}
+                  onChange={(e) => setNewSliderImageAlt(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl border border-border bg-background"
+                />
+                <div className="flex gap-4">
+                  <input
+                    ref={sliderFileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleSliderImageUpload}
+                    className="hidden"
+                    id="slider-upload"
+                    multiple
+                  />
+                  <label
+                    htmlFor="slider-upload"
+                    className="flex-1 flex flex-col items-center justify-center p-8 border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-primary/50 hover:bg-muted/30 transition-colors"
+                  >
+                    {uploading ? (
+                      <Loader2 className="w-10 h-10 text-primary animate-spin mb-2" />
+                    ) : (
+                      <Upload className="w-10 h-10 text-muted-foreground mb-2" />
+                    )}
+                    <span className="text-sm text-muted-foreground">
+                      {uploading ? 'അപ്‌ലോഡ് ചെയ്യുന്നു...' : 'ക്ലിക്ക് ചെയ്ത് ഇമേജ് തിരഞ്ഞെടുക്കുക'}
+                    </span>
+                    <span className="text-xs text-muted-foreground mt-1">JPG, PNG, WEBP (ഒന്നിലധികം തിരഞ്ഞെടുക്കാം)</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {/* Slider Images Grid with Reorder */}
+            <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-medium text-foreground">സ്ലൈഡർ ഇമേജുകൾ ({localContent.heroSlider?.images?.length || 0})</h3>
+                <p className="text-xs text-muted-foreground">ഓർഡർ മാറ്റാൻ ഇമേജുകൾ ഡ്രാഗ് ചെയ്യുക</p>
+              </div>
+              {(!localContent.heroSlider?.images || localContent.heroSlider.images.length === 0) ? (
+                <div className="text-center py-12 text-muted-foreground">
+                  <ImageIcon className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                  <p>ഇമേജുകൾ ഇല്ല. മുകളിൽ ഇമേജുകൾ അപ്‌ലോഡ് ചെയ്യുക.</p>
+                </div>
+              ) : (
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {localContent.heroSlider.images.map((image, index) => (
+                    <div 
+                      key={image.id} 
+                      draggable
+                      onDragStart={(e) => {
+                        e.dataTransfer.setData('text/plain', index.toString());
+                        e.currentTarget.classList.add('opacity-50');
+                      }}
+                      onDragEnd={(e) => {
+                        e.currentTarget.classList.remove('opacity-50');
+                      }}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.currentTarget.classList.add('ring-2', 'ring-primary');
+                      }}
+                      onDragLeave={(e) => {
+                        e.currentTarget.classList.remove('ring-2', 'ring-primary');
+                      }}
+                      onDrop={async (e) => {
+                        e.preventDefault();
+                        e.currentTarget.classList.remove('ring-2', 'ring-primary');
+                        const fromIndex = parseInt(e.dataTransfer.getData('text/plain'));
+                        const toIndex = index;
+                        if (fromIndex !== toIndex) {
+                          const newImages = [...(localContent.heroSlider?.images || [])];
+                          const [movedItem] = newImages.splice(fromIndex, 1);
+                          newImages.splice(toIndex, 0, movedItem);
+                          const updatedContent = { 
+                            ...localContent, 
+                            heroSlider: {
+                              ...localContent.heroSlider,
+                              images: newImages
+                            }
+                          };
+                          setLocalContent(updatedContent);
+                          await handleSaveToDatabase(updatedContent);
+                        }
+                      }}
+                      className="group relative bg-muted rounded-xl overflow-hidden border border-border/50 cursor-move transition-all"
+                    >
+                      <div className="absolute top-2 left-2 z-10 flex items-center gap-1">
+                        <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-medium">
+                          {index + 1}
+                        </div>
+                        <GripVertical className="w-4 h-4 text-primary-foreground/70" />
+                      </div>
+                      <img src={image.url} alt={image.alt} className="w-full aspect-video object-cover" />
+                      <div className="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                        <Button size="sm" variant="destructive" onClick={() => handleDeleteSliderImage(image.id)} className="rounded-lg" disabled={saving}>
+                          <Trash2 className="w-4 h-4 mr-1" />ഡിലീറ്റ്
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}

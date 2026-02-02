@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { SplashScreen } from '@/components/SplashScreen';
 import Navigation from "@/components/Navigation";
+import HeroSlider from "@/components/HeroSlider";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
 import CoursesSection from "@/components/CoursesSection";
@@ -9,7 +10,6 @@ import GallerySection from "@/components/GallerySection";
 import RouteMapSection from "@/components/RouteMapSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
-import SocialButtons from "@/components/SocialButtons";
 import ApprovedApplications from "@/components/ApprovedApplications";
 import AdmissionFormSection from "@/components/AdmissionFormSection";
 import { useWebsiteContent } from "@/hooks/useWebsiteContent";
@@ -46,10 +46,19 @@ const Index = () => {
 
   const approvedApplications = getApprovedAdmissions();
 
+  const hasSliderImages = content.heroSlider?.enabled && content.heroSlider?.images && content.heroSlider.images.length > 0;
+
   return (
     <main className="min-h-screen">
       <Navigation />
-      <HeroSection content={content.hero} />
+      {hasSliderImages ? (
+        <HeroSlider 
+          images={content.heroSlider.images} 
+          autoPlayInterval={content.heroSlider?.autoPlayInterval || 5000}
+        />
+      ) : (
+        <HeroSection content={content.hero} />
+      )}
       <AboutSection content={content.about} />
       <CoursesSection 
         courses={content.courses} 
