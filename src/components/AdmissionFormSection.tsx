@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Send, User, CheckCircle, Upload, X, File, Loader2, FileText, ScrollText, Image, FileCheck } from "lucide-react";
+import { Send, User, CheckCircle, Upload, X, File, Loader2, FileText, ScrollText, Image, FileCheck, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
@@ -33,6 +33,8 @@ const AdmissionFormSection = () => {
     tcCopy: null
   });
   const [submitted, setSubmitted] = useState(false);
+  const [submittedStudentName, setSubmittedStudentName] = useState("");
+  const [submittedApplicationId, setSubmittedApplicationId] = useState("");
   const [rulesApproved, setRulesApproved] = useState(false);
   const [showRulesError, setShowRulesError] = useState(false);
 
@@ -187,6 +189,8 @@ const AdmissionFormSection = () => {
       const result = await submitAdmission(admissionData);
       
       if (result) {
+        setSubmittedStudentName(formData.studentName || '');
+        setSubmittedApplicationId(result.id?.substring(0, 8).toUpperCase() || '');
         setSubmitted(true);
         setFormData({});
         setDocuments({
@@ -209,6 +213,25 @@ const AdmissionFormSection = () => {
     }
   };
 
+  const handleWhatsAppShare = () => {
+    const institutionName = "JDSA - Jawharathul Da'awa Suffa Academy";
+    const websiteUrl = window.location.origin;
+    
+    const message = `✅ അഡ്മിഷൻ അപേക്ഷ വിജയകരമായി സമർപ്പിച്ചു!
+
+🏫 സ്ഥാപനം: ${institutionName}
+👤 വിദ്യാർത്ഥി: ${submittedStudentName}
+📋 അപേക്ഷ നമ്പർ: ${submittedApplicationId}
+
+🔗 വെബ്സൈറ്റ്: ${websiteUrl}
+
+ഇസ്ലാമിക വിദ്യാഭ്യാസത്തിലേക്ക് സ്വാഗതം!`;
+
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
   if (submitted) {
     return (
       <section id="admission-form" className="py-20 bg-muted/30">
@@ -221,13 +244,36 @@ const AdmissionFormSection = () => {
               <h2 className="font-display text-2xl font-bold text-foreground mb-4">
                 അപേക്ഷ സമർപ്പിച്ചു!
               </h2>
-              <p className="text-muted-foreground mb-8">
+              <p className="text-muted-foreground mb-4">
                 നിങ്ങളുടെ അഡ്മിഷൻ അപേക്ഷ വിജയകരമായി ലഭിച്ചു. 
                 ഉടൻ തന്നെ ഞങ്ങൾ നിങ്ങളെ ബന്ധപ്പെടുന്നതാണ്.
               </p>
+              
+              {/* Application Reference */}
+              {submittedApplicationId && (
+                <div className="bg-muted/50 rounded-xl p-4 mb-6">
+                  <p className="text-sm text-muted-foreground mb-1">അപേക്ഷ നമ്പർ</p>
+                  <p className="font-mono text-lg font-bold text-foreground">{submittedApplicationId}</p>
+                </div>
+              )}
+
+              {/* WhatsApp Share Button */}
               <Button 
-                onClick={() => setSubmitted(false)} 
-                className="rounded-xl gold-bg text-primary"
+                onClick={handleWhatsAppShare}
+                className="w-full mb-4 rounded-xl bg-[#25D366] hover:bg-[#128C7E] text-white font-semibold py-6"
+              >
+                <MessageCircle className="w-5 h-5 mr-2" />
+                WhatsApp-ൽ പങ്കിടുക
+              </Button>
+              
+              <Button 
+                onClick={() => {
+                  setSubmitted(false);
+                  setSubmittedStudentName("");
+                  setSubmittedApplicationId("");
+                }} 
+                variant="outline"
+                className="w-full rounded-xl"
               >
                 പുതിയ അപേക്ഷ സമർപ്പിക്കുക
               </Button>

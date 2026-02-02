@@ -25,7 +25,8 @@ import {
   EyeOff,
   ClipboardList,
   Play,
-  GripVertical
+  GripVertical,
+  Download
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWebsiteContent, WebsiteContent } from "@/hooks/useWebsiteContent";
@@ -33,6 +34,7 @@ import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import { useAdmissions } from "@/hooks/useAdmissions";
 import AdminLogin from "@/components/AdminLogin";
+import { generateApplicationPDF } from "@/utils/generateApplicationPDF";
 
 const Admin = () => {
   const { isAuthenticated, loading: authLoading, login, logout } = useAdminAuth();
@@ -1554,7 +1556,15 @@ const Admin = () => {
                           </div>
                           
                           {/* Actions */}
-                          <div className="flex gap-2 flex-shrink-0">
+                          <div className="flex gap-2 flex-shrink-0 flex-wrap">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => generateApplicationPDF(admission)}
+                              className="rounded-lg text-primary border-primary hover:bg-primary/10"
+                            >
+                              <Download className="w-4 h-4 mr-1" />PDF
+                            </Button>
                             <Button
                               size="sm"
                               variant={admission.approved ? "outline" : "default"}
