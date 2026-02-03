@@ -35,6 +35,7 @@ import { useImageUpload } from "@/hooks/useImageUpload";
 import { useAdmissions } from "@/hooks/useAdmissions";
 import AdminLogin from "@/components/AdminLogin";
 import { generateApplicationPDF } from "@/utils/generateApplicationPDF";
+import AdminSettings from "@/components/AdminSettings";
 
 const Admin = () => {
   const { isAuthenticated, loading: authLoading, login, logout } = useAdminAuth();
@@ -42,7 +43,7 @@ const Admin = () => {
   const { uploadImage, deleteImage, uploading } = useImageUpload();
   const { admissions, updateAdmission, deleteAdmission, newAdmissionCount } = useAdmissions();
   
-  const [activeTab, setActiveTab] = useState<"hero" | "slider" | "about" | "courses" | "benefits" | "gallery" | "suffa" | "contact" | "map" | "footer" | "social" | "admissions" | "form">("hero");
+  const [activeTab, setActiveTab] = useState<"hero" | "slider" | "about" | "courses" | "benefits" | "gallery" | "suffa" | "contact" | "map" | "footer" | "social" | "admissions" | "form" | "settings">("hero");
   
   // Local editing state
   const [localContent, setLocalContent] = useState<WebsiteContent | null>(null);
@@ -403,6 +404,7 @@ const Admin = () => {
     { id: "social" as const, label: "സോഷ്യൽ", icon: Share2 },
     { id: "form" as const, label: "ഫോം സെറ്റിംഗ്സ്", icon: ClipboardList },
     { id: "admissions" as const, label: "അപേക്ഷകൾ", icon: ClipboardList, badge: newAdmissionCount },
+    { id: "settings" as const, label: "ക്രമീകരണം", icon: Settings },
   ];
 
   if (loading || !localContent) {
@@ -1619,6 +1621,9 @@ const Admin = () => {
             )}
           </div>
         )}
+
+        {/* Settings Tab */}
+        {activeTab === "settings" && <AdminSettings />}
       </div>
     </div>
   );
