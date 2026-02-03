@@ -26,7 +26,8 @@ import {
   ClipboardList,
   Play,
   GripVertical,
-  Download
+  Download,
+  Search
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWebsiteContent, WebsiteContent } from "@/hooks/useWebsiteContent";
@@ -36,6 +37,7 @@ import { useAdmissions } from "@/hooks/useAdmissions";
 import AdminLogin from "@/components/AdminLogin";
 import { generateApplicationPDF } from "@/utils/generateApplicationPDF";
 import AdminSettings from "@/components/AdminSettings";
+import { Switch } from "@/components/ui/switch";
 
 const Admin = () => {
   const { isAuthenticated, loading: authLoading, login, logout } = useAdminAuth();
@@ -43,7 +45,7 @@ const Admin = () => {
   const { uploadImage, deleteImage, uploading } = useImageUpload();
   const { admissions, updateAdmission, deleteAdmission, newAdmissionCount } = useAdmissions();
   
-  const [activeTab, setActiveTab] = useState<"hero" | "slider" | "about" | "courses" | "benefits" | "gallery" | "suffa" | "contact" | "map" | "footer" | "social" | "admissions" | "form" | "settings">("hero");
+  const [activeTab, setActiveTab] = useState<"hero" | "slider" | "about" | "courses" | "benefits" | "gallery" | "suffa" | "contact" | "map" | "footer" | "social" | "admissions" | "form" | "search" | "settings">("hero");
   
   // Local editing state
   const [localContent, setLocalContent] = useState<WebsiteContent | null>(null);
@@ -403,6 +405,7 @@ const Admin = () => {
     { id: "footer" as const, label: "ഫൂട്ടർ", icon: FileText },
     { id: "social" as const, label: "സോഷ്യൽ", icon: Share2 },
     { id: "form" as const, label: "ഫോം സെറ്റിംഗ്സ്", icon: ClipboardList },
+    { id: "search" as const, label: "സെർച്ച്", icon: Search },
     { id: "admissions" as const, label: "അപേക്ഷകൾ", icon: ClipboardList, badge: newAdmissionCount },
     { id: "settings" as const, label: "ക്രമീകരണം", icon: Settings },
   ];
@@ -1619,6 +1622,112 @@ const Admin = () => {
                 })}
               </div>
             )}
+          </div>
+        )}
+
+        {/* Search Settings Tab */}
+        {activeTab === "search" && (
+          <div className="space-y-6">
+            <h2 className="font-display text-2xl font-semibold text-foreground">സെർച്ച് സെറ്റിംഗ്സ്</h2>
+            
+            {/* Enable/Disable Search */}
+            <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="text-sm font-medium text-foreground block mb-1">സെർച്ച് പ്രവർത്തനക്ഷമമാക്കുക</label>
+                  <p className="text-xs text-muted-foreground">വെബ്സൈറ്റിൽ ഗ്ലോബൽ സെർച്ച് ബാർ കാണിക്കുക</p>
+                </div>
+                <Switch
+                  checked={localContent.searchSettings?.enabled !== false}
+                  onCheckedChange={async (checked) => {
+                    const updatedContent = {
+                      ...localContent,
+                      searchSettings: {
+                        ...localContent.searchSettings,
+                        enabled: checked,
+                        excludedSections: localContent.searchSettings?.excludedSections || []
+                      }
+                    };
+                    setLocalContent(updatedContent);
+                    await handleSaveToDatabase(updatedContent);
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Exclude Sections */}
+            <div className="bg-card rounded-2xl p-6 border border-border/50 shadow-soft">
+              <label className="text-sm font-medium text-foreground block mb-4">സെർച്ചിൽ നിന്ന് ഒഴിവാക്കേണ്ട സെക്ഷനുകൾ</label>
+              <p className="text-xs text-muted-foreground mb-4">സെർച്ച് ഫലങ്ങളിൽ നിന്ന് ഒഴിവാക്കേണ്ട സെക്ഷനുകൾ തിരഞ്ഞെടുക്കുക</p>
+              
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {[
+                  { id: 'home', label: 'ഹോം' },
+                  { id: 'about', label: 'ഞങ്ങളെക്കുറിച്ച്' },
+                  { id: 'courses', label: 'കോഴ്‌സുകൾ' },
+                  { id: 'benefits', label: 'നേട്ടങ്ങൾ' },
+                  { id: 'gallery', label: 'ഗാലറി' },
+                  { id: 'routeMap', label: 'റൂട്ട് മാപ്പ്' },
+                  { id: 'contact', label: 'ബന്ധപ്പെടുക' },
+                  { id: 'admission', label: 'അഡ്മിഷൻ' },
+                  { id: 'suffa', label: 'സുഫ്ഫ' }
+                ].map((section) => {
+                  const isExcluded = localContent.searchSettings?.excludedSections?.includes(section.id) || false;
+                  return (
+                    <label
+                      key={section.id}
+                      className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
+                        isExcluded
+                          ? 'border-primary bg-primary/5'
+                          : 'border-border hover:border-primary/50'
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isExcluded}
+                        onChange={async (e) => {
+                          const currentExcluded = localContent.searchSettings?.excludedSections || [];
+                          let newExcluded: string[];
+                          
+                          if (e.target.checked) {
+                            newExcluded = [...currentExcluded, section.id];
+                          } else {
+                            newExcluded = currentExcluded.filter(id => id !== section.id);
+                          }
+                          
+                          const updatedContent = {
+                            ...localContent,
+                            searchSettings: {
+                              ...localContent.searchSettings,
+                              enabled: localContent.searchSettings?.enabled !== false,
+                              excludedSections: newExcluded
+                            }
+                          };
+                          setLocalContent(updatedContent);
+                          await handleSaveToDatabase(updatedContent);
+                        }}
+                        className="w-4 h-4 rounded border-border text-primary focus:ring-primary"
+                      />
+                      <span className="text-sm font-medium text-foreground">{section.label}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+            
+            {/* Search Info */}
+            <div className="bg-muted/30 rounded-2xl p-6 border border-border/30">
+              <h3 className="font-medium text-foreground mb-3 flex items-center gap-2">
+                <Search className="w-5 h-5 text-primary" />
+                സെർച്ച് വിവരങ്ങൾ
+              </h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>• തത്സമയ സെർച്ച് - ടൈപ്പ് ചെയ്യുമ്പോൾ ഫലങ്ങൾ കാണിക്കും</li>
+                <li>• മലയാളവും ഇംഗ്ലീഷും സപ്പോർട്ട് ചെയ്യുന്നു</li>
+                <li>• പേജുകൾ, സെക്ഷനുകൾ, കോഴ്‌സുകൾ, ഗാലറി എന്നിവയിൽ തിരയും</li>
+                <li>• മൊബൈൽ, ഡെസ്ക്ടോപ്പ് എന്നിവയിൽ പ്രവർത്തിക്കും</li>
+              </ul>
+            </div>
           </div>
         )}
 

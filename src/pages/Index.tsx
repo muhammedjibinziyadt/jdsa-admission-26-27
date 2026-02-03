@@ -50,7 +50,7 @@ const Index = () => {
 
   return (
     <main className="min-h-screen">
-      <Navigation />
+      <Navigation content={content} />
       {hasSliderImages ? (
         <HeroSlider 
           images={content.heroSlider.images} 

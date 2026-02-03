@@ -52,6 +52,10 @@ const defaultInstitutionRules = `സ്ഥാപനത്തിന്റെ അ�
 10. മേൽപ്പറഞ്ഞ നിയമങ്ങൾ ലംഘിച്ചാൽ ശിക്ഷാനടപടി സ്വീകരിക്കും.`;
 
 const defaultContent = {
+  searchSettings: {
+    enabled: true,
+    excludedSections: [] as string[]
+  },
   splash: {
     buttonText: 'Click to Open',
     buttonSubtitle: 'ഞങ്ങളുടെ വിദ്യാഭ്യാസ സ്ഥാപനം അറിയാൻ ടാപ് ചെയ്യുക',

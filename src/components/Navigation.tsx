@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Settings } from "lucide-react";
+import GlobalSearch from "./GlobalSearch";
+import { WebsiteContent } from "@/hooks/useWebsiteContent";
 
 const navLinks = [
   { href: "#home", label: "ഹോം", isSection: true },
@@ -13,7 +15,11 @@ const navLinks = [
   { href: "#contact", label: "ബന്ധപ്പെടുക", isSection: true },
 ];
 
-const Navigation = () => {
+interface NavigationProps {
+  content?: WebsiteContent;
+}
+
+const Navigation = ({ content }: NavigationProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -31,14 +37,11 @@ const Navigation = () => {
     setIsMobileMenuOpen(false);
     
     if (!link.isSection) {
-      // It's a page link, navigate directly
       navigate(link.href);
       return;
     }
 
-    // It's a section link
     if (location.pathname !== '/') {
-      // Navigate to home first, then scroll
       navigate('/');
       setTimeout(() => {
         const element = document.querySelector(link.href);
@@ -47,7 +50,6 @@ const Navigation = () => {
         }
       }, 100);
     } else {
-      // Already on home, just scroll
       const element = document.querySelector(link.href);
       if (element) {
         element.scrollIntoView({ behavior: "smooth" });
@@ -83,13 +85,18 @@ const Navigation = () => {
             </div>
           </button>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation with Search */}
           <div className="hidden md:flex items-center gap-1">
+            {/* Search Bar - Desktop */}
+            {content && (
+              <GlobalSearch content={content} isScrolled={isScrolled} />
+            )}
+            
             {navLinks.map((link) => (
               <button
                 key={link.href}
                 onClick={() => handleNavClick(link)}
-                className={`px-4 py-2 rounded-xl font-medium transition-all duration-300 hover:bg-primary/10 ${
+                className={`px-3 py-2 rounded-xl font-medium text-sm transition-all duration-300 hover:bg-primary/10 ${
                   isScrolled
                     ? "text-foreground hover:text-primary"
                     : "text-primary-foreground hover:text-gold-light"
@@ -112,15 +119,22 @@ const Navigation = () => {
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className={`md:hidden p-2 rounded-xl transition-colors ${
-              isScrolled ? "text-foreground hover:bg-muted" : "text-primary-foreground hover:bg-primary-foreground/10"
-            }`}
-          >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          {/* Mobile - Search and Menu */}
+          <div className="md:hidden flex items-center gap-2">
+            {/* Search Bar - Mobile */}
+            {content && (
+              <GlobalSearch content={content} isScrolled={isScrolled} />
+            )}
+            
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className={`p-2 rounded-xl transition-colors ${
+                isScrolled ? "text-foreground hover:bg-muted" : "text-primary-foreground hover:bg-primary-foreground/10"
+              }`}
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}

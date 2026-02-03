@@ -89,7 +89,7 @@ const Suffa = () => {
 
   return (
     <main className="min-h-screen bg-background">
-      <Navigation />
+      <Navigation content={content} />
       
       {/* Hero Section */}
       <section className="pt-24 pb-12 px-4 bg-gradient-to-b from-primary/5 to-background">
