@@ -26,31 +26,25 @@ const defaultLandmarks: Landmark[] = [
 ];
 
 const RouteMapSection = ({ content }: RouteMapSectionProps) => {
-  // Build embed URL from the Google Maps link
   const googleMapsEmbedUrl = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3929.5!2d76.27!3d10.04!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDAyJzI0LjAiTiA3NsKwMTYnMTIuMCJF!5e0!3m2!1sen!2sin!4v1234567890";
   
   const handleGetDirections = () => {
-    // Use the link from admin or default
     window.open(content.embedUrl || "https://maps.app.goo.gl/ZN8C3epBni6h3hKn9?g_st=aw", "_blank");
   };
 
-  // Use landmarks from content or defaults
   const landmarks = content.landmarks && content.landmarks.length > 0 ? content.landmarks : defaultLandmarks;
-  const landmarksEnabled = content.landmarksEnabled !== false; // Default to true
+  const landmarksEnabled = content.landmarksEnabled !== false;
 
   return (
-    <section id="route-map" className="py-24 lg:py-32 relative bg-muted/30">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 islamic-pattern opacity-10" />
-      
-      <div className="container mx-auto px-4 relative z-10">
+    <section id="route-map" className="py-20 lg:py-28 bg-secondary/30">
+      <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/8 text-primary text-sm font-medium mb-4">
             <Navigation className="w-4 h-4" />
             റൂട്ട് മാപ്പ്
           </span>
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6">
+          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-5">
             ഞങ്ങളിലേക്കുള്ള 
             <span className="gold-text"> വഴി</span>
           </h2>
@@ -59,73 +53,56 @@ const RouteMapSection = ({ content }: RouteMapSectionProps) => {
           </p>
         </div>
 
-        {/* Map Container */}
-        <div className="relative">
-          <div className="bg-card rounded-3xl overflow-hidden shadow-elevated border border-border/50">
-            {/* Map Embed */}
-            <div className="aspect-video lg:aspect-[21/9] w-full">
-              <iframe
-                src={googleMapsEmbedUrl}
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Jawharathul Uloom Location"
-                className="w-full h-full"
-              />
-            </div>
-
-            {/* Map Info Card */}
-            <div className="p-6 lg:p-8">
-              <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-14 h-14 rounded-2xl emerald-gradient flex items-center justify-center shadow-soft flex-shrink-0">
-                    <MapPin className="w-7 h-7 text-primary-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="font-display text-xl font-semibold text-foreground mb-2">
-                      {content.address || 'ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസ്'}
-                    </h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      കേരളം, ഇന്ത്യ
-                      <br />
-                      <span className="text-sm">
-                        (കൃത്യമായ വിലാസത്തിനായി ഞങ്ങളെ ബന്ധപ്പെടുക)
-                      </span>
-                    </p>
-                  </div>
-                </div>
-
-                <Button 
-                  onClick={handleGetDirections}
-                  className="gold-bg text-primary font-semibold px-8 py-6 rounded-xl shadow-gold hover:scale-[1.02] transition-all duration-300"
-                >
-                  <Navigation className="w-5 h-5 mr-2" />
-                  ദിശ കണ്ടെത്തുക
-                </Button>
-              </div>
-            </div>
+        {/* Map */}
+        <div className="bg-card rounded-xl overflow-hidden shadow-soft border border-border">
+          <div className="aspect-video lg:aspect-[21/9] w-full">
+            <iframe
+              src={googleMapsEmbedUrl}
+              width="100%" height="100%"
+              style={{ border: 0 }}
+              allowFullScreen loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Jawharathul Uloom Location"
+              className="w-full h-full"
+            />
           </div>
 
-          {/* Decorative Elements */}
-          <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-gold/5 blur-3xl" />
-          <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full bg-primary/5 blur-3xl" />
+          <div className="p-6 lg:p-8">
+            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl emerald-gradient flex items-center justify-center flex-shrink-0">
+                  <MapPin className="w-6 h-6 text-primary-foreground" />
+                </div>
+                <div>
+                  <h3 className="font-display text-xl font-semibold text-foreground mb-1">
+                    {content.address || 'ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസ്'}
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    കേരളം, ഇന്ത്യ
+                    <br />
+                    <span className="text-sm">(കൃത്യമായ വിലാസത്തിനായി ഞങ്ങളെ ബന്ധപ്പെടുക)</span>
+                  </p>
+                </div>
+              </div>
+
+              <Button 
+                onClick={handleGetDirections}
+                className="gold-bg text-primary font-semibold px-8 py-5 rounded-xl hover:opacity-90 transition-opacity"
+              >
+                <Navigation className="w-5 h-5 mr-2" />
+                ദിശ കണ്ടെത്തുക
+              </Button>
+            </div>
+          </div>
         </div>
 
-        {/* Landmarks - Only show if enabled */}
+        {/* Landmarks */}
         {landmarksEnabled && landmarks.length > 0 && (
-          <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {landmarks.map((landmark, index) => (
-              <div 
-                key={landmark.id} 
-                className={`bg-card rounded-2xl p-5 border border-border/50 shadow-soft ${
-                  index === landmarks.length - 1 && landmarks.length % 3 === 1 ? 'sm:col-span-2 lg:col-span-1' : ''
-                }`}
-              >
+          <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {landmarks.map((landmark) => (
+              <div key={landmark.id} className="bg-card rounded-xl p-5 shadow-soft">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-primary/8 flex items-center justify-center">
                     <span className="text-primary font-bold">{landmark.number}</span>
                   </div>
                   <div>
