@@ -48,7 +48,7 @@ const Navigation = ({ content }: NavigationProps) => {
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled ? "bg-card/95 backdrop-blur-md shadow-soft py-3" : "bg-transparent py-4"
+      isScrolled ? "bg-card shadow-soft py-3" : "bg-primary py-4"
     }`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
@@ -104,7 +104,7 @@ const Navigation = ({ content }: NavigationProps) => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-card/98 backdrop-blur-md border-t border-border shadow-soft animate-fade-in">
+          <div className="md:hidden absolute top-full left-0 right-0 bg-card border-t border-border shadow-soft animate-fade-in">
             <div className="container mx-auto px-4 py-3">
               {navLinks.map((link) => (
                 <button
