@@ -17,7 +17,7 @@ interface HeroSectionProps {
 
 const HeroSection = ({ content }: HeroSectionProps) => {
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section id="home" className="relative h-[40vh] md:h-[45vh] lg:h-[40vh] flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
