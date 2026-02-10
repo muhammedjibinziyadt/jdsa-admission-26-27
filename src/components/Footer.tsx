@@ -1,4 +1,4 @@
-import { Phone, Mail, Heart, MessageCircle } from "lucide-react";
+import { Phone, Mail, Heart, MessageCircle, BookOpen } from "lucide-react";
 
 interface FooterContent { copyright: string; tagline: string; }
 interface ContactInfo { phone1: string; phone2: string; email: string; }
@@ -101,6 +101,31 @@ const Footer = ({ content, contact, social }: FooterProps) => {
           </div>
         )}
         
+        {/* Al Jawahir Magazine Box */}
+        <div className="flex justify-center mb-10">
+          <a
+            href="https://aljawahirmagazinejdsa.rf.gd/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full max-w-lg bg-[#faf7f2] rounded-2xl p-8 text-center shadow-soft hover:shadow-elevated transition-shadow duration-300 group"
+          >
+            <div className="flex justify-center mb-4">
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <BookOpen className="w-6 h-6 text-primary" />
+              </div>
+            </div>
+            <h4 className="font-display font-semibold text-lg text-primary mb-2">
+              Explore Our Other Official Website
+            </h4>
+            <p className="text-muted-foreground text-sm leading-relaxed mb-5">
+              Read more exclusive articles, reflections, and magazine content from Al Jawahir.
+            </p>
+            <span className="inline-block px-6 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium group-hover:opacity-90 transition-opacity">
+              Visit Website
+            </span>
+          </a>
+        </div>
+
         <div className="border-t border-primary-foreground/10 pt-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-primary-foreground/50 text-sm">
