@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { X, ChevronLeft, ChevronRight, Image as ImageIcon, Heart, Download, Loader2 } from "lucide-react";
 import { useGalleryLikes } from "@/hooks/useGalleryLikes";
+import { ScrollAnimate } from "@/hooks/useScrollAnimation";
 
 interface GalleryImage {
   id: string;
@@ -133,102 +134,106 @@ const GallerySection = ({ images, settings }: GallerySectionProps) => {
     <section id="gallery" className="py-20 lg:py-28 bg-secondary/50">
       <div className="container mx-auto px-4">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-14">
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/8 text-primary text-sm font-medium mb-4">
-            <ImageIcon className="w-4 h-4" />
-            ഗാലറി
-          </span>
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-5">
-            നിമിഷങ്ങൾ 
-            <span className="gold-text"> ഓർമ്മകളായി</span>
-          </h2>
-          <p className="text-muted-foreground text-lg leading-relaxed">
-            ഞങ്ങളുടെ സ്ഥാപനത്തിന്റെ വിവിധ പ്രവർത്തനങ്ങളുടെ ഓർമ്മകൾ
-          </p>
-        </div>
+        <ScrollAnimate direction="up">
+          <div className="text-center max-w-3xl mx-auto mb-14">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/8 text-primary text-sm font-medium mb-4">
+              <ImageIcon className="w-4 h-4" />
+              ഗാലറി
+            </span>
+            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-5">
+              നിമിഷങ്ങൾ 
+              <span className="gold-text"> ഓർമ്മകളായി</span>
+            </h2>
+            <p className="text-muted-foreground text-lg leading-relaxed">
+              ഞങ്ങളുടെ സ്ഥാപനത്തിന്റെ വിവിധ പ്രവർത്തനങ്ങളുടെ ഓർമ്മകൾ
+            </p>
+          </div>
+        </ScrollAnimate>
         
         {/* Gallery Slider */}
-        <div className="relative">
-          <button
-            onClick={handlePrevSlide}
-            disabled={currentIndex === 0}
-            className="hidden md:flex absolute -left-4 lg:-left-6 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-card shadow-soft border border-border items-center justify-center hover:bg-muted transition-colors disabled:opacity-30"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          
-          <button
-            onClick={handleNextSlide}
-            disabled={currentIndex >= galleryImages.length - 1}
-            className="hidden md:flex absolute -right-4 lg:-right-6 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-card shadow-soft border border-border items-center justify-center hover:bg-muted transition-colors disabled:opacity-30"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
+        <ScrollAnimate direction="fade" duration={800}>
+          <div className="relative">
+            <button
+              onClick={handlePrevSlide}
+              disabled={currentIndex === 0}
+              className="hidden md:flex absolute -left-4 lg:-left-6 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-card shadow-soft border border-border items-center justify-center hover:bg-muted transition-colors disabled:opacity-30"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            
+            <button
+              onClick={handleNextSlide}
+              disabled={currentIndex >= galleryImages.length - 1}
+              className="hidden md:flex absolute -right-4 lg:-right-6 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-card shadow-soft border border-border items-center justify-center hover:bg-muted transition-colors disabled:opacity-30"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
 
-          <div
-            ref={sliderRef}
-            onScroll={handleScroll}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-            onMouseMove={handleMouseMove}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4 cursor-grab active:cursor-grabbing"
-            style={{ scrollSnapType: 'x mandatory' }}
-          >
-            {galleryImages.map((image) => (
-              <div 
-                key={image.id}
-                onClick={() => setSelectedImage(image.id)}
-                className="flex-shrink-0 w-[280px] sm:w-[320px] overflow-hidden rounded-xl cursor-pointer bg-card shadow-soft card-hover"
-                style={{ scrollSnapAlign: 'start' }}
-              >
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <img src={image.url} alt={image.alt} loading="lazy" className="w-full h-full object-cover" />
-                  <div className="absolute top-3 right-3 flex gap-2">
-                    {likesEnabled && (
-                      <button
-                        onClick={(e) => handleLike(image.id, e)}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-sm transition-colors ${
-                          isLiked(image.id) ? 'bg-red-500 text-white' : 'bg-white/90 text-foreground hover:bg-red-500 hover:text-white'
-                        }`}
-                      >
-                        <Heart className={`w-4 h-4 ${isLiked(image.id) ? 'fill-current' : ''}`} />
-                        <span className="text-sm font-medium">{likesLoading ? '...' : getLikeCount(image.id)}</span>
-                      </button>
-                    )}
-                    {downloadEnabled && (
-                      <button
-                        onClick={(e) => handleDownload(image, e)}
-                        className="flex items-center justify-center w-8 h-8 rounded-full bg-white/90 text-foreground hover:bg-primary hover:text-primary-foreground backdrop-blur-sm transition-colors"
-                        title="ഡൗൺലോഡ്"
-                      >
-                        <Download className="w-4 h-4" />
-                      </button>
-                    )}
+            <div
+              ref={sliderRef}
+              onScroll={handleScroll}
+              onMouseDown={handleMouseDown}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              onMouseMove={handleMouseMove}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4 cursor-grab active:cursor-grabbing"
+              style={{ scrollSnapType: 'x mandatory' }}
+            >
+              {galleryImages.map((image) => (
+                <div 
+                  key={image.id}
+                  onClick={() => setSelectedImage(image.id)}
+                  className="flex-shrink-0 w-[280px] sm:w-[320px] overflow-hidden rounded-xl cursor-pointer bg-card shadow-soft card-hover"
+                  style={{ scrollSnapAlign: 'start' }}
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <img src={image.url} alt={image.alt} loading="lazy" className="w-full h-full object-cover" />
+                    <div className="absolute top-3 right-3 flex gap-2">
+                      {likesEnabled && (
+                        <button
+                          onClick={(e) => handleLike(image.id, e)}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-sm transition-colors ${
+                            isLiked(image.id) ? 'bg-red-500 text-white' : 'bg-white/90 text-foreground hover:bg-red-500 hover:text-white'
+                          }`}
+                        >
+                          <Heart className={`w-4 h-4 ${isLiked(image.id) ? 'fill-current' : ''}`} />
+                          <span className="text-sm font-medium">{likesLoading ? '...' : getLikeCount(image.id)}</span>
+                        </button>
+                      )}
+                      {downloadEnabled && (
+                        <button
+                          onClick={(e) => handleDownload(image, e)}
+                          className="flex items-center justify-center w-8 h-8 rounded-full bg-white/90 text-foreground hover:bg-primary hover:text-primary-foreground backdrop-blur-sm transition-colors"
+                          title="ഡൗൺലോഡ്"
+                        >
+                          <Download className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <p className="text-foreground font-medium text-sm line-clamp-1">{image.alt}</p>
                   </div>
                 </div>
-                <div className="p-4">
-                  <p className="text-foreground font-medium text-sm line-clamp-1">{image.alt}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          {/* Dots */}
-          <div className="flex justify-center gap-2 mt-6">
-            {galleryImages.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => scrollToIndex(index)}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  index === currentIndex ? 'w-6 bg-primary' : 'bg-primary/25 hover:bg-primary/40'
-                }`}
-              />
-            ))}
+            {/* Dots */}
+            <div className="flex justify-center gap-2 mt-6">
+              {galleryImages.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => scrollToIndex(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    index === currentIndex ? 'w-6 bg-primary' : 'bg-primary/25 hover:bg-primary/40'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        </ScrollAnimate>
       </div>
       
       {/* Lightbox */}
