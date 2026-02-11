@@ -112,7 +112,7 @@ const HeroSlider = ({ images, autoPlayInterval = 5000 }: HeroSliderProps) => {
   return (
     <section 
       ref={sliderRef}
-      className="relative w-full h-screen overflow-hidden bg-background"
+      className="relative w-full h-[25vh] md:h-[250px] overflow-hidden bg-background"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onTouchStart={handleTouchStart}

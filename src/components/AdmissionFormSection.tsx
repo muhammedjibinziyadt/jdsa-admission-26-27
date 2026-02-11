@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Send, User, CheckCircle, Upload, X, File, Loader2, FileText, ScrollText, Image, FileCheck, MessageCircle } from "lucide-react";
+import { ScrollAnimate } from "@/hooks/useScrollAnimation";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
@@ -204,6 +205,7 @@ const AdmissionFormSection = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
+          <ScrollAnimate direction="up">
           <div className="text-center mb-10">
             <span className="inline-block px-4 py-1.5 rounded-full bg-gold/10 text-gold-dark text-sm font-medium mb-4">{formConfig.subtitle}</span>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
@@ -212,6 +214,7 @@ const AdmissionFormSection = () => {
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">{formConfig.description}</p>
           </div>
+          </ScrollAnimate>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Student Photo */}

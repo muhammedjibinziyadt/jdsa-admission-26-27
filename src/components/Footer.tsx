@@ -1,4 +1,5 @@
 import { Phone, Mail, Heart, MessageCircle, BookOpen } from "lucide-react";
+import { ScrollAnimate } from "@/hooks/useScrollAnimation";
 
 interface FooterContent { copyright: string; tagline: string; }
 interface ContactInfo { phone1: string; phone2: string; email: string; }
@@ -36,57 +37,59 @@ const Footer = ({ content, contact, social }: FooterProps) => {
   return (
     <footer className="bg-primary text-primary-foreground">
       <div className="container mx-auto px-4 py-14">
-        <div className="grid md:grid-cols-3 gap-10 mb-10">
-          {/* Brand */}
-          <div>
-            <div className="flex items-center gap-3 mb-5">
-              <div className="w-12 h-12 rounded-xl gold-bg flex items-center justify-center">
-                <span className="text-primary font-display font-bold text-lg">ج</span>
+        <ScrollAnimate direction="up" threshold={0.1}>
+          <div className="grid md:grid-cols-3 gap-10 mb-10">
+            {/* Brand */}
+            <div>
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-12 h-12 rounded-xl gold-bg flex items-center justify-center">
+                  <span className="text-primary font-display font-bold text-lg">ج</span>
+                </div>
+                <div>
+                  <span className="font-display font-semibold text-xl block leading-tight">ജൗഹറത്തുൽ ഉലൂം</span>
+                  <span className="text-primary-foreground/60 text-sm">സുഫ്ഫ ദർസ്</span>
+                </div>
               </div>
-              <div>
-                <span className="font-display font-semibold text-xl block leading-tight">ജൗഹറത്തുൽ ഉലൂം</span>
-                <span className="text-primary-foreground/60 text-sm">സുഫ്ഫ ദർസ്</span>
+              <p className="text-primary-foreground/60 leading-relaxed">
+                {content.tagline || 'വിജ്ഞാനത്തിന്റെയും മൂല്യങ്ങളുടെയും സമന്വയത്തിലൂടെ പുതിയ തലമുറയെ രൂപപ്പെടുത്തുന്ന വിദ്യാഭ്യാസ കേന്ദ്രം'}
+              </p>
+            </div>
+            
+            {/* Quick Links */}
+            <div>
+              <h4 className="font-display font-semibold text-lg mb-5">ദ്രുത ലിങ്കുകൾ</h4>
+              <div className="space-y-2.5">
+                {[
+                  { href: "#home", label: "ഹോം" },
+                  { href: "#about", label: "ഞങ്ങളെക്കുറിച്ച്" },
+                  { href: "#courses", label: "കോഴ്‌സുകൾ" },
+                  { href: "#gallery", label: "ഗാലറി" },
+                  { href: "#contact", label: "ബന്ധപ്പെടുക" },
+                ].map((link) => (
+                  <a key={link.href} href={link.href} className="block text-primary-foreground/60 hover:text-gold-light transition-colors">
+                    {link.label}
+                  </a>
+                ))}
               </div>
             </div>
-            <p className="text-primary-foreground/60 leading-relaxed">
-              {content.tagline || 'വിജ്ഞാനത്തിന്റെയും മൂല്യങ്ങളുടെയും സമന്വയത്തിലൂടെ പുതിയ തലമുറയെ രൂപപ്പെടുത്തുന്ന വിദ്യാഭ്യാസ കേന്ദ്രം'}
-            </p>
-          </div>
-          
-          {/* Quick Links */}
-          <div>
-            <h4 className="font-display font-semibold text-lg mb-5">ദ്രുത ലിങ്കുകൾ</h4>
-            <div className="space-y-2.5">
-              {[
-                { href: "#home", label: "ഹോം" },
-                { href: "#about", label: "ഞങ്ങളെക്കുറിച്ച്" },
-                { href: "#courses", label: "കോഴ്‌സുകൾ" },
-                { href: "#gallery", label: "ഗാലറി" },
-                { href: "#contact", label: "ബന്ധപ്പെടുക" },
-              ].map((link) => (
-                <a key={link.href} href={link.href} className="block text-primary-foreground/60 hover:text-gold-light transition-colors">
-                  {link.label}
+            
+            {/* Contact */}
+            <div>
+              <h4 className="font-display font-semibold text-lg mb-5">ബന്ധപ്പെടുക</h4>
+              <div className="space-y-3">
+                <a href={`tel:${contact.phone1?.replace(/\s/g, '')}`} className="flex items-center gap-3 text-primary-foreground/60 hover:text-gold-light transition-colors">
+                  <Phone className="w-4 h-4" /> {contact.phone1}
                 </a>
-              ))}
+                <a href={`tel:${contact.phone2?.replace(/\s/g, '')}`} className="flex items-center gap-3 text-primary-foreground/60 hover:text-gold-light transition-colors">
+                  <Phone className="w-4 h-4" /> {contact.phone2}
+                </a>
+                <a href={`mailto:${contact.email}`} className="flex items-center gap-3 text-primary-foreground/60 hover:text-gold-light transition-colors">
+                  <Mail className="w-4 h-4" /> {contact.email}
+                </a>
+              </div>
             </div>
           </div>
-          
-          {/* Contact */}
-          <div>
-            <h4 className="font-display font-semibold text-lg mb-5">ബന്ധപ്പെടുക</h4>
-            <div className="space-y-3">
-              <a href={`tel:${contact.phone1?.replace(/\s/g, '')}`} className="flex items-center gap-3 text-primary-foreground/60 hover:text-gold-light transition-colors">
-                <Phone className="w-4 h-4" /> {contact.phone1}
-              </a>
-              <a href={`tel:${contact.phone2?.replace(/\s/g, '')}`} className="flex items-center gap-3 text-primary-foreground/60 hover:text-gold-light transition-colors">
-                <Phone className="w-4 h-4" /> {contact.phone2}
-              </a>
-              <a href={`mailto:${contact.email}`} className="flex items-center gap-3 text-primary-foreground/60 hover:text-gold-light transition-colors">
-                <Mail className="w-4 h-4" /> {contact.email}
-              </a>
-            </div>
-          </div>
-        </div>
+        </ScrollAnimate>
 
         {/* Social */}
         {visibleLinks.length > 0 && (
@@ -102,29 +105,31 @@ const Footer = ({ content, contact, social }: FooterProps) => {
         )}
         
         {/* Al Jawahir Magazine Box */}
-        <div className="flex justify-center mb-10">
-          <a
-            href="https://aljawahirmagazinejdsa.rf.gd/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block w-full max-w-lg bg-[#faf7f2] rounded-2xl p-8 text-center shadow-soft hover:shadow-elevated transition-shadow duration-300 group"
-          >
-            <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <BookOpen className="w-6 h-6 text-primary" />
+        <ScrollAnimate direction="up" delay={100} threshold={0.1}>
+          <div className="flex justify-center mb-10">
+            <a
+              href="https://aljawahirmagazinejdsa.rf.gd/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full max-w-lg bg-[#faf7f2] rounded-2xl p-8 text-center shadow-soft hover:shadow-elevated transition-shadow duration-300 group"
+            >
+              <div className="flex justify-center mb-4">
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <BookOpen className="w-6 h-6 text-primary" />
+                </div>
               </div>
-            </div>
-            <h4 className="font-display font-semibold text-lg text-primary mb-2">
-              Explore Our Other Official Website
-            </h4>
-            <p className="text-muted-foreground text-sm leading-relaxed mb-5">
-              Read more exclusive articles, reflections, and magazine content from Al Jawahir.
-            </p>
-            <span className="inline-block px-6 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium group-hover:opacity-90 transition-opacity">
-              Visit Website
-            </span>
-          </a>
-        </div>
+              <h4 className="font-display font-semibold text-lg text-primary mb-2">
+                Explore Our Other Official Website
+              </h4>
+              <p className="text-muted-foreground text-sm leading-relaxed mb-5">
+                Read more exclusive articles, reflections, and magazine content from Al Jawahir.
+              </p>
+              <span className="inline-block px-6 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium group-hover:opacity-90 transition-opacity">
+                Visit Website
+              </span>
+            </a>
+          </div>
+        </ScrollAnimate>
 
         <div className="border-t border-primary-foreground/10 pt-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
