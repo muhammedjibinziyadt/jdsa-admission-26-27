@@ -139,24 +139,44 @@ const StudentsAdminPanel = () => {
           )}
         </div>
 
-        {/* Delete */}
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="destructive" size="sm">
-              <Trash2 className="w-4 h-4 mr-1" /> ഡിലീറ്റ് ചെയ്യുക
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>ഈ റെക്കോർഡ് ഡിലീറ്റ് ചെയ്യണോ?</AlertDialogTitle>
-              <AlertDialogDescription>ഈ പ്രവർത്തനം പഴയപടിയാക്കാൻ കഴിയില്ല.</AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>റദ്ദാക്കുക</AlertDialogCancel>
-              <AlertDialogAction onClick={() => { deleteStudent(s.id); setSelectedStudent(null); }}>ഡിലീറ്റ്</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        {/* Actions */}
+        <div className="flex gap-2 flex-wrap">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={generatingPdf}
+            onClick={async () => {
+              setGeneratingPdf(true);
+              let photoUrl: string | null = null;
+              if (s.photo_url) {
+                photoUrl = await getSignedUrl(s.photo_url);
+              }
+              await generateStudentPDF(s, photoUrl);
+              setGeneratingPdf(false);
+            }}
+          >
+            {generatingPdf ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <FileDown className="w-4 h-4 mr-1" />}
+            PDF ഡൗൺലോഡ്
+          </Button>
+
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" size="sm">
+                <Trash2 className="w-4 h-4 mr-1" /> ഡിലീറ്റ് ചെയ്യുക
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>ഈ റെക്കോർഡ് ഡിലീറ്റ് ചെയ്യണോ?</AlertDialogTitle>
+                <AlertDialogDescription>ഈ പ്രവർത്തനം പഴയപടിയാക്കാൻ കഴിയില്ല.</AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>റദ്ദാക്കുക</AlertDialogCancel>
+                <AlertDialogAction onClick={() => { deleteStudent(s.id); setSelectedStudent(null); }}>ഡിലീറ്റ്</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
       </div>
     );
   }
