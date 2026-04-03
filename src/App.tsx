@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Admin from "./pages/Admin";
 import AdmissionForm from "./pages/AdmissionForm";
+import StudentsPortal from "./pages/StudentsPortal";
 import Suffa from "./pages/Suffa";
 import NotFound from "./pages/NotFound";
 
