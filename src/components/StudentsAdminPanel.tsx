@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Loader2, Trash2, Eye, Download, X, User, Phone, MapPin, BookOpen, Calendar, FileText, Search } from "lucide-react";
+import { Loader2, Trash2, Eye, Download, X, User, Phone, MapPin, BookOpen, Calendar, FileText, Search, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { generateStudentPDF } from "@/utils/generateStudentPDF";
 import { Input } from "@/components/ui/input";
 import { useStudentsPortal, StudentRecord } from "@/hooks/useStudentsPortal";
 import {
