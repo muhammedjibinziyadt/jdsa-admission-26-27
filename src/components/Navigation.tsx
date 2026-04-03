@@ -12,7 +12,7 @@ const navLinks = [
   { href: "#gallery", label: "ഗാലറി", isSection: true },
   { href: "#route-map", label: "റൂട്ട് മാപ്പ്", isSection: true },
   { href: "#admission-form", label: "അഡ്മിഷൻ", isSection: true },
-  { href: "/students-portal", label: "Students Portal", isSection: false },
+  { href: "/students-portal", label: "സ്റ്റുഡൻസ് പോർട്ടൽ", isSection: false },
   { href: "#contact", label: "ബന്ധപ്പെടുക", isSection: true },
 ];
 
