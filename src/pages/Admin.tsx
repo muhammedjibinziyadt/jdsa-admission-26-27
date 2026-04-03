@@ -407,6 +407,7 @@ const Admin = () => {
     { id: "form" as const, label: "ഫോം സെറ്റിംഗ്സ്", icon: ClipboardList },
     { id: "search" as const, label: "സെർച്ച്", icon: Search },
     { id: "admissions" as const, label: "അപേക്ഷകൾ", icon: ClipboardList, badge: newAdmissionCount },
+    { id: "students" as const, label: "Students Portal", icon: Users },
     { id: "settings" as const, label: "ക്രമീകരണം", icon: Settings },
   ];
 
