@@ -38,6 +38,7 @@ import AdminLogin from "@/components/AdminLogin";
 import { generateApplicationPDF } from "@/utils/generateApplicationPDF";
 import AdminSettings from "@/components/AdminSettings";
 import { Switch } from "@/components/ui/switch";
+import StudentsAdminPanel from "@/components/StudentsAdminPanel";
 
 const Admin = () => {
   const { isAuthenticated, loading: authLoading, login, logout } = useAdminAuth();
@@ -45,7 +46,7 @@ const Admin = () => {
   const { uploadImage, deleteImage, uploading } = useImageUpload();
   const { admissions, updateAdmission, deleteAdmission, newAdmissionCount } = useAdmissions();
   
-  const [activeTab, setActiveTab] = useState<"hero" | "slider" | "about" | "courses" | "benefits" | "gallery" | "suffa" | "contact" | "map" | "footer" | "social" | "admissions" | "form" | "search" | "settings">("hero");
+  const [activeTab, setActiveTab] = useState<"hero" | "slider" | "about" | "courses" | "benefits" | "gallery" | "suffa" | "contact" | "map" | "footer" | "social" | "admissions" | "form" | "search" | "settings" | "students">("hero");
   
   // Local editing state
   const [localContent, setLocalContent] = useState<WebsiteContent | null>(null);
@@ -407,6 +408,7 @@ const Admin = () => {
     { id: "form" as const, label: "ഫോം സെറ്റിംഗ്സ്", icon: ClipboardList },
     { id: "search" as const, label: "സെർച്ച്", icon: Search },
     { id: "admissions" as const, label: "അപേക്ഷകൾ", icon: ClipboardList, badge: newAdmissionCount },
+    { id: "students" as const, label: "Students Portal", icon: Users },
     { id: "settings" as const, label: "ക്രമീകരണം", icon: Settings },
   ];
 
@@ -1733,6 +1735,7 @@ const Admin = () => {
 
         {/* Settings Tab */}
         {activeTab === "settings" && <AdminSettings />}
+        {activeTab === "students" && <StudentsAdminPanel />}
       </div>
     </div>
   );

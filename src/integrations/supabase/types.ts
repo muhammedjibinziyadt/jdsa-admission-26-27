@@ -194,6 +194,54 @@ export type Database = {
         }
         Relationships: []
       }
+      students_portal: {
+        Row: {
+          aadhaar_url: string | null
+          address: string
+          birth_certificate_url: string | null
+          created_at: string
+          current_education: string | null
+          father_name: string
+          id: string
+          phone1: string
+          phone2: string | null
+          photo_url: string | null
+          previous_madrasa: string | null
+          student_name: string
+          year_of_admission: string
+        }
+        Insert: {
+          aadhaar_url?: string | null
+          address: string
+          birth_certificate_url?: string | null
+          created_at?: string
+          current_education?: string | null
+          father_name: string
+          id?: string
+          phone1: string
+          phone2?: string | null
+          photo_url?: string | null
+          previous_madrasa?: string | null
+          student_name: string
+          year_of_admission: string
+        }
+        Update: {
+          aadhaar_url?: string | null
+          address?: string
+          birth_certificate_url?: string | null
+          created_at?: string
+          current_education?: string | null
+          father_name?: string
+          id?: string
+          phone1?: string
+          phone2?: string | null
+          photo_url?: string | null
+          previous_madrasa?: string | null
+          student_name?: string
+          year_of_admission?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
