@@ -50,7 +50,7 @@ export function useSearch(content: WebsiteContent, settings?: SearchSettings) {
   const [isOpen, setIsOpen] = useState(false);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const searchEnabled = settings?.enabled !== false;
   const excludedSections = settings?.excludedSections || [];
