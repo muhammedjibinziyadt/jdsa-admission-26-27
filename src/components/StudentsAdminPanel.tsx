@@ -21,6 +21,7 @@ const StudentsAdminPanel = () => {
   const [selectedStudent, setSelectedStudent] = useState<StudentRecord | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [loadingUrl, setLoadingUrl] = useState<string | null>(null);
+  const [generatingPdf, setGeneratingPdf] = useState(false);
 
   const filtered = students.filter(s =>
     s.student_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
