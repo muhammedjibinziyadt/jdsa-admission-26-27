@@ -38,6 +38,7 @@ import AdminLogin from "@/components/AdminLogin";
 import { generateApplicationPDF } from "@/utils/generateApplicationPDF";
 import AdminSettings from "@/components/AdminSettings";
 import { Switch } from "@/components/ui/switch";
+import StudentsAdminPanel from "@/components/StudentsAdminPanel";
 
 const Admin = () => {
   const { isAuthenticated, loading: authLoading, login, logout } = useAdminAuth();
