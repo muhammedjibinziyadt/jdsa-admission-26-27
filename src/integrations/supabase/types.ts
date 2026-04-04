@@ -173,6 +173,77 @@ export type Database = {
         }
         Relationships: []
       }
+      book_orders: {
+        Row: {
+          address: string
+          book_id: string | null
+          book_name: string
+          created_at: string
+          customer_name: string
+          id: string
+          payment_screenshot_url: string | null
+          phone: string
+          status: string
+        }
+        Insert: {
+          address: string
+          book_id?: string | null
+          book_name: string
+          created_at?: string
+          customer_name: string
+          id?: string
+          payment_screenshot_url?: string | null
+          phone: string
+          status?: string
+        }
+        Update: {
+          address?: string
+          book_id?: string | null
+          book_name?: string
+          created_at?: string
+          customer_name?: string
+          id?: string
+          payment_screenshot_url?: string | null
+          phone?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_orders_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      books: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          image_url: string | null
+          name: string
+          price: number
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          name: string
+          price?: number
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          price?: number
+        }
+        Relationships: []
+      }
       gallery_likes: {
         Row: {
           created_at: string
@@ -239,6 +310,36 @@ export type Database = {
           previous_madrasa?: string | null
           student_name?: string
           year_of_admission?: string
+        }
+        Relationships: []
+      }
+      timetables: {
+        Row: {
+          activity: string
+          category: string
+          created_at: string
+          day: string
+          id: string
+          sort_order: number
+          time_slot: string
+        }
+        Insert: {
+          activity: string
+          category: string
+          created_at?: string
+          day: string
+          id?: string
+          sort_order?: number
+          time_slot: string
+        }
+        Update: {
+          activity?: string
+          category?: string
+          created_at?: string
+          day?: string
+          id?: string
+          sort_order?: number
+          time_slot?: string
         }
         Relationships: []
       }
