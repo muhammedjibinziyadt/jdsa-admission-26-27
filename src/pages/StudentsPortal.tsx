@@ -220,6 +220,7 @@ const StudentsPortal = () => {
           </Button>
         </form>
       </div>
+      )}
     </div>
   );
 };
