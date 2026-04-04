@@ -8,6 +8,7 @@ import Admin from "./pages/Admin";
 import AdmissionForm from "./pages/AdmissionForm";
 import StudentsPortal from "./pages/StudentsPortal";
 import Suffa from "./pages/Suffa";
+import BookStore from "./pages/BookStore";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
