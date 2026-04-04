@@ -39,6 +39,8 @@ import { generateApplicationPDF } from "@/utils/generateApplicationPDF";
 import AdminSettings from "@/components/AdminSettings";
 import { Switch } from "@/components/ui/switch";
 import StudentsAdminPanel from "@/components/StudentsAdminPanel";
+import TimetableAdmin from "@/components/TimetableAdmin";
+import BookStoreAdmin from "@/components/BookStoreAdmin";
 
 const Admin = () => {
   const { isAuthenticated, loading: authLoading, login, logout } = useAdminAuth();
