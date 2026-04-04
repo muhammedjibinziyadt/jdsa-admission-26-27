@@ -1740,6 +1740,8 @@ const Admin = () => {
         {/* Settings Tab */}
         {activeTab === "settings" && <AdminSettings />}
         {activeTab === "students" && <StudentsAdminPanel />}
+        {activeTab === "timetable" && <TimetableAdmin />}
+        {activeTab === "bookstore" && <BookStoreAdmin />}
       </div>
     </div>
   );
