@@ -9,6 +9,7 @@ import TimetableDisplay from "@/components/TimetableDisplay";
 
 const StudentsPortal = () => {
   const { submitStudent } = useStudentsPortal();
+  const [activeView, setActiveView] = useState<'form' | 'timetable'>('form');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
