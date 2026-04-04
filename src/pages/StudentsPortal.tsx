@@ -100,10 +100,37 @@ const StudentsPortal = () => {
             <ArrowLeft className="w-4 h-4" /> ഹോം പേജിലേക്ക്
           </Link>
           <h1 className="text-2xl md:text-3xl font-bold">വിദ്യാർത്ഥി പോർട്ടൽ</h1>
-          <p className="text-emerald-200 mt-1">Students Portal - Registration Form</p>
+          <p className="text-emerald-200 mt-1">Students Portal</p>
         </div>
       </div>
 
+      {/* Tab Buttons */}
+      <div className="container mx-auto px-4 pt-6 max-w-2xl">
+        <div className="flex gap-2 mb-6">
+          <Button
+            variant={activeView === 'form' ? 'default' : 'outline'}
+            onClick={() => setActiveView('form')}
+            className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white data-[active=false]:bg-white data-[active=false]:text-emerald-700 data-[active=false]:border-emerald-300"
+            data-active={activeView === 'form'}
+          >
+            <User className="w-4 h-4 mr-2" /> രജിസ്ട്രേഷൻ
+          </Button>
+          <Button
+            variant={activeView === 'timetable' ? 'default' : 'outline'}
+            onClick={() => setActiveView('timetable')}
+            className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white data-[active=false]:bg-white data-[active=false]:text-emerald-700 data-[active=false]:border-emerald-300"
+            data-active={activeView === 'timetable'}
+          >
+            <Clock className="w-4 h-4 mr-2" /> ടൈം ടേബിൾ
+          </Button>
+        </div>
+      </div>
+
+      {activeView === 'timetable' ? (
+        <div className="container mx-auto px-4 py-4 max-w-2xl">
+          <TimetableDisplay />
+        </div>
+      ) : (
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Personal Info */}
