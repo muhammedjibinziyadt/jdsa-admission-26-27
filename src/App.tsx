@@ -8,6 +8,7 @@ import Admin from "./pages/Admin";
 import AdmissionForm from "./pages/AdmissionForm";
 import StudentsPortal from "./pages/StudentsPortal";
 import Suffa from "./pages/Suffa";
+import BookStore from "./pages/BookStore";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/admission" element={<AdmissionForm />} />
           <Route path="/suffa" element={<Suffa />} />
           <Route path="/students-portal" element={<StudentsPortal />} />
+          <Route path="/bookstore" element={<BookStore />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
