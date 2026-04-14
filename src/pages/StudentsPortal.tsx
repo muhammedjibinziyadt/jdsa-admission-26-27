@@ -115,13 +115,21 @@ const StudentsPortal = () => {
           >
             <User className="w-4 h-4 mr-2" /> രജിസ്ട്രേഷൻ
           </Button>
-          <Button
+           <Button
             variant={activeView === 'timetable' ? 'default' : 'outline'}
             onClick={() => setActiveView('timetable')}
             className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white data-[active=false]:bg-white data-[active=false]:text-emerald-700 data-[active=false]:border-emerald-300"
             data-active={activeView === 'timetable'}
           >
             <Clock className="w-4 h-4 mr-2" /> ടൈം ടേബിൾ
+          </Button>
+          <Button
+            variant={activeView === 'students' ? 'default' : 'outline'}
+            onClick={() => setActiveView('students')}
+            className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white data-[active=false]:bg-white data-[active=false]:text-emerald-700 data-[active=false]:border-emerald-300"
+            data-active={activeView === 'students'}
+          >
+            <Users className="w-4 h-4 mr-2" /> വിദ്യാർത്ഥികൾ
           </Button>
         </div>
       </div>
