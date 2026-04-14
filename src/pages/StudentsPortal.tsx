@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Upload, Loader2, CheckCircle, User, Phone, MapPin, BookOpen, Calendar, FileText, Clock } from "lucide-react";
+import { ArrowLeft, Upload, Loader2, CheckCircle, User, Phone, MapPin, BookOpen, Calendar, FileText, Clock, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,8 +8,8 @@ import { useStudentsPortal } from "@/hooks/useStudentsPortal";
 import TimetableDisplay from "@/components/TimetableDisplay";
 
 const StudentsPortal = () => {
-  const { submitStudent } = useStudentsPortal();
-  const [activeView, setActiveView] = useState<'form' | 'timetable'>('form');
+  const { submitStudent, students, loading } = useStudentsPortal();
+  const [activeView, setActiveView] = useState<'form' | 'timetable' | 'students'>('form');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
