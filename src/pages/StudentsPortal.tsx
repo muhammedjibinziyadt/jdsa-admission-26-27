@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Upload, Loader2, CheckCircle, User, Phone, MapPin, BookOpen, Calendar, FileText, Clock } from "lucide-react";
+import { ArrowLeft, Upload, Loader2, CheckCircle, User, Phone, MapPin, BookOpen, Calendar, FileText, Clock, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,8 +8,8 @@ import { useStudentsPortal } from "@/hooks/useStudentsPortal";
 import TimetableDisplay from "@/components/TimetableDisplay";
 
 const StudentsPortal = () => {
-  const { submitStudent } = useStudentsPortal();
-  const [activeView, setActiveView] = useState<'form' | 'timetable'>('form');
+  const { submitStudent, students, loading } = useStudentsPortal();
+  const [activeView, setActiveView] = useState<'form' | 'timetable' | 'students'>('form');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -115,7 +115,7 @@ const StudentsPortal = () => {
           >
             <User className="w-4 h-4 mr-2" /> രജിസ്ട്രേഷൻ
           </Button>
-          <Button
+           <Button
             variant={activeView === 'timetable' ? 'default' : 'outline'}
             onClick={() => setActiveView('timetable')}
             className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white data-[active=false]:bg-white data-[active=false]:text-emerald-700 data-[active=false]:border-emerald-300"
@@ -123,10 +123,47 @@ const StudentsPortal = () => {
           >
             <Clock className="w-4 h-4 mr-2" /> ടൈം ടേബിൾ
           </Button>
+          <Button
+            variant={activeView === 'students' ? 'default' : 'outline'}
+            onClick={() => setActiveView('students')}
+            className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white data-[active=false]:bg-white data-[active=false]:text-emerald-700 data-[active=false]:border-emerald-300"
+            data-active={activeView === 'students'}
+          >
+            <Users className="w-4 h-4 mr-2" /> വിദ്യാർത്ഥികൾ
+          </Button>
         </div>
       </div>
 
-      {activeView === 'timetable' ? (
+      {activeView === 'students' ? (
+        <div className="container mx-auto px-4 py-4 max-w-2xl">
+          <div className="bg-white rounded-2xl shadow-sm border border-emerald-100 p-6">
+            <h2 className="text-lg font-semibold text-emerald-800 mb-4 flex items-center gap-2">
+              <Users className="w-5 h-5" /> സമർപ്പിച്ച വിദ്യാർത്ഥികൾ
+            </h2>
+            {loading ? (
+              <div className="flex justify-center py-8">
+                <Loader2 className="w-6 h-6 animate-spin text-emerald-600" />
+              </div>
+            ) : students.length === 0 ? (
+              <p className="text-gray-500 text-center py-8">ഇതുവരെ രജിസ്ട്രേഷനുകൾ ഇല്ല</p>
+            ) : (
+              <div className="space-y-2">
+                {students.map((student, index) => (
+                  <div key={student.id} className="flex items-center justify-between px-4 py-3 bg-emerald-50/60 rounded-xl border border-emerald-100">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-medium text-emerald-500 bg-emerald-100 rounded-full w-7 h-7 flex items-center justify-center">{index + 1}</span>
+                      <span className="font-medium text-gray-800">{student.student_name}</span>
+                    </div>
+                    <span className="text-xs font-medium text-emerald-600 bg-emerald-100 px-3 py-1 rounded-full flex items-center gap-1">
+                      Submitted <CheckCircle className="w-3.5 h-3.5" />
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      ) : activeView === 'timetable' ? (
         <div className="container mx-auto px-4 py-4 max-w-2xl">
           <TimetableDisplay />
         </div>
