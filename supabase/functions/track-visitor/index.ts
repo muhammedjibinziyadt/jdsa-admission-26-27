@@ -12,15 +12,20 @@ Deno.serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { page_visited, device_type, browser_name } = body;
+    const { page_visited, device_type, browser_name, visitor_name, visitor_email } = body;
 
-    // Get IP from request headers
+    if (!page_visited || typeof page_visited !== 'string') {
+      return new Response(JSON.stringify({ error: 'page_visited is required' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() 
       || req.headers.get('cf-connecting-ip') 
       || req.headers.get('x-real-ip') 
       || 'Unknown';
 
-    // Try to get location from IP using free API
     let city = 'Unknown';
     let country = 'Unknown';
     try {
@@ -33,7 +38,7 @@ Deno.serve(async (req) => {
         }
       }
     } catch {
-      // Geo lookup failed, continue with Unknown
+      // Geo lookup failed
     }
 
     const supabase = createClient(
@@ -45,9 +50,11 @@ Deno.serve(async (req) => {
       ip_address: ip,
       city,
       country,
-      page_visited: page_visited || '/',
-      device_type: device_type || 'Unknown',
-      browser_name: browser_name || 'Unknown',
+      page_visited: String(page_visited).slice(0, 100),
+      device_type: device_type ? String(device_type).slice(0, 50) : 'Unknown',
+      browser_name: browser_name ? String(browser_name).slice(0, 50) : 'Unknown',
+      visitor_name: visitor_name ? String(visitor_name).slice(0, 200) : null,
+      visitor_email: visitor_email ? String(visitor_email).slice(0, 255) : null,
     });
 
     if (error) throw error;

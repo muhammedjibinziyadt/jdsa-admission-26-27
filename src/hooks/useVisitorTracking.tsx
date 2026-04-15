@@ -23,15 +23,26 @@ export function useVisitorTracking(pageName: string) {
   useEffect(() => {
     const trackVisit = async () => {
       try {
+        const stored = localStorage.getItem('visitor_info');
+        let visitor_name: string | null = null;
+        let visitor_email: string | null = null;
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          visitor_name = parsed.name || null;
+          visitor_email = parsed.email || null;
+        }
+
         await supabase.functions.invoke('track-visitor', {
           body: {
             page_visited: pageName,
             device_type: getDeviceType(),
             browser_name: getBrowserName(),
+            visitor_name,
+            visitor_email,
           },
         });
-      } catch (e) {
-        // Silent fail - tracking should not affect UX
+      } catch {
+        // Silent fail
       }
     };
 

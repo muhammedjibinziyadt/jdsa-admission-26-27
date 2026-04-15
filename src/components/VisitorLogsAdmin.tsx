@@ -12,6 +12,8 @@ interface VisitorLog {
   device_type: string | null;
   browser_name: string | null;
   visited_at: string;
+  visitor_name: string | null;
+  visitor_email: string | null;
 }
 
 export default function VisitorLogsAdmin() {
@@ -80,7 +82,8 @@ export default function VisitorLogsAdmin() {
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-muted/50 border-b border-border">
-                <th className="text-left px-4 py-3 font-medium">IP Address</th>
+                <th className="text-left px-4 py-3 font-medium">Name</th>
+                <th className="text-left px-4 py-3 font-medium">Email</th>
                 <th className="text-left px-4 py-3 font-medium">Location</th>
                 <th className="text-left px-4 py-3 font-medium">Date</th>
                 <th className="text-left px-4 py-3 font-medium">Time</th>
@@ -92,7 +95,8 @@ export default function VisitorLogsAdmin() {
             <tbody>
               {logs.map((log) => (
                 <tr key={log.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
-                  <td className="px-4 py-3 font-mono text-xs">{log.ip_address || '-'}</td>
+                  <td className="px-4 py-3 font-medium">{log.visitor_name || '-'}</td>
+                  <td className="px-4 py-3 text-xs">{log.visitor_email || '-'}</td>
                   <td className="px-4 py-3">
                     {log.city && log.country ? `${log.city}, ${log.country}` : log.country || '-'}
                   </td>
