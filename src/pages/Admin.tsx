@@ -29,6 +29,7 @@ import {
   Download,
   Search
 } from "lucide-react";
+import { Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWebsiteContent, WebsiteContent } from "@/hooks/useWebsiteContent";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
