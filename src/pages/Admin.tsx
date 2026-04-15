@@ -414,6 +414,7 @@ const Admin = () => {
     { id: "students" as const, label: "Students Portal", icon: Users },
     { id: "timetable" as const, label: "ടൈം ടേബിൾ", icon: ClipboardList },
     { id: "bookstore" as const, label: "ബുക്ക് സ്റ്റോർ", icon: BookOpen },
+    { id: "visitors" as const, label: "Visitors", icon: Globe },
     { id: "settings" as const, label: "ക്രമീകരണം", icon: Settings },
   ];
 
