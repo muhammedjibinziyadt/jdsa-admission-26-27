@@ -6,8 +6,10 @@ import { useWebsiteContent } from '@/hooks/useWebsiteContent';
 import { useGalleryLikes } from '@/hooks/useGalleryLikes';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
+import { useVisitorTracking } from '@/hooks/useVisitorTracking';
 
 const Suffa = () => {
+  useVisitorTracking('Suffa');
   const { content, loading } = useWebsiteContent();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useBookStore, Book } from '@/hooks/useBookStore';
+import { useVisitorTracking } from '@/hooks/useVisitorTracking';
 
 function BuyModal({ book, onClose }: { book: Book; onClose: () => void }) {
   const { placeOrder, uploadPaymentScreenshot } = useBookStore();
@@ -127,6 +128,7 @@ function BuyModal({ book, onClose }: { book: Book; onClose: () => void }) {
 }
 
 export default function BookStore() {
+  useVisitorTracking('Book Store');
   const { books, loading } = useBookStore();
   const [buyingBook, setBuyingBook] = useState<Book | null>(null);
 

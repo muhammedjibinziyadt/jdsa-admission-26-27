@@ -367,6 +367,39 @@ export type Database = {
         }
         Relationships: []
       }
+      visitor_logs: {
+        Row: {
+          browser_name: string | null
+          city: string | null
+          country: string | null
+          device_type: string | null
+          id: string
+          ip_address: string | null
+          page_visited: string
+          visited_at: string
+        }
+        Insert: {
+          browser_name?: string | null
+          city?: string | null
+          country?: string | null
+          device_type?: string | null
+          id?: string
+          ip_address?: string | null
+          page_visited?: string
+          visited_at?: string
+        }
+        Update: {
+          browser_name?: string | null
+          city?: string | null
+          country?: string | null
+          device_type?: string | null
+          id?: string
+          ip_address?: string | null
+          page_visited?: string
+          visited_at?: string
+        }
+        Relationships: []
+      }
       website_content: {
         Row: {
           content: Json
