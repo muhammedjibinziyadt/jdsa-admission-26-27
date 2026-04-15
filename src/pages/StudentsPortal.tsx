@@ -6,8 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useStudentsPortal } from "@/hooks/useStudentsPortal";
 import TimetableDisplay from "@/components/TimetableDisplay";
+import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
 const StudentsPortal = () => {
+  useVisitorTracking('Students Portal');
   const { submitStudent, students, loading } = useStudentsPortal();
   const [activeView, setActiveView] = useState<'form' | 'timetable' | 'students'>('form');
   const [submitting, setSubmitting] = useState(false);
