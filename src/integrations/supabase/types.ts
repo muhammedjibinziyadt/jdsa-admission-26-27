@@ -377,6 +377,8 @@ export type Database = {
           ip_address: string | null
           page_visited: string
           visited_at: string
+          visitor_email: string | null
+          visitor_name: string | null
         }
         Insert: {
           browser_name?: string | null
@@ -387,6 +389,8 @@ export type Database = {
           ip_address?: string | null
           page_visited?: string
           visited_at?: string
+          visitor_email?: string | null
+          visitor_name?: string | null
         }
         Update: {
           browser_name?: string | null
@@ -397,6 +401,8 @@ export type Database = {
           ip_address?: string | null
           page_visited?: string
           visited_at?: string
+          visitor_email?: string | null
+          visitor_name?: string | null
         }
         Relationships: []
       }
