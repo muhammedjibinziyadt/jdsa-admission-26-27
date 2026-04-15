@@ -41,6 +41,7 @@ import { Switch } from "@/components/ui/switch";
 import StudentsAdminPanel from "@/components/StudentsAdminPanel";
 import TimetableAdmin from "@/components/TimetableAdmin";
 import BookStoreAdmin from "@/components/BookStoreAdmin";
+import VisitorLogsAdmin from "@/components/VisitorLogsAdmin";
 
 const Admin = () => {
   const { isAuthenticated, loading: authLoading, login, logout } = useAdminAuth();
@@ -48,7 +49,7 @@ const Admin = () => {
   const { uploadImage, deleteImage, uploading } = useImageUpload();
   const { admissions, updateAdmission, deleteAdmission, newAdmissionCount } = useAdmissions();
   
-  const [activeTab, setActiveTab] = useState<"hero" | "slider" | "about" | "courses" | "benefits" | "gallery" | "suffa" | "contact" | "map" | "footer" | "social" | "admissions" | "form" | "search" | "settings" | "students" | "timetable" | "bookstore">("hero");
+  const [activeTab, setActiveTab] = useState<"hero" | "slider" | "about" | "courses" | "benefits" | "gallery" | "suffa" | "contact" | "map" | "footer" | "social" | "admissions" | "form" | "search" | "settings" | "students" | "timetable" | "bookstore" | "visitors">("hero");
   
   // Local editing state
   const [localContent, setLocalContent] = useState<WebsiteContent | null>(null);
