@@ -14,10 +14,8 @@ import ApprovedApplications from "@/components/ApprovedApplications";
 import AdmissionFormSection from "@/components/AdmissionFormSection";
 import { useWebsiteContent } from "@/hooks/useWebsiteContent";
 import { useAdmissions } from "@/hooks/useAdmissions";
-import { useVisitorTracking } from "@/hooks/useVisitorTracking";
 
 const Index = () => {
-  useVisitorTracking('Home');
   const [showSplash, setShowSplash] = useState(true);
   const { content, loading } = useWebsiteContent();
   const { getApprovedAdmissions } = useAdmissions();
