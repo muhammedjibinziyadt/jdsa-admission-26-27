@@ -29,7 +29,6 @@ import {
   Download,
   Search
 } from "lucide-react";
-import { Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWebsiteContent, WebsiteContent } from "@/hooks/useWebsiteContent";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
@@ -42,7 +41,6 @@ import { Switch } from "@/components/ui/switch";
 import StudentsAdminPanel from "@/components/StudentsAdminPanel";
 import TimetableAdmin from "@/components/TimetableAdmin";
 import BookStoreAdmin from "@/components/BookStoreAdmin";
-import VisitorLogsAdmin from "@/components/VisitorLogsAdmin";
 
 const Admin = () => {
   const { isAuthenticated, loading: authLoading, login, logout } = useAdminAuth();
@@ -50,7 +48,7 @@ const Admin = () => {
   const { uploadImage, deleteImage, uploading } = useImageUpload();
   const { admissions, updateAdmission, deleteAdmission, newAdmissionCount } = useAdmissions();
   
-  const [activeTab, setActiveTab] = useState<"hero" | "slider" | "about" | "courses" | "benefits" | "gallery" | "suffa" | "contact" | "map" | "footer" | "social" | "admissions" | "form" | "search" | "settings" | "students" | "timetable" | "bookstore" | "visitors">("hero");
+  const [activeTab, setActiveTab] = useState<"hero" | "slider" | "about" | "courses" | "benefits" | "gallery" | "suffa" | "contact" | "map" | "footer" | "social" | "admissions" | "form" | "search" | "settings" | "students" | "timetable" | "bookstore">("hero");
   
   // Local editing state
   const [localContent, setLocalContent] = useState<WebsiteContent | null>(null);
@@ -415,7 +413,6 @@ const Admin = () => {
     { id: "students" as const, label: "Students Portal", icon: Users },
     { id: "timetable" as const, label: "ടൈം ടേബിൾ", icon: ClipboardList },
     { id: "bookstore" as const, label: "ബുക്ക് സ്റ്റോർ", icon: BookOpen },
-    { id: "visitors" as const, label: "Visitors", icon: Globe },
     { id: "settings" as const, label: "ക്രമീകരണം", icon: Settings },
   ];
 
@@ -1745,7 +1742,6 @@ const Admin = () => {
         {activeTab === "students" && <StudentsAdminPanel />}
         {activeTab === "timetable" && <TimetableAdmin />}
         {activeTab === "bookstore" && <BookStoreAdmin />}
-        {activeTab === "visitors" && <VisitorLogsAdmin />}
       </div>
     </div>
   );
