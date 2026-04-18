@@ -41,6 +41,7 @@ import { Switch } from "@/components/ui/switch";
 import StudentsAdminPanel from "@/components/StudentsAdminPanel";
 import TimetableAdmin from "@/components/TimetableAdmin";
 import BookStoreAdmin from "@/components/BookStoreAdmin";
+import CommitteeAdmin from "@/components/CommitteeAdmin";
 
 const Admin = () => {
   const { isAuthenticated, loading: authLoading, login, logout } = useAdminAuth();
@@ -48,7 +49,7 @@ const Admin = () => {
   const { uploadImage, deleteImage, uploading } = useImageUpload();
   const { admissions, updateAdmission, deleteAdmission, newAdmissionCount } = useAdmissions();
   
-  const [activeTab, setActiveTab] = useState<"hero" | "slider" | "about" | "courses" | "benefits" | "gallery" | "suffa" | "contact" | "map" | "footer" | "social" | "admissions" | "form" | "search" | "settings" | "students" | "timetable" | "bookstore">("hero");
+  const [activeTab, setActiveTab] = useState<"hero" | "slider" | "about" | "courses" | "benefits" | "gallery" | "suffa" | "contact" | "map" | "footer" | "social" | "admissions" | "form" | "search" | "settings" | "students" | "timetable" | "bookstore" | "committee">("hero");
   
   // Local editing state
   const [localContent, setLocalContent] = useState<WebsiteContent | null>(null);
@@ -413,6 +414,7 @@ const Admin = () => {
     { id: "students" as const, label: "Students Portal", icon: Users },
     { id: "timetable" as const, label: "ടൈം ടേബിൾ", icon: ClipboardList },
     { id: "bookstore" as const, label: "ബുക്ക് സ്റ്റോർ", icon: BookOpen },
+    { id: "committee" as const, label: "കമ്മിറ്റി", icon: Users },
     { id: "settings" as const, label: "ക്രമീകരണം", icon: Settings },
   ];
 
@@ -1742,6 +1744,7 @@ const Admin = () => {
         {activeTab === "students" && <StudentsAdminPanel />}
         {activeTab === "timetable" && <TimetableAdmin />}
         {activeTab === "bookstore" && <BookStoreAdmin />}
+        {activeTab === "committee" && <CommitteeAdmin />}
       </div>
     </div>
   );
