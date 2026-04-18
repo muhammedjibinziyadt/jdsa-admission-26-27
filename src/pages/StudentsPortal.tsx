@@ -1,15 +1,16 @@
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Upload, Loader2, CheckCircle, User, Phone, MapPin, BookOpen, Calendar, FileText, Clock, Users } from "lucide-react";
+import { ArrowLeft, Upload, Loader2, CheckCircle, User, Phone, MapPin, BookOpen, Calendar, FileText, Clock, Users, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useStudentsPortal } from "@/hooks/useStudentsPortal";
 import TimetableDisplay from "@/components/TimetableDisplay";
+import CommitteeSection from "@/components/CommitteeSection";
 
 const StudentsPortal = () => {
   const { submitStudent, students, loading } = useStudentsPortal();
-  const [activeView, setActiveView] = useState<'form' | 'timetable' | 'students'>('form');
+  const [activeView, setActiveView] = useState<'form' | 'timetable' | 'students' | 'committee'>('form');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -131,10 +132,22 @@ const StudentsPortal = () => {
           >
             <Users className="w-4 h-4 mr-2" /> വിദ്യാർത്ഥികൾ
           </Button>
+          <Button
+            variant={activeView === 'committee' ? 'default' : 'outline'}
+            onClick={() => setActiveView('committee')}
+            className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white data-[active=false]:bg-white data-[active=false]:text-emerald-700 data-[active=false]:border-emerald-300"
+            data-active={activeView === 'committee'}
+          >
+            <Briefcase className="w-4 h-4 mr-2" /> കമ്മിറ്റി
+          </Button>
         </div>
       </div>
 
-      {activeView === 'students' ? (
+      {activeView === 'committee' ? (
+        <div className="container mx-auto px-4 py-4 max-w-2xl">
+          <CommitteeSection />
+        </div>
+      ) : activeView === 'students' ? (
         <div className="container mx-auto px-4 py-4 max-w-2xl">
           <div className="bg-white rounded-2xl shadow-sm border border-emerald-100 p-6">
             <h2 className="text-lg font-semibold text-emerald-800 mb-4 flex items-center gap-2">
