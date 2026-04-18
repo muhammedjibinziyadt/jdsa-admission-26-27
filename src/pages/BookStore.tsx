@@ -127,7 +127,6 @@ function BuyModal({ book, onClose }: { book: Book; onClose: () => void }) {
 }
 
 export default function BookStore() {
-  useVisitorTracking('Book Store');
   const { books, loading } = useBookStore();
   const [buyingBook, setBuyingBook] = useState<Book | null>(null);
 

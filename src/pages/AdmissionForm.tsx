@@ -29,7 +29,6 @@ interface UploadedFile {
 }
 
 const AdmissionForm = () => {
-  useVisitorTracking('Admission Form');
   const [formData, setFormData] = useState<FormData>({
     studentName: "",
     studentAge: "",
