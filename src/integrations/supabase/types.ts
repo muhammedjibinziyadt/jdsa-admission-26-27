@@ -244,6 +244,87 @@ export type Database = {
         }
         Relationships: []
       }
+      committee_finances: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          entry_date: string
+          id: string
+          title: string
+          type: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          entry_date?: string
+          id?: string
+          title: string
+          type: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          entry_date?: string
+          id?: string
+          title?: string
+          type?: string
+        }
+        Relationships: []
+      }
+      committee_items: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          notes: string | null
+          photo_url: string | null
+          quantity: number | null
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          notes?: string | null
+          photo_url?: string | null
+          quantity?: number | null
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          photo_url?: string | null
+          quantity?: number | null
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      committee_settings: {
+        Row: {
+          constitution_url: string | null
+          group_photo_url: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          constitution_url?: string | null
+          group_photo_url?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          constitution_url?: string | null
+          group_photo_url?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       gallery_likes: {
         Row: {
           created_at: string
