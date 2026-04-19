@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Plus, Trash2, Loader2, Camera, Calendar, Lightbulb, Trophy, Upload } from 'lucide-react';
-import CommitteePageShell from '@/components/committee/CommitteePageShell';
 import { useCommitteeAuth } from '@/hooks/useCommittees';
 import { useCommitteeTable, uploadCommitteeFile } from '@/hooks/useCommitteeTable';
 
@@ -12,7 +10,7 @@ interface Booking { id: string; title: string; booked_by: string | null; booking
 interface Initiative { id: string; title: string; description: string | null; entry_date: string; }
 interface Award { id: string; winner_name: string; award_title: string; award_month: string; notes: string | null; }
 
-export default function SamajaCommittee() {
+export default function SamajaBody() {
   const { isLoggedIn } = useCommitteeAuth('samaja');
   const photos = useCommitteeTable<Photo>('samaja_photos', 'week_date');
   const bookings = useCommitteeTable<Booking>('samaja_bookings', 'booking_date');
@@ -27,8 +25,7 @@ export default function SamajaCommittee() {
   const [awardForm, setAwardForm] = useState({ winner_name: '', award_title: '', award_month: new Date().toLocaleString('en', { month: 'long', year: 'numeric' }), notes: '' });
 
   return (
-    <CommitteePageShell id="samaja">
-      {/* Weekly Photos */}
+    <>
       <section className="bg-white rounded-2xl shadow-sm border border-blue-100 p-5">
         <h3 className="text-sm font-semibold text-blue-800 flex items-center gap-2 mb-4"><Camera className="w-4 h-4" /> ആഴ്ചയിലെ ഫോട്ടോകൾ</h3>
         {isLoggedIn && (
@@ -58,7 +55,6 @@ export default function SamajaCommittee() {
         )}
       </section>
 
-      {/* Bookings */}
       <section className="bg-white rounded-2xl shadow-sm border border-blue-100 p-5">
         <h3 className="text-sm font-semibold text-blue-800 flex items-center gap-2 mb-4"><Calendar className="w-4 h-4" /> ബുക്കിംഗ് വിവരങ്ങൾ</h3>
         {isLoggedIn && (
@@ -82,7 +78,6 @@ export default function SamajaCommittee() {
         )}
       </section>
 
-      {/* Initiatives */}
       <section className="bg-white rounded-2xl shadow-sm border border-blue-100 p-5">
         <h3 className="text-sm font-semibold text-blue-800 flex items-center gap-2 mb-4"><Lightbulb className="w-4 h-4" /> പദ്ധതികൾ</h3>
         {isLoggedIn && (
@@ -102,7 +97,6 @@ export default function SamajaCommittee() {
         )}
       </section>
 
-      {/* Awards */}
       <section className="bg-white rounded-2xl shadow-sm border border-blue-100 p-5">
         <h3 className="text-sm font-semibold text-blue-800 flex items-center gap-2 mb-4"><Trophy className="w-4 h-4" /> മാസത്തിലെ വിജയികൾ</h3>
         {isLoggedIn && (
@@ -123,6 +117,6 @@ export default function SamajaCommittee() {
           ))}</div>
         )}
       </section>
-    </CommitteePageShell>
+    </>
   );
 }

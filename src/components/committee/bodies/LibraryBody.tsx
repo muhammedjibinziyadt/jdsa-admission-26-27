@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Trash2, Loader2, Book, Calendar, PenTool, Upload, BookOpen } from 'lucide-react';
-import CommitteePageShell from '@/components/committee/CommitteePageShell';
+import { Plus, Trash2, Loader2, Book, Calendar, PenTool, BookOpen } from 'lucide-react';
 import { useCommitteeAuth } from '@/hooks/useCommittees';
 import { useCommitteeTable, uploadCommitteeFile } from '@/hooks/useCommitteeTable';
 
@@ -10,7 +9,7 @@ interface LBook { id: string; name: string; author: string | null; photo_url: st
 interface Program { id: string; title: string; description: string | null; entry_date: string; }
 interface Activity { id: string; student_name: string; activity_title: string; details: string | null; }
 
-export default function LibraryCommittee() {
+export default function LibraryBody() {
   const { isLoggedIn } = useCommitteeAuth('library');
   const books = useCommitteeTable<LBook>('library_books');
   const programs = useCommitteeTable<Program>('library_programs', 'entry_date');
@@ -23,8 +22,7 @@ export default function LibraryCommittee() {
   const [actForm, setActForm] = useState({ student_name: '', activity_title: '', details: '' });
 
   return (
-    <CommitteePageShell id="library">
-      {/* Books */}
+    <>
       <section className="bg-white rounded-2xl shadow-sm border border-purple-100 p-5">
         <h3 className="text-sm font-semibold text-purple-800 flex items-center gap-2 mb-4"><Book className="w-4 h-4" /> പുതിയ പുസ്തകങ്ങൾ</h3>
         {isLoggedIn && (
@@ -54,7 +52,6 @@ export default function LibraryCommittee() {
         )}
       </section>
 
-      {/* Programs */}
       <section className="bg-white rounded-2xl shadow-sm border border-purple-100 p-5">
         <h3 className="text-sm font-semibold text-purple-800 flex items-center gap-2 mb-4"><Calendar className="w-4 h-4" /> പ്രോഗ്രാമുകൾ</h3>
         {isLoggedIn && (
@@ -74,7 +71,6 @@ export default function LibraryCommittee() {
         )}
       </section>
 
-      {/* Student Activities */}
       <section className="bg-white rounded-2xl shadow-sm border border-purple-100 p-5">
         <h3 className="text-sm font-semibold text-purple-800 flex items-center gap-2 mb-4"><PenTool className="w-4 h-4" /> വിദ്യാർത്ഥി പ്രവർത്തനങ്ങൾ (ഉപന്യാസം)</h3>
         {isLoggedIn && (
@@ -94,6 +90,6 @@ export default function LibraryCommittee() {
           ))}</div>
         )}
       </section>
-    </CommitteePageShell>
+    </>
   );
 }
