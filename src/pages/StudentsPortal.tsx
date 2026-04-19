@@ -149,6 +149,11 @@ const StudentsPortal = () => {
             <p className="text-sm text-emerald-700/70">കമ്മിറ്റി തിരഞ്ഞെടുക്കുക</p>
           </div>
           <CommitteesGrid />
+          <div className="mt-4 text-center">
+            <Link to="/committee" className="inline-block text-sm text-emerald-700 hover:text-emerald-900 underline">
+              അല്ലെങ്കിൽ കമ്മിറ്റി ഹബ്ബിലേക്ക് നേരിട്ട് പോകുക →
+            </Link>
+          </div>
         </div>
       ) : activeView === 'students' ? (
         <div className="container mx-auto px-4 py-4 max-w-2xl">
