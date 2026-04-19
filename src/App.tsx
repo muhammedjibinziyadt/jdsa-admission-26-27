@@ -9,6 +9,10 @@ import AdmissionForm from "./pages/AdmissionForm";
 import StudentsPortal from "./pages/StudentsPortal";
 import Suffa from "./pages/Suffa";
 import BookStore from "./pages/BookStore";
+import CentralCommittee from "./pages/committee/CentralCommittee";
+import JawahirCommittee from "./pages/committee/JawahirCommittee";
+import SamajaCommittee from "./pages/committee/SamajaCommittee";
+import LibraryCommittee from "./pages/committee/LibraryCommittee";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +30,10 @@ const App = () => (
           <Route path="/suffa" element={<Suffa />} />
           <Route path="/students-portal" element={<StudentsPortal />} />
           <Route path="/bookstore" element={<BookStore />} />
+          <Route path="/committee/central" element={<CentralCommittee />} />
+          <Route path="/committee/jawahir" element={<JawahirCommittee />} />
+          <Route path="/committee/samaja" element={<SamajaCommittee />} />
+          <Route path="/committee/library" element={<LibraryCommittee />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

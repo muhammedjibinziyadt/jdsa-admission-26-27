@@ -244,6 +244,81 @@ export type Database = {
         }
         Relationships: []
       }
+      central_item_usage: {
+        Row: {
+          created_at: string
+          entry_date: string
+          id: string
+          item_name: string
+          notes: string | null
+          quantity: number | null
+          used_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          entry_date?: string
+          id?: string
+          item_name: string
+          notes?: string | null
+          quantity?: number | null
+          used_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          entry_date?: string
+          id?: string
+          item_name?: string
+          notes?: string | null
+          quantity?: number | null
+          used_by?: string | null
+        }
+        Relationships: []
+      }
+      central_minutes: {
+        Row: {
+          created_at: string
+          id: string
+          meeting_date: string
+          notes: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          meeting_date?: string
+          notes: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          meeting_date?: string
+          notes?: string
+        }
+        Relationships: []
+      }
+      central_updates: {
+        Row: {
+          content: string | null
+          created_at: string
+          entry_date: string
+          id: string
+          title: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          entry_date?: string
+          id?: string
+          title: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          entry_date?: string
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
       committee_finances: {
         Row: {
           amount: number
@@ -325,6 +400,36 @@ export type Database = {
         }
         Relationships: []
       }
+      committees: {
+        Row: {
+          id: string
+          max_score: number | null
+          name: string
+          password: string
+          remark: string | null
+          score: number | null
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          max_score?: number | null
+          name: string
+          password?: string
+          remark?: string | null
+          score?: number | null
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          max_score?: number | null
+          name?: string
+          password?: string
+          remark?: string | null
+          score?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       gallery_likes: {
         Row: {
           created_at: string
@@ -343,6 +448,252 @@ export type Database = {
           device_id?: string
           id?: string
           image_id?: string
+        }
+        Relationships: []
+      }
+      jawahir_contributors: {
+        Row: {
+          created_at: string
+          details: string | null
+          id: string
+          student_name: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          student_name: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          student_name?: string
+        }
+        Relationships: []
+      }
+      jawahir_initiatives: {
+        Row: {
+          created_at: string
+          description: string | null
+          entry_date: string
+          id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          entry_date?: string
+          id?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          entry_date?: string
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      jawahir_magazines: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          id: string
+          issue_date: string
+          pdf_url: string
+          title: string
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          id?: string
+          issue_date?: string
+          pdf_url: string
+          title: string
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          id?: string
+          issue_date?: string
+          pdf_url?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      library_activities: {
+        Row: {
+          activity_title: string
+          created_at: string
+          details: string | null
+          id: string
+          student_name: string
+        }
+        Insert: {
+          activity_title: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          student_name: string
+        }
+        Update: {
+          activity_title?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          student_name?: string
+        }
+        Relationships: []
+      }
+      library_books: {
+        Row: {
+          author: string | null
+          created_at: string
+          id: string
+          name: string
+          photo_url: string | null
+        }
+        Insert: {
+          author?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          photo_url?: string | null
+        }
+        Update: {
+          author?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          photo_url?: string | null
+        }
+        Relationships: []
+      }
+      library_programs: {
+        Row: {
+          created_at: string
+          description: string | null
+          entry_date: string
+          id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          entry_date?: string
+          id?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          entry_date?: string
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      samaja_awards: {
+        Row: {
+          award_month: string
+          award_title: string
+          created_at: string
+          id: string
+          notes: string | null
+          winner_name: string
+        }
+        Insert: {
+          award_month: string
+          award_title: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          winner_name: string
+        }
+        Update: {
+          award_month?: string
+          award_title?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          winner_name?: string
+        }
+        Relationships: []
+      }
+      samaja_bookings: {
+        Row: {
+          booked_by: string | null
+          booking_date: string
+          created_at: string
+          details: string | null
+          id: string
+          title: string
+        }
+        Insert: {
+          booked_by?: string | null
+          booking_date?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          title: string
+        }
+        Update: {
+          booked_by?: string | null
+          booking_date?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      samaja_initiatives: {
+        Row: {
+          created_at: string
+          description: string | null
+          entry_date: string
+          id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          entry_date?: string
+          id?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          entry_date?: string
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      samaja_photos: {
+        Row: {
+          caption: string | null
+          created_at: string
+          id: string
+          photo_url: string
+          week_date: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          photo_url: string
+          week_date?: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          photo_url?: string
+          week_date?: string
         }
         Relationships: []
       }

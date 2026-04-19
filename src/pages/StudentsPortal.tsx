@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useStudentsPortal } from "@/hooks/useStudentsPortal";
 import TimetableDisplay from "@/components/TimetableDisplay";
-import CommitteeSection from "@/components/CommitteeSection";
+import CommitteesGrid from "@/components/committee/CommitteesGrid";
 
 const StudentsPortal = () => {
   const { submitStudent, students, loading } = useStudentsPortal();
@@ -145,7 +145,10 @@ const StudentsPortal = () => {
 
       {activeView === 'committee' ? (
         <div className="container mx-auto px-4 py-4 max-w-2xl">
-          <CommitteeSection />
+          <div className="mb-4 text-center">
+            <p className="text-sm text-emerald-700/70">കമ്മിറ്റി തിരഞ്ഞെടുക്കുക</p>
+          </div>
+          <CommitteesGrid />
         </div>
       ) : activeView === 'students' ? (
         <div className="container mx-auto px-4 py-4 max-w-2xl">
