@@ -14,14 +14,15 @@ export interface Committee {
   updated_at: string;
 }
 
-export const COMMITTEE_META: Record<CommitteeId, { name: string; slug: string; gradient: string; emoji: string }> = {
-  central: { name: 'സെൻട്രൽ കമ്മിറ്റി', slug: 'central', gradient: 'from-emerald-600 to-teal-600', emoji: '🏛️' },
-  jawahir: { name: 'അൽ ജവാഹിർ കമ്മിറ്റി', slug: 'jawahir', gradient: 'from-amber-600 to-orange-600', emoji: '📖' },
-  samaja: { name: 'സമാജ കമ്മിറ്റി', slug: 'samaja', gradient: 'from-blue-600 to-indigo-600', emoji: '🤝' },
-  library: { name: 'ലൈബ്രറി കമ്മിറ്റി', slug: 'library', gradient: 'from-purple-600 to-pink-600', emoji: '📚' },
+export const COMMITTEE_META: Record<CommitteeId, { name: string; slug: string; gradient: string; emoji: string; accent: string }> = {
+  central: { name: 'സെൻട്രൽ കമ്മിറ്റി', slug: 'central', gradient: 'from-emerald-600 to-teal-600', emoji: '🏛️', accent: 'emerald' },
+  jawahir: { name: 'അൽ ജവാഹിർ കമ്മിറ്റി', slug: 'jawahir', gradient: 'from-amber-600 to-orange-600', emoji: '📖', accent: 'amber' },
+  samaja: { name: 'സമാജ കമ്മിറ്റി', slug: 'samaja', gradient: 'from-blue-600 to-indigo-600', emoji: '🤝', accent: 'blue' },
+  library: { name: 'ലൈബ്രറി കമ്മിറ്റി', slug: 'library', gradient: 'from-purple-600 to-pink-600', emoji: '📚', accent: 'purple' },
 };
 
 const SESSION_KEY = (id: CommitteeId) => `committee_session_${id}`;
+const AUTH_EVENT = 'committee-auth-change';
 
 export function useCommittees() {
   const [committees, setCommittees] = useState<Committee[]>([]);
@@ -69,11 +70,30 @@ export function useCommittee(id: CommitteeId) {
   return { committee, loading, refresh: fetchOne };
 }
 
+/**
+ * Shared auth hook. All instances across the page tree stay in sync via
+ * a custom window event so login in <LoginCard /> immediately unlocks
+ * forms in sibling components on the same page.
+ */
 export function useCommitteeAuth(id: CommitteeId) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return sessionStorage.getItem(SESSION_KEY(id)) === '1';
+  });
 
   useEffect(() => {
-    setIsLoggedIn(sessionStorage.getItem(SESSION_KEY(id)) === '1');
+    const sync = () => setIsLoggedIn(sessionStorage.getItem(SESSION_KEY(id)) === '1');
+    sync();
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail as { id: CommitteeId } | undefined;
+      if (!detail || detail.id === id) sync();
+    };
+    window.addEventListener(AUTH_EVENT, handler);
+    window.addEventListener('storage', sync);
+    return () => {
+      window.removeEventListener(AUTH_EVENT, handler);
+      window.removeEventListener('storage', sync);
+    };
   }, [id]);
 
   const login = async (password: string): Promise<boolean> => {
@@ -84,6 +104,7 @@ export function useCommitteeAuth(id: CommitteeId) {
     }
     if ((data as any).password === password) {
       sessionStorage.setItem(SESSION_KEY(id), '1');
+      window.dispatchEvent(new CustomEvent(AUTH_EVENT, { detail: { id } }));
       setIsLoggedIn(true);
       toast.success('ലോഗിൻ വിജയകരം');
       return true;
@@ -94,6 +115,7 @@ export function useCommitteeAuth(id: CommitteeId) {
 
   const logout = () => {
     sessionStorage.removeItem(SESSION_KEY(id));
+    window.dispatchEvent(new CustomEvent(AUTH_EVENT, { detail: { id } }));
     setIsLoggedIn(false);
   };
 
