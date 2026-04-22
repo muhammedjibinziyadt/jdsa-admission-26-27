@@ -105,43 +105,35 @@ const StudentsPortal = () => {
         </div>
       </div>
 
-      {/* Tab Buttons */}
-      <div className="container mx-auto px-4 pt-6 max-w-2xl">
-        <div className="flex gap-2 mb-6">
-          <Button
-            variant={activeView === 'form' ? 'default' : 'outline'}
-            onClick={() => setActiveView('form')}
-            className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white data-[active=false]:bg-white data-[active=false]:text-emerald-700 data-[active=false]:border-emerald-300"
-            data-active={activeView === 'form'}
-          >
-            <User className="w-4 h-4 mr-2" /> രജിസ്ട്രേഷൻ
-          </Button>
-           <Button
-            variant={activeView === 'timetable' ? 'default' : 'outline'}
-            onClick={() => setActiveView('timetable')}
-            className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white data-[active=false]:bg-white data-[active=false]:text-emerald-700 data-[active=false]:border-emerald-300"
-            data-active={activeView === 'timetable'}
-          >
-            <Clock className="w-4 h-4 mr-2" /> ടൈം ടേബിൾ
-          </Button>
-          <Button
-            variant={activeView === 'students' ? 'default' : 'outline'}
-            onClick={() => setActiveView('students')}
-            className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white data-[active=false]:bg-white data-[active=false]:text-emerald-700 data-[active=false]:border-emerald-300"
-            data-active={activeView === 'students'}
-          >
-            <Users className="w-4 h-4 mr-2" /> വിദ്യാർത്ഥികൾ
-          </Button>
-          <Button
-            variant={activeView === 'committee' ? 'default' : 'outline'}
-            onClick={() => setActiveView('committee')}
-            className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white data-[active=false]:bg-white data-[active=false]:text-emerald-700 data-[active=false]:border-emerald-300"
-            data-active={activeView === 'committee'}
-          >
-            <Briefcase className="w-4 h-4 mr-2" /> കമ്മിറ്റി
-          </Button>
+      {/* Sticky Menu Bar */}
+      <nav className="sticky top-0 z-30 bg-white border-b border-emerald-100 shadow-sm">
+        <div className="container mx-auto max-w-3xl">
+          <div className="flex gap-2 overflow-x-auto px-3 py-3 scrollbar-hide">
+            {[
+              { id: 'form', label: 'രജിസ്ട്രേഷൻ', icon: User },
+              { id: 'timetable', label: 'ടൈം ടേബിൾ', icon: Clock },
+              { id: 'students', label: 'വിദ്യാർത്ഥി ലിസ്റ്റ്', icon: Users },
+              { id: 'committee', label: 'കമ്മിറ്റി', icon: Briefcase },
+            ].map(({ id, label, icon: Icon }) => {
+              const isActive = activeView === id;
+              return (
+                <button
+                  key={id}
+                  onClick={() => setActiveView(id as typeof activeView)}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 ${
+                    isActive
+                      ? 'bg-emerald-600 text-white shadow-md scale-[1.02]'
+                      : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span>{label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      </nav>
 
       {activeView === 'committee' ? (
         <div className="container mx-auto px-4 py-4 max-w-2xl">
