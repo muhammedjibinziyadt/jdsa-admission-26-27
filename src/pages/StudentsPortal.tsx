@@ -1,16 +1,17 @@
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Upload, Loader2, CheckCircle, User, Phone, MapPin, BookOpen, Calendar, FileText, Clock, Users, Briefcase } from "lucide-react";
+import { ArrowLeft, Upload, Loader2, CheckCircle, User, Phone, MapPin, BookOpen, Calendar, FileText, Clock, Users, Briefcase, ClipboardCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useStudentsPortal } from "@/hooks/useStudentsPortal";
 import TimetableDisplay from "@/components/TimetableDisplay";
 import CommitteesGrid from "@/components/committee/CommitteesGrid";
+import AttendanceSection from "@/components/AttendanceSection";
 
 const StudentsPortal = () => {
   const { submitStudent, students, loading } = useStudentsPortal();
-  const [activeView, setActiveView] = useState<'form' | 'timetable' | 'students' | 'committee'>('form');
+  const [activeView, setActiveView] = useState<'form' | 'timetable' | 'students' | 'committee' | 'attendance'>('form');
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -111,6 +112,7 @@ const StudentsPortal = () => {
           <div className="flex gap-2 overflow-x-auto px-3 py-3 scrollbar-hide">
             {[
               { id: 'form', label: 'രജിസ്ട്രേഷൻ', icon: User },
+              { id: 'attendance', label: 'അറ്റൻഡൻസ്', icon: ClipboardCheck },
               { id: 'timetable', label: 'ടൈം ടേബിൾ', icon: Clock },
               { id: 'students', label: 'വിദ്യാർത്ഥി ലിസ്റ്റ്', icon: Users },
               { id: 'committee', label: 'കമ്മിറ്റി', icon: Briefcase },
@@ -135,7 +137,11 @@ const StudentsPortal = () => {
         </div>
       </nav>
 
-      {activeView === 'committee' ? (
+      {activeView === 'attendance' ? (
+        <div className="container mx-auto px-4 py-4 max-w-2xl">
+          <AttendanceSection />
+        </div>
+      ) : activeView === 'committee' ? (
         <div className="container mx-auto px-4 py-4 max-w-2xl">
           <div className="mb-4 text-center">
             <p className="text-sm text-emerald-700/70">കമ്മിറ്റി തിരഞ്ഞെടുക്കുക</p>
