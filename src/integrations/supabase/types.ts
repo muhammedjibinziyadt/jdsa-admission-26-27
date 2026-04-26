@@ -173,6 +173,112 @@ export type Database = {
         }
         Relationships: []
       }
+      attendance_leaves: {
+        Row: {
+          created_at: string
+          end_date: string
+          id: string
+          reason: string | null
+          return_date: string | null
+          start_date: string
+          student_id: string
+          total_days: number
+        }
+        Insert: {
+          created_at?: string
+          end_date: string
+          id?: string
+          reason?: string | null
+          return_date?: string | null
+          start_date: string
+          student_id: string
+          total_days?: number
+        }
+        Update: {
+          created_at?: string
+          end_date?: string
+          id?: string
+          reason?: string | null
+          return_date?: string | null
+          start_date?: string
+          student_id?: string
+          total_days?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_leaves_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "attendance_students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      attendance_records: {
+        Row: {
+          created_at: string
+          entry_date: string
+          id: string
+          notes: string | null
+          status: string
+          student_id: string
+          time_in: string | null
+          time_out: string | null
+        }
+        Insert: {
+          created_at?: string
+          entry_date?: string
+          id?: string
+          notes?: string | null
+          status?: string
+          student_id: string
+          time_in?: string | null
+          time_out?: string | null
+        }
+        Update: {
+          created_at?: string
+          entry_date?: string
+          id?: string
+          notes?: string | null
+          status?: string
+          student_id?: string
+          time_in?: string | null
+          time_out?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_records_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "attendance_students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      attendance_students: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          photo_url: string | null
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          photo_url?: string | null
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          photo_url?: string | null
+          sort_order?: number
+        }
+        Relationships: []
+      }
       book_orders: {
         Row: {
           address: string
