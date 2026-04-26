@@ -137,7 +137,11 @@ const StudentsPortal = () => {
         </div>
       </nav>
 
-      {activeView === 'committee' ? (
+      {activeView === 'attendance' ? (
+        <div className="container mx-auto px-4 py-4 max-w-2xl">
+          <AttendanceSection />
+        </div>
+      ) : activeView === 'committee' ? (
         <div className="container mx-auto px-4 py-4 max-w-2xl">
           <div className="mb-4 text-center">
             <p className="text-sm text-emerald-700/70">കമ്മിറ്റി തിരഞ്ഞെടുക്കുക</p>
