@@ -23,7 +23,16 @@ export function useCommitteeTable<T extends { id: string }>(table: string, order
     return true;
   };
 
+  const update = async (id: string, patch: Partial<T>) => {
+    const { error } = await (supabase as any).from(table).update(patch).eq('id', id);
+    if (error) { toast.error('പിശക്: ' + error.message); return false; }
+    toast.success('സേവ് ചെയ്തു');
+    await fetch();
+    return true;
+  };
+
   const remove = async (id: string) => {
+    if (!window.confirm('Delete this entry?')) return false;
     const { error } = await (supabase as any).from(table).delete().eq('id', id);
     if (error) { toast.error('പിശക്: ' + error.message); return false; }
     toast.success('നീക്കം ചെയ്തു');
@@ -31,7 +40,7 @@ export function useCommitteeTable<T extends { id: string }>(table: string, order
     return true;
   };
 
-  return { rows, loading, insert, remove, refresh: fetch };
+  return { rows, loading, insert, update, remove, refresh: fetch };
 }
 
 export async function uploadCommitteeFile(bucket: string, file: File, prefix = '') {

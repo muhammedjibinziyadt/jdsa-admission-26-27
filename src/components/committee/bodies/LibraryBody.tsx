@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Trash2, Loader2, Book, Calendar, PenTool, BookOpen } from 'lucide-react';
-import { useCommitteeAuth } from '@/hooks/useCommittees';
+import { Plus, Trash2, Edit2, Loader2, Book, Calendar, PenTool, BookOpen } from 'lucide-react';
+import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { useCommitteeTable, uploadCommitteeFile } from '@/hooks/useCommitteeTable';
+import EditEntryDialog from '@/components/committee/EditEntryDialog';
 
 interface LBook { id: string; name: string; author: string | null; photo_url: string | null; }
 interface Program { id: string; title: string; description: string | null; entry_date: string; }
 interface Activity { id: string; student_name: string; activity_title: string; details: string | null; }
 
 export default function LibraryBody() {
-  const { isLoggedIn } = useCommitteeAuth('library');
+  const { isAuthenticated } = useAdminAuth();
   const books = useCommitteeTable<LBook>('library_books');
   const programs = useCommitteeTable<Program>('library_programs', 'entry_date');
   const activities = useCommitteeTable<Activity>('library_activities');
@@ -21,11 +22,15 @@ export default function LibraryBody() {
   const [progForm, setProgForm] = useState({ title: '', description: '' });
   const [actForm, setActForm] = useState({ student_name: '', activity_title: '', details: '' });
 
+  const [editBook, setEditBook] = useState<LBook | null>(null);
+  const [editProg, setEditProg] = useState<Program | null>(null);
+  const [editAct, setEditAct] = useState<Activity | null>(null);
+
   return (
     <>
       <section className="bg-white rounded-2xl shadow-sm border border-purple-100 p-5">
         <h3 className="text-sm font-semibold text-purple-800 flex items-center gap-2 mb-4"><Book className="w-4 h-4" /> പുതിയ പുസ്തകങ്ങൾ</h3>
-        {isLoggedIn && (
+        {isAuthenticated && (
           <form onSubmit={async (e) => {
             e.preventDefault();
             if (!bookForm.name.trim()) return;
@@ -46,7 +51,12 @@ export default function LibraryBody() {
             <div key={b.id} className="rounded-xl border border-gray-100 overflow-hidden bg-gray-50 group relative">
               {b.photo_url ? <img src={b.photo_url} alt={b.name} className="w-full aspect-[3/4] object-cover" /> : <div className="aspect-[3/4] bg-purple-100 flex items-center justify-center text-purple-400"><BookOpen className="w-10 h-10" /></div>}
               <div className="p-2"><p className="text-xs font-medium text-gray-800 truncate">{b.name}</p>{b.author && <p className="text-[10px] text-gray-500 truncate">{b.author}</p>}</div>
-              {isLoggedIn && <button onClick={() => books.remove(b.id)} className="absolute top-1 right-1 bg-rose-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100"><Trash2 className="w-3 h-3" /></button>}
+              {isAuthenticated && (
+                <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100">
+                  <button onClick={() => setEditBook(b)} className="bg-blue-500 text-white p-1 rounded-full"><Edit2 className="w-3 h-3" /></button>
+                  <button onClick={() => books.remove(b.id)} className="bg-rose-500 text-white p-1 rounded-full"><Trash2 className="w-3 h-3" /></button>
+                </div>
+              )}
             </div>
           ))}</div>
         )}
@@ -54,7 +64,7 @@ export default function LibraryBody() {
 
       <section className="bg-white rounded-2xl shadow-sm border border-purple-100 p-5">
         <h3 className="text-sm font-semibold text-purple-800 flex items-center gap-2 mb-4"><Calendar className="w-4 h-4" /> പ്രോഗ്രാമുകൾ</h3>
-        {isLoggedIn && (
+        {isAuthenticated && (
           <form onSubmit={async (e) => { e.preventDefault(); if (!progForm.title.trim()) return; const ok = await programs.insert({ title: progForm.title, description: progForm.description || null }); if (ok) setProgForm({ title: '', description: '' }); }} className="space-y-2 mb-4 p-3 bg-purple-50 rounded-xl">
             <Input placeholder="Program title" value={progForm.title} onChange={(e) => setProgForm({ ...progForm, title: e.target.value })} className="rounded-lg" />
             <textarea placeholder="Description" value={progForm.description} onChange={(e) => setProgForm({ ...progForm, description: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-purple-200 text-sm" rows={2} />
@@ -65,7 +75,12 @@ export default function LibraryBody() {
           <div className="space-y-2">{programs.rows.map((p) => (
             <div key={p.id} className="p-3 bg-gray-50 rounded-lg border border-gray-100 flex justify-between gap-3">
               <div className="flex-1 min-w-0"><p className="font-medium text-sm">{p.title}</p>{p.description && <p className="text-xs text-gray-600">{p.description}</p>}<p className="text-xs text-gray-400 mt-1">{new Date(p.entry_date).toLocaleDateString('en-IN')}</p></div>
-              {isLoggedIn && <button onClick={() => programs.remove(p.id)} className="text-rose-500 hover:text-rose-700"><Trash2 className="w-4 h-4" /></button>}
+              {isAuthenticated && (
+                <div className="flex gap-1 flex-shrink-0">
+                  <button onClick={() => setEditProg(p)} className="text-blue-500 hover:text-blue-700"><Edit2 className="w-4 h-4" /></button>
+                  <button onClick={() => programs.remove(p.id)} className="text-rose-500 hover:text-rose-700"><Trash2 className="w-4 h-4" /></button>
+                </div>
+              )}
             </div>
           ))}</div>
         )}
@@ -73,7 +88,7 @@ export default function LibraryBody() {
 
       <section className="bg-white rounded-2xl shadow-sm border border-purple-100 p-5">
         <h3 className="text-sm font-semibold text-purple-800 flex items-center gap-2 mb-4"><PenTool className="w-4 h-4" /> വിദ്യാർത്ഥി പ്രവർത്തനങ്ങൾ (ഉപന്യാസം)</h3>
-        {isLoggedIn && (
+        {isAuthenticated && (
           <form onSubmit={async (e) => { e.preventDefault(); if (!actForm.student_name.trim() || !actForm.activity_title.trim()) return; const ok = await activities.insert({ student_name: actForm.student_name, activity_title: actForm.activity_title, details: actForm.details || null }); if (ok) setActForm({ student_name: '', activity_title: '', details: '' }); }} className="space-y-2 mb-4 p-3 bg-purple-50 rounded-xl">
             <Input placeholder="Student name" value={actForm.student_name} onChange={(e) => setActForm({ ...actForm, student_name: e.target.value })} className="rounded-lg" />
             <Input placeholder="Essay / Activity title" value={actForm.activity_title} onChange={(e) => setActForm({ ...actForm, activity_title: e.target.value })} className="rounded-lg" />
@@ -85,11 +100,41 @@ export default function LibraryBody() {
           <div className="space-y-2">{activities.rows.map((a) => (
             <div key={a.id} className="p-3 bg-gray-50 rounded-lg border border-gray-100 flex justify-between gap-3">
               <div className="flex-1 min-w-0"><p className="font-medium text-sm text-gray-800">{a.student_name}</p><p className="text-xs text-purple-700">{a.activity_title}</p>{a.details && <p className="text-xs text-gray-600">{a.details}</p>}</div>
-              {isLoggedIn && <button onClick={() => activities.remove(a.id)} className="text-rose-500 hover:text-rose-700"><Trash2 className="w-4 h-4" /></button>}
+              {isAuthenticated && (
+                <div className="flex gap-1 flex-shrink-0">
+                  <button onClick={() => setEditAct(a)} className="text-blue-500 hover:text-blue-700"><Edit2 className="w-4 h-4" /></button>
+                  <button onClick={() => activities.remove(a.id)} className="text-rose-500 hover:text-rose-700"><Trash2 className="w-4 h-4" /></button>
+                </div>
+              )}
             </div>
           ))}</div>
         )}
       </section>
+
+      <EditEntryDialog
+        open={!!editBook}
+        onOpenChange={(v) => { if (!v) setEditBook(null); }}
+        title="Edit Book"
+        fields={[{ key: 'name', label: 'Name' }, { key: 'author', label: 'Author' }]}
+        initialValues={editBook ? { name: editBook.name, author: editBook.author || '' } : {}}
+        onSave={async (vals) => { if (editBook) await books.update(editBook.id, { name: vals.name, author: vals.author || null } as any); }}
+      />
+      <EditEntryDialog
+        open={!!editProg}
+        onOpenChange={(v) => { if (!v) setEditProg(null); }}
+        title="Edit Program"
+        fields={[{ key: 'title', label: 'Title' }, { key: 'description', label: 'Description', type: 'textarea' }, { key: 'entry_date', label: 'Date', type: 'date' }]}
+        initialValues={editProg ? { title: editProg.title, description: editProg.description || '', entry_date: editProg.entry_date } : {}}
+        onSave={async (vals) => { if (editProg) await programs.update(editProg.id, { title: vals.title, description: vals.description || null, entry_date: vals.entry_date } as any); }}
+      />
+      <EditEntryDialog
+        open={!!editAct}
+        onOpenChange={(v) => { if (!v) setEditAct(null); }}
+        title="Edit Activity"
+        fields={[{ key: 'student_name', label: 'Student' }, { key: 'activity_title', label: 'Activity Title' }, { key: 'details', label: 'Details', type: 'textarea' }]}
+        initialValues={editAct ? { student_name: editAct.student_name, activity_title: editAct.activity_title, details: editAct.details || '' } : {}}
+        onSave={async (vals) => { if (editAct) await activities.update(editAct.id, { student_name: vals.student_name, activity_title: vals.activity_title, details: vals.details || null } as any); }}
+      />
     </>
   );
 }
