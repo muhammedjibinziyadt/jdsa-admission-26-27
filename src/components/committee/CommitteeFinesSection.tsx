@@ -1,10 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Plus, Trash2, Edit2, Loader2, Receipt, Download, Printer } from 'lucide-react';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
-import { useCommitteeTable } from '@/hooks/useCommitteeTable';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { generateFineReceipt } from '@/utils/generateFineReceipt';
@@ -24,12 +23,11 @@ interface Fine {
 interface Props {
   committeeId: string;
   committeeName: string;
-  accentColor: string; // tailwind color name e.g. 'rose'
 }
 
 const dayName = (d: string) => new Date(d).toLocaleDateString('en-IN', { weekday: 'long' });
 
-export default function CommitteeFinesSection({ committeeId, committeeName, accentColor }: Props) {
+export default function CommitteeFinesSection({ committeeId, committeeName }: Props) {
   const { isAuthenticated } = useAdminAuth();
   const [rows, setRows] = useState<Fine[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,7 +39,6 @@ export default function CommitteeFinesSection({ committeeId, committeeName, acce
   });
   const [editing, setEditing] = useState<Fine | null>(null);
 
-  // Inline fetch (filtered by committee)
   const fetchFines = async () => {
     setLoading(true);
     const { data, error } = await (supabase as any)
@@ -53,13 +50,8 @@ export default function CommitteeFinesSection({ committeeId, committeeName, acce
     if (!error && data) setRows(data as Fine[]);
     setLoading(false);
   };
-  // initial + when committee changes
-  useState(() => { fetchFines(); return undefined; });
-  // proper useEffect via inline:
-  // (use real useEffect)
 
-  // Replace useState hack with effect
-  // (kept for clarity below)
+  useEffect(() => { fetchFines(); /* eslint-disable-next-line */ }, [committeeId]);
 
   const submitNew = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,46 +93,33 @@ export default function CommitteeFinesSection({ committeeId, committeeName, acce
     fetchFines();
   };
 
-  const downloadReceipt = (f: Fine) => {
-    const doc = generateFineReceipt({
-      fine_date: f.fine_date,
-      day_name: f.day_name,
-      person_name: f.person_name,
-      reason: f.reason,
-      amount: Number(f.amount),
-      committee_name: committeeName,
-      receipt_no: f.id.slice(0, 8).toUpperCase(),
-    });
-    doc.save(`fine-receipt-${f.id.slice(0, 6)}.pdf`);
-  };
+  const buildReceipt = (f: Fine) => generateFineReceipt({
+    fine_date: f.fine_date,
+    day_name: f.day_name,
+    person_name: f.person_name,
+    reason: f.reason,
+    amount: Number(f.amount),
+    committee_name: committeeName,
+    receipt_no: f.id.slice(0, 8).toUpperCase(),
+  });
 
+  const downloadReceipt = (f: Fine) => buildReceipt(f).save(`fine-receipt-${f.id.slice(0, 6)}.pdf`);
   const printReceipt = (f: Fine) => {
-    const doc = generateFineReceipt({
-      fine_date: f.fine_date,
-      day_name: f.day_name,
-      person_name: f.person_name,
-      reason: f.reason,
-      amount: Number(f.amount),
-      committee_name: committeeName,
-      receipt_no: f.id.slice(0, 8).toUpperCase(),
-    });
+    const doc = buildReceipt(f);
     doc.autoPrint();
     const blobUrl = doc.output('bloburl');
     window.open(blobUrl as any, '_blank');
   };
 
-  // accent class helpers
-  const a = accentColor;
-
   return (
-    <section className={`bg-white rounded-2xl shadow-sm border border-${a}-200 p-5`}>
-      <h3 className={`text-sm font-semibold text-${a}-800 flex items-center gap-2 mb-1`}>
+    <section className="bg-white rounded-2xl shadow-sm border border-rose-200 p-5">
+      <h3 className="text-sm font-semibold text-rose-800 flex items-center gap-2 mb-1">
         <Receipt className="w-4 h-4" /> Fine / Penalty
       </h3>
       <p className="text-xs text-gray-500 mb-4">Recent fines for {committeeName}</p>
 
       {isAuthenticated && (
-        <form onSubmit={submitNew} className={`space-y-2 mb-4 p-3 bg-${a}-50 rounded-xl`}>
+        <form onSubmit={submitNew} className="space-y-2 mb-4 p-3 bg-rose-50 rounded-xl">
           <div className="grid grid-cols-2 gap-2">
             <div>
               <Label className="text-xs">Date</Label>
@@ -152,8 +131,8 @@ export default function CommitteeFinesSection({ committeeId, committeeName, acce
             </div>
           </div>
           <Input placeholder="Person / Committee name" value={form.person_name} onChange={(e) => setForm({ ...form, person_name: e.target.value })} className="rounded-lg" />
-          <textarea placeholder="Reason for fine" value={form.reason} onChange={(e) => setForm({ ...form, reason: e.target.value })} className={`w-full px-3 py-2 rounded-lg border border-${a}-200 text-sm`} rows={2} />
-          <Button size="sm" type="submit" className={`bg-${a}-600 hover:bg-${a}-700`}>
+          <textarea placeholder="Reason for fine" value={form.reason} onChange={(e) => setForm({ ...form, reason: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-rose-200 text-sm" rows={2} />
+          <Button size="sm" type="submit" className="bg-rose-600 hover:bg-rose-700">
             <Plus className="w-3.5 h-3.5 mr-1" /> Add Fine
           </Button>
         </form>
@@ -176,11 +155,11 @@ export default function CommitteeFinesSection({ committeeId, committeeName, acce
                   </p>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className={`text-base font-bold text-${a}-700`}>₹{Number(f.amount).toFixed(2)}</p>
+                  <p className="text-base font-bold text-rose-700">₹{Number(f.amount).toFixed(2)}</p>
                 </div>
               </div>
               <div className="flex gap-1.5 mt-2 flex-wrap">
-                <button onClick={() => downloadReceipt(f)} className={`text-[11px] inline-flex items-center gap-1 px-2 py-1 rounded border border-${a}-300 text-${a}-700 hover:bg-${a}-50`}>
+                <button onClick={() => downloadReceipt(f)} className="text-[11px] inline-flex items-center gap-1 px-2 py-1 rounded border border-rose-300 text-rose-700 hover:bg-rose-50">
                   <Download className="w-3 h-3" /> Receipt
                 </button>
                 <button onClick={() => printReceipt(f)} className="text-[11px] inline-flex items-center gap-1 px-2 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-100">
