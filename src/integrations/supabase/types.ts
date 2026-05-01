@@ -425,6 +425,74 @@ export type Database = {
         }
         Relationships: []
       }
+      committee_custom_entries: {
+        Row: {
+          body: string | null
+          created_at: string
+          entry_date: string
+          file_url: string | null
+          id: string
+          image_url: string | null
+          section_id: string
+          title: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          entry_date?: string
+          file_url?: string | null
+          id?: string
+          image_url?: string | null
+          section_id: string
+          title: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          entry_date?: string
+          file_url?: string | null
+          id?: string
+          image_url?: string | null
+          section_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "committee_custom_entries_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "committee_custom_sections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      committee_custom_sections: {
+        Row: {
+          committee_id: string
+          created_at: string
+          description: string | null
+          id: string
+          sort_order: number
+          title: string
+        }
+        Insert: {
+          committee_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          sort_order?: number
+          title: string
+        }
+        Update: {
+          committee_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          sort_order?: number
+          title?: string
+        }
+        Relationships: []
+      }
       committee_finances: {
         Row: {
           amount: number
@@ -452,6 +520,39 @@ export type Database = {
           id?: string
           title?: string
           type?: string
+        }
+        Relationships: []
+      }
+      committee_fines: {
+        Row: {
+          amount: number
+          committee_id: string
+          created_at: string
+          day_name: string | null
+          fine_date: string
+          id: string
+          person_name: string
+          reason: string
+        }
+        Insert: {
+          amount?: number
+          committee_id: string
+          created_at?: string
+          day_name?: string | null
+          fine_date?: string
+          id?: string
+          person_name: string
+          reason: string
+        }
+        Update: {
+          amount?: number
+          committee_id?: string
+          created_at?: string
+          day_name?: string | null
+          fine_date?: string
+          id?: string
+          person_name?: string
+          reason?: string
         }
         Relationships: []
       }
