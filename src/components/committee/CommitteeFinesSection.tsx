@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Plus, Trash2, Edit2, Loader2, Receipt, Download, Printer } from 'lucide-react';
+import { Plus, Trash2, Edit2, Loader2, Receipt, Download, Printer, CheckCircle2, XCircle } from 'lucide-react';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -17,6 +17,7 @@ interface Fine {
   person_name: string;
   reason: string;
   amount: number;
+  payment_status: 'paid' | 'unpaid';
   created_at: string;
 }
 
@@ -36,6 +37,7 @@ export default function CommitteeFinesSection({ committeeId, committeeName }: Pr
     person_name: '',
     reason: '',
     amount: '',
+    payment_status: 'unpaid' as 'paid' | 'unpaid',
   });
   const [editing, setEditing] = useState<Fine | null>(null);
 
@@ -63,10 +65,19 @@ export default function CommitteeFinesSection({ committeeId, committeeName }: Pr
       person_name: form.person_name.trim(),
       reason: form.reason.trim(),
       amount: Number(form.amount),
+      payment_status: form.payment_status,
     });
     if (error) { toast.error(error.message); return; }
     toast.success('Fine added');
-    setForm({ fine_date: new Date().toISOString().slice(0, 10), person_name: '', reason: '', amount: '' });
+    setForm({ fine_date: new Date().toISOString().slice(0, 10), person_name: '', reason: '', amount: '', payment_status: 'unpaid' });
+    fetchFines();
+  };
+
+  const togglePaid = async (f: Fine) => {
+    const next = f.payment_status === 'paid' ? 'unpaid' : 'paid';
+    const { error } = await (supabase as any).from('committee_fines').update({ payment_status: next }).eq('id', f.id);
+    if (error) { toast.error(error.message); return; }
+    toast.success(next === 'paid' ? 'Marked as Paid' : 'Marked as Unpaid');
     fetchFines();
   };
 
@@ -86,6 +97,7 @@ export default function CommitteeFinesSection({ committeeId, committeeName }: Pr
       person_name: vals.person_name,
       reason: vals.reason,
       amount: Number(vals.amount) || 0,
+      payment_status: vals.payment_status === 'paid' ? 'paid' : 'unpaid',
     }).eq('id', editing.id);
     if (error) { toast.error(error.message); return; }
     toast.success('Updated');
@@ -101,6 +113,7 @@ export default function CommitteeFinesSection({ committeeId, committeeName }: Pr
     amount: Number(f.amount),
     committee_name: committeeName,
     receipt_no: f.id.slice(0, 8).toUpperCase(),
+    payment_status: f.payment_status,
   });
 
   const downloadReceipt = (f: Fine) => buildReceipt(f).save(`fine-receipt-${f.id.slice(0, 6)}.pdf`);
