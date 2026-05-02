@@ -531,6 +531,7 @@ export type Database = {
           day_name: string | null
           fine_date: string
           id: string
+          payment_status: string
           person_name: string
           reason: string
         }
@@ -541,6 +542,7 @@ export type Database = {
           day_name?: string | null
           fine_date?: string
           id?: string
+          payment_status?: string
           person_name: string
           reason: string
         }
@@ -551,6 +553,7 @@ export type Database = {
           day_name?: string | null
           fine_date?: string
           id?: string
+          payment_status?: string
           person_name?: string
           reason?: string
         }
