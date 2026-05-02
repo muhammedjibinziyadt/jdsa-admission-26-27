@@ -8,7 +8,8 @@ import { Loader2, Save } from 'lucide-react';
 export interface EditField {
   key: string;
   label: string;
-  type?: 'text' | 'textarea' | 'date' | 'number';
+  type?: 'text' | 'textarea' | 'date' | 'number' | 'select';
+  options?: { label: string; value: string }[];
 }
 
 interface Props {
@@ -48,6 +49,16 @@ export default function EditEntryDialog({ open, onOpenChange, title, fields, ini
                   className="w-full px-3 py-2 rounded-lg border border-input bg-background text-sm"
                   rows={3}
                 />
+              ) : f.type === 'select' ? (
+                <select
+                  value={values[f.key] ?? ''}
+                  onChange={(e) => setValues({ ...values, [f.key]: e.target.value })}
+                  className="w-full px-3 py-2 rounded-lg border border-input bg-background text-sm"
+                >
+                  {(f.options || []).map((o) => (
+                    <option key={o.value} value={o.value}>{o.label}</option>
+                  ))}
+                </select>
               ) : (
                 <Input
                   type={f.type || 'text'}
