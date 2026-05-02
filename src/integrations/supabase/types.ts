@@ -350,6 +350,36 @@ export type Database = {
         }
         Relationships: []
       }
+      central_fund_book: {
+        Row: {
+          amount: number
+          created_at: string
+          entry_date: string
+          fund_type: string
+          id: string
+          person_name: string
+          reason: string | null
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          entry_date?: string
+          fund_type?: string
+          id?: string
+          person_name: string
+          reason?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          entry_date?: string
+          fund_type?: string
+          id?: string
+          person_name?: string
+          reason?: string | null
+        }
+        Relationships: []
+      }
       central_item_usage: {
         Row: {
           created_at: string
@@ -398,6 +428,30 @@ export type Database = {
           id?: string
           meeting_date?: string
           notes?: string
+        }
+        Relationships: []
+      }
+      central_reports: {
+        Row: {
+          created_at: string
+          description: string | null
+          entry_date: string
+          id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          entry_date?: string
+          id?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          entry_date?: string
+          id?: string
+          title?: string
         }
         Relationships: []
       }
@@ -733,6 +787,59 @@ export type Database = {
         }
         Relationships: []
       }
+      jawahir_students: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      jawahir_submissions: {
+        Row: {
+          id: string
+          student_id: string
+          submitted: boolean
+          updated_at: string
+          year_month: string
+        }
+        Insert: {
+          id?: string
+          student_id: string
+          submitted?: boolean
+          updated_at?: string
+          year_month: string
+        }
+        Update: {
+          id?: string
+          student_id?: string
+          submitted?: boolean
+          updated_at?: string
+          year_month?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "jawahir_submissions_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "jawahir_students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       library_activities: {
         Row: {
           activity_title: string
@@ -757,6 +864,36 @@ export type Database = {
         }
         Relationships: []
       }
+      library_book_issues: {
+        Row: {
+          book_name: string
+          created_at: string
+          id: string
+          issue_date: string
+          issue_time: string | null
+          notes: string | null
+          student_name: string
+        }
+        Insert: {
+          book_name: string
+          created_at?: string
+          id?: string
+          issue_date?: string
+          issue_time?: string | null
+          notes?: string | null
+          student_name: string
+        }
+        Update: {
+          book_name?: string
+          created_at?: string
+          id?: string
+          issue_date?: string
+          issue_time?: string | null
+          notes?: string | null
+          student_name?: string
+        }
+        Relationships: []
+      }
       library_books: {
         Row: {
           author: string | null
@@ -764,6 +901,7 @@ export type Database = {
           id: string
           name: string
           photo_url: string | null
+          status: string
         }
         Insert: {
           author?: string | null
@@ -771,6 +909,7 @@ export type Database = {
           id?: string
           name: string
           photo_url?: string | null
+          status?: string
         }
         Update: {
           author?: string | null
@@ -778,6 +917,7 @@ export type Database = {
           id?: string
           name?: string
           photo_url?: string | null
+          status?: string
         }
         Relationships: []
       }
@@ -904,6 +1044,39 @@ export type Database = {
           id?: string
           photo_url?: string
           week_date?: string
+        }
+        Relationships: []
+      }
+      samaja_reports: {
+        Row: {
+          absent: string | null
+          attended: string | null
+          created_at: string
+          details: string | null
+          entry_date: string
+          id: string
+          speakers: string | null
+          title: string
+        }
+        Insert: {
+          absent?: string | null
+          attended?: string | null
+          created_at?: string
+          details?: string | null
+          entry_date?: string
+          id?: string
+          speakers?: string | null
+          title: string
+        }
+        Update: {
+          absent?: string | null
+          attended?: string | null
+          created_at?: string
+          details?: string | null
+          entry_date?: string
+          id?: string
+          speakers?: string | null
+          title?: string
         }
         Relationships: []
       }

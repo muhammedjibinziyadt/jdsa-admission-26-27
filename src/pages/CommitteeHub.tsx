@@ -9,6 +9,7 @@ import SamajaBody from '@/components/committee/bodies/SamajaBody';
 import LibraryBody from '@/components/committee/bodies/LibraryBody';
 import CustomSections from '@/components/committee/CustomSections';
 import CommitteeFinesSection from '@/components/committee/CommitteeFinesSection';
+import LoginCard from '@/components/committee/LoginCard';
 
 const ORDER: CommitteeId[] = ['central', 'jawahir', 'samaja', 'library'];
 const BUCKET: Record<CommitteeId, string> = { central: 'committee', jawahir: 'jawahir', samaja: 'samaja', library: 'library' };
@@ -77,6 +78,7 @@ export default function CommitteeHub() {
           </div>
         ) : (
           <>
+            <LoginCard id={active} />
             <ScoreBoard committee={committee} gradient={meta.gradient} />
             {active === 'central' && <CentralBody />}
             {active === 'jawahir' && <JawahirBody />}
