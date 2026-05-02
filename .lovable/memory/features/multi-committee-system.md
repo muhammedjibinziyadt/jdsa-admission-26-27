@@ -1,22 +1,22 @@
 ---
 name: Multi-Committee System
-description: Four committees (Central, Al Jawahir, Samaja, Library) — admin-only edit, dynamic custom sections, and per-committee fines with PDF receipts
+description: Four committees with admin + per-committee logins, fund book, report books, monthly tracking, library issues, and admin-only fines
 type: feature
 ---
-The Students Portal "കമ്മിറ്റി" tab opens a unified `CommitteeHub` (`/committee/:id`) with a sticky menu bar for the 4 committees: central, jawahir, samaja, library.
+The Students Portal "കമ്മിറ്റി" tab opens `CommitteeHub` (`/committee/:id`) with a sticky menu bar for: central, jawahir, samaja, library.
 
-**Per committee page (top → bottom):**
-- ScoreBoard (admin-controlled in /admin)
-- Built-in body sections (CentralBody / JawahirBody / SamajaBody / LibraryBody) — each with Add / Edit / Delete entries
-- CustomSections — dynamic sections created by admin (Events, Notices, etc.) with text + image + PDF entries
-- CommitteeFinesSection — admin adds penalties; everyone can View / Download Receipt (PDF) / Print
+**Edit access (per-committee content):** Either main admin (`useAdminAuth`) OR committee member logged in via `LoginCard` (committee password set in /admin). Combined in `useCommitteeEdit(id) → { canEdit, isAdmin, isCommitteeMember }`. Used by all body sections + `CustomSections`.
 
-**Edit access:** Only main admin (`useAdminAuth` from /admin login). Committee passwords from earlier iteration are no longer used for editing — `LoginCard` and `useCommitteeAuth` are dead code (kept for now). All committee body components use `useAdminAuth`.
+**Fines: ADMIN ONLY.** `CommitteeFinesSection` uses `useAdminAuth` directly — committee members can view/download/print receipts but cannot add/edit/delete/toggle status.
 
-**Editing UI:** `EditEntryDialog` (shadcn dialog) shared across all body sections, custom sections, and fines. Delete uses `window.confirm`.
+**Per-committee features:**
+- **Central** (`CentralBody`): Fund Book (paid/pending with totals), Report Book (notebook style with modal viewer), Updates, Item Usage, Minutes
+- **Jawahir** (`JawahirBody`): Magazines (PDF), Monthly Article Tracking (15 students from `jawahir_students`, alternates Writing/Typing automatically — April=Writing, May=Typing, etc., red highlight if not submitted), Programs. *Donation students UI removed (table `jawahir_contributors` kept).*
+- **Samaja** (`SamajaBody`): Photos, Report Book (attended/absent/speakers/details with modal viewer), Initiatives, Awards. *Booking UI removed (table `samaja_bookings` kept).*
+- **Library** (`LibraryBody`): Book List with Available/Missing status, Book Issue Records (student/book/date/time), Programs.
 
-**Fine receipt:** `src/utils/generateFineReceipt.ts` (jsPDF, A5). Header: "JAWHARATHUL ULOOM SUFFA DARS STUDENTS ASSOCIATION". Includes Date, Day, Committee, Name, Reason, Amount, receipt no (first 8 chars of UUID).
+**Tables added:** central_fund_book, central_reports, samaja_reports, jawahir_students (seeded with 15 names), jawahir_submissions, library_book_issues. `library_books.status` column added.
 
-**Tables:** committees, central_*, jawahir_*, samaja_*, library_*, committee_fines, committee_custom_sections, committee_custom_entries.
+**Storage buckets:** committee, jawahir, samaja, library (all public).
 
-**Storage buckets:** committee, jawahir, samaja, library (all public). Custom section files use the bucket of their committee.
+**Receipt:** `src/utils/generateFineReceipt.ts` (jsPDF, A5, green=Paid / red=Unpaid).
