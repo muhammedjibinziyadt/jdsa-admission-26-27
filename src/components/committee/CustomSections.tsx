@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Plus, Trash2, Edit2, Loader2, FolderPlus, FileText, Image as ImageIcon, Download, ExternalLink } from 'lucide-react';
-import { useAdminAuth } from '@/hooks/useAdminAuth';
+import { useCommitteeEdit } from '@/hooks/useCommitteeEdit';
+import { CommitteeId } from '@/hooks/useCommittees';
 import { uploadCommitteeFile } from '@/hooks/useCommitteeTable';
 import EditEntryDialog from './EditEntryDialog';
 
@@ -18,7 +19,7 @@ interface Props {
 }
 
 export default function CustomSections({ committeeId, bucket }: Props) {
-  const { isAuthenticated } = useAdminAuth();
+  const { canEdit: isAuthenticated } = useCommitteeEdit(committeeId as CommitteeId);
   const [sections, setSections] = useState<Section[]>([]);
   const [entries, setEntries] = useState<Record<string, Entry[]>>({});
   const [loading, setLoading] = useState(true);
