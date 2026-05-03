@@ -868,28 +868,40 @@ export type Database = {
         Row: {
           book_name: string
           created_at: string
+          day_name: string | null
           id: string
           issue_date: string
           issue_time: string | null
           notes: string | null
+          return_date: string | null
+          return_time: string | null
+          status: string
           student_name: string
         }
         Insert: {
           book_name: string
           created_at?: string
+          day_name?: string | null
           id?: string
           issue_date?: string
           issue_time?: string | null
           notes?: string | null
+          return_date?: string | null
+          return_time?: string | null
+          status?: string
           student_name: string
         }
         Update: {
           book_name?: string
           created_at?: string
+          day_name?: string | null
           id?: string
           issue_date?: string
           issue_time?: string | null
           notes?: string | null
+          return_date?: string | null
+          return_time?: string | null
+          status?: string
           student_name?: string
         }
         Relationships: []
