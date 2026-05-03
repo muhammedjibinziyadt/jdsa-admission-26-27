@@ -8,7 +8,15 @@ import EditEntryDialog from '@/components/committee/EditEntryDialog';
 
 interface LBook { id: string; name: string; author: string | null; photo_url: string | null; status: 'available' | 'missing'; }
 interface Program { id: string; title: string; description: string | null; entry_date: string; }
-interface Issue { id: string; student_name: string; book_name: string; issue_date: string; issue_time: string | null; notes: string | null; }
+interface Issue { id: string; student_name: string; book_name: string; issue_date: string; issue_time: string | null; notes: string | null; status: 'taken' | 'returned' | 'not_taken'; return_date: string | null; return_time: string | null; day_name: string | null; }
+
+const STUDENT_LIST = [
+  'Muhammad Navas', 'Muhammad Jibin Ziyad', 'Muhammad Anshid', 'Muhammad Jareer',
+  'Muhammad Shimlal', 'Muhammad Sidan', 'Muhammad Sinan', 'Muhammad Shafi P',
+  'Muhammad Ameen', 'Muhammad Shereef', 'Muhammad Jubair', 'Muhammad Afham',
+  'Muhammad Jinshad', 'Muhammad Shafi K', 'Salman Faris',
+];
+const DAY_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
 export default function LibraryBody() {
   const { canEdit } = useCommitteeEdit('library');
@@ -25,6 +33,9 @@ export default function LibraryBody() {
     book_name: '',
     issue_date: new Date().toISOString().slice(0, 10),
     issue_time: new Date().toTimeString().slice(0, 5),
+    status: 'taken' as 'taken' | 'returned' | 'not_taken',
+    return_date: '',
+    return_time: '',
     notes: '',
   });
 
@@ -88,53 +99,105 @@ export default function LibraryBody() {
         )}
       </section>
 
-      {/* BOOK ISSUE RECORDS */}
+      {/* BOOK ISSUE REGISTER */}
       <section className="bg-white rounded-2xl shadow-sm border border-purple-100 p-5">
-        <h3 className="text-sm font-semibold text-purple-800 flex items-center gap-2 mb-4"><ScrollText className="w-4 h-4" /> ബുക്ക് ഇഷ്യൂ റെക്കോർഡ്</h3>
+        <h3 className="text-sm font-semibold text-purple-800 flex items-center gap-2 mb-4">
+          <ScrollText className="w-4 h-4" /> Book Issue Register
+        </h3>
+        <p className="text-[11px] text-gray-500 -mt-3 mb-4">വിതരണ ദിവസം: ചൊവ്വ (Tuesday)</p>
+
         {canEdit && (
           <form onSubmit={async (e) => {
             e.preventDefault();
             if (!issueForm.student_name.trim() || !issueForm.book_name.trim()) return;
+            const day = issueForm.issue_date ? DAY_NAMES[new Date(issueForm.issue_date).getDay()] : null;
             const ok = await issues.insert({
               student_name: issueForm.student_name,
               book_name: issueForm.book_name,
               issue_date: issueForm.issue_date,
               issue_time: issueForm.issue_time || null,
+              status: issueForm.status,
+              return_date: issueForm.status === 'returned' ? (issueForm.return_date || null) : null,
+              return_time: issueForm.status === 'returned' ? (issueForm.return_time || null) : null,
+              day_name: day,
               notes: issueForm.notes || null,
             } as any);
-            if (ok) setIssueForm({ student_name: '', book_name: '', issue_date: new Date().toISOString().slice(0, 10), issue_time: new Date().toTimeString().slice(0, 5), notes: '' });
+            if (ok) setIssueForm({ student_name: '', book_name: '', issue_date: new Date().toISOString().slice(0, 10), issue_time: new Date().toTimeString().slice(0, 5), status: 'taken', return_date: '', return_time: '', notes: '' });
           }} className="space-y-2 mb-4 p-3 bg-purple-50 rounded-xl">
-            <Input placeholder="Student name" value={issueForm.student_name} onChange={(e) => setIssueForm({ ...issueForm, student_name: e.target.value })} className="rounded-lg" />
+            <select value={issueForm.student_name} onChange={(e) => setIssueForm({ ...issueForm, student_name: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-purple-200 bg-white text-sm">
+              <option value="">— Select Student —</option>
+              {STUDENT_LIST.map((s) => <option key={s} value={s}>{s}</option>)}
+            </select>
             <Input placeholder="Book name" value={issueForm.book_name} onChange={(e) => setIssueForm({ ...issueForm, book_name: e.target.value })} className="rounded-lg" />
             <div className="grid grid-cols-2 gap-2">
               <Input type="date" value={issueForm.issue_date} onChange={(e) => setIssueForm({ ...issueForm, issue_date: e.target.value })} className="rounded-lg" />
               <Input type="time" value={issueForm.issue_time} onChange={(e) => setIssueForm({ ...issueForm, issue_time: e.target.value })} className="rounded-lg" />
             </div>
+            <select value={issueForm.status} onChange={(e) => setIssueForm({ ...issueForm, status: e.target.value as any })} className="w-full px-3 py-2 rounded-lg border border-purple-200 bg-white text-sm">
+              <option value="taken">Book Taken</option>
+              <option value="returned">Returned</option>
+              <option value="not_taken">Not Taken</option>
+            </select>
+            {issueForm.status === 'returned' && (
+              <div className="grid grid-cols-2 gap-2">
+                <Input type="date" value={issueForm.return_date} onChange={(e) => setIssueForm({ ...issueForm, return_date: e.target.value })} className="rounded-lg" placeholder="Return date" />
+                <Input type="time" value={issueForm.return_time} onChange={(e) => setIssueForm({ ...issueForm, return_time: e.target.value })} className="rounded-lg" placeholder="Return time" />
+              </div>
+            )}
             <Input placeholder="Notes (optional)" value={issueForm.notes} onChange={(e) => setIssueForm({ ...issueForm, notes: e.target.value })} className="rounded-lg" />
-            <Button size="sm" type="submit" className="bg-purple-600 hover:bg-purple-700"><Plus className="w-3.5 h-3.5 mr-1" /> Record Issue</Button>
+            <Button size="sm" type="submit" className="bg-purple-600 hover:bg-purple-700"><Plus className="w-3.5 h-3.5 mr-1" /> Add Record</Button>
           </form>
         )}
+
         {issues.loading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : issues.rows.length === 0 ? (
           <p className="text-center text-sm text-gray-400 py-4">റെക്കോർഡുകൾ ഇല്ല</p>
         ) : (
-          <div className="space-y-2">{issues.rows.map((i) => (
-            <div key={i.id} className="p-3 bg-gray-50 rounded-lg border border-gray-100 flex justify-between gap-3">
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-800">{i.student_name}</p>
-                <p className="text-xs text-purple-700">{i.book_name}</p>
-                <p className="text-[11px] text-gray-400 mt-1">
-                  {new Date(i.issue_date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}{i.issue_time ? ` · ${i.issue_time}` : ''}
-                </p>
-                {i.notes && <p className="text-xs text-gray-500 mt-0.5">{i.notes}</p>}
-              </div>
-              {canEdit && (
-                <div className="flex gap-1 flex-shrink-0">
-                  <button onClick={() => setEditIssue(i)} className="text-blue-500 hover:text-blue-700"><Edit2 className="w-4 h-4" /></button>
-                  <button onClick={() => issues.remove(i.id)} className="text-rose-500 hover:text-rose-700"><Trash2 className="w-4 h-4" /></button>
+          <div className="space-y-2">{issues.rows.map((i) => {
+            const status = i.status || 'taken';
+            const tone = status === 'returned'
+              ? 'bg-emerald-50 border-emerald-200'
+              : status === 'not_taken'
+                ? 'bg-gray-50 border-gray-200'
+                : 'bg-rose-50 border-rose-200';
+            const badge = status === 'returned'
+              ? 'bg-emerald-600 text-white'
+              : status === 'not_taken'
+                ? 'bg-gray-400 text-white'
+                : 'bg-rose-600 text-white';
+            const label = status === 'returned' ? 'RETURNED' : status === 'not_taken' ? 'NOT TAKEN' : 'TAKEN';
+            return (
+              <div key={i.id} className={`p-3 rounded-lg border flex justify-between gap-3 ${tone}`}>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="text-sm font-medium text-gray-800">{i.student_name}</p>
+                    <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${badge}`}>{label}</span>
+                  </div>
+                  <p className="text-xs text-purple-700 truncate">{i.book_name}</p>
+                  <p className="text-[11px] text-gray-500 mt-1">
+                    {new Date(i.issue_date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                    {i.day_name ? ` · ${i.day_name}` : ''}{i.issue_time ? ` · ${i.issue_time}` : ''}
+                  </p>
+                  {status === 'returned' && i.return_date && (
+                    <p className="text-[11px] text-emerald-700 mt-0.5">
+                      Returned: {new Date(i.return_date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })}{i.return_time ? ` · ${i.return_time}` : ''}
+                    </p>
+                  )}
+                  {i.notes && <p className="text-xs text-gray-500 mt-0.5">{i.notes}</p>}
                 </div>
-              )}
-            </div>
-          ))}</div>
+                {canEdit && (
+                  <div className="flex flex-col gap-1 flex-shrink-0">
+                    {status !== 'returned' && (
+                      <button onClick={() => issues.update(i.id, { status: 'returned', return_date: new Date().toISOString().slice(0,10), return_time: new Date().toTimeString().slice(0,5) } as any)} className="text-[10px] font-semibold text-emerald-700 hover:underline">Mark Returned</button>
+                    )}
+                    <div className="flex gap-1">
+                      <button onClick={() => setEditIssue(i)} className="text-blue-500 hover:text-blue-700"><Edit2 className="w-4 h-4" /></button>
+                      <button onClick={() => issues.remove(i.id)} className="text-rose-500 hover:text-rose-700"><Trash2 className="w-4 h-4" /></button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}</div>
         )}
       </section>
 
@@ -172,9 +235,32 @@ export default function LibraryBody() {
         initialValues={editProg ? { title: editProg.title, description: editProg.description || '', entry_date: editProg.entry_date } : {}}
         onSave={async (vals) => { if (editProg) await programs.update(editProg.id, { title: vals.title, description: vals.description || null, entry_date: vals.entry_date } as any); }} />
       <EditEntryDialog open={!!editIssue} onOpenChange={(v) => { if (!v) setEditIssue(null); }} title="Edit Issue Record"
-        fields={[{ key: 'student_name', label: 'Student' }, { key: 'book_name', label: 'Book' }, { key: 'issue_date', label: 'Date', type: 'date' }, { key: 'issue_time', label: 'Time' }, { key: 'notes', label: 'Notes', type: 'textarea' }]}
-        initialValues={editIssue ? { student_name: editIssue.student_name, book_name: editIssue.book_name, issue_date: editIssue.issue_date, issue_time: editIssue.issue_time || '', notes: editIssue.notes || '' } : {}}
-        onSave={async (vals) => { if (editIssue) await issues.update(editIssue.id, { student_name: vals.student_name, book_name: vals.book_name, issue_date: vals.issue_date, issue_time: vals.issue_time || null, notes: vals.notes || null } as any); }} />
+        fields={[
+          { key: 'student_name', label: 'Student', type: 'select', options: STUDENT_LIST.map((s) => ({ label: s, value: s })) },
+          { key: 'book_name', label: 'Book' },
+          { key: 'issue_date', label: 'Issue Date', type: 'date' },
+          { key: 'issue_time', label: 'Issue Time' },
+          { key: 'status', label: 'Status', type: 'select', options: [{ label: 'Book Taken', value: 'taken' }, { label: 'Returned', value: 'returned' }, { label: 'Not Taken', value: 'not_taken' }] },
+          { key: 'return_date', label: 'Return Date', type: 'date' },
+          { key: 'return_time', label: 'Return Time' },
+          { key: 'notes', label: 'Notes', type: 'textarea' },
+        ]}
+        initialValues={editIssue ? { student_name: editIssue.student_name, book_name: editIssue.book_name, issue_date: editIssue.issue_date, issue_time: editIssue.issue_time || '', status: editIssue.status || 'taken', return_date: editIssue.return_date || '', return_time: editIssue.return_time || '', notes: editIssue.notes || '' } : {}}
+        onSave={async (vals) => {
+          if (!editIssue) return;
+          const day = vals.issue_date ? DAY_NAMES[new Date(vals.issue_date).getDay()] : null;
+          await issues.update(editIssue.id, {
+            student_name: vals.student_name,
+            book_name: vals.book_name,
+            issue_date: vals.issue_date,
+            issue_time: vals.issue_time || null,
+            status: vals.status,
+            return_date: vals.status === 'returned' ? (vals.return_date || null) : null,
+            return_time: vals.status === 'returned' ? (vals.return_time || null) : null,
+            day_name: day,
+            notes: vals.notes || null,
+          } as any);
+        }} />
     </>
   );
 }
