@@ -33,14 +33,6 @@ export default function LibraryBody() {
     book_name: '',
     issue_date: new Date().toISOString().slice(0, 10),
     issue_time: new Date().toTimeString().slice(0, 5),
-    notes: '',
-  });
-
-  const [issueForm, setIssueForm] = useState({
-    student_name: '',
-    book_name: '',
-    issue_date: new Date().toISOString().slice(0, 10),
-    issue_time: new Date().toTimeString().slice(0, 5),
     status: 'taken' as 'taken' | 'returned' | 'not_taken',
     return_date: '',
     return_time: '',
