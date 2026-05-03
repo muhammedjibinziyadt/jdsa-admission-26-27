@@ -957,6 +957,109 @@ export type Database = {
         }
         Relationships: []
       }
+      photoshop_classes: {
+        Row: {
+          class_number: number
+          completed: boolean
+          id: string
+          locked: boolean
+          student_id: string
+          title: string | null
+          updated_at: string
+          youtube_url: string | null
+        }
+        Insert: {
+          class_number: number
+          completed?: boolean
+          id?: string
+          locked?: boolean
+          student_id: string
+          title?: string | null
+          updated_at?: string
+          youtube_url?: string | null
+        }
+        Update: {
+          class_number?: number
+          completed?: boolean
+          id?: string
+          locked?: boolean
+          student_id?: string
+          title?: string | null
+          updated_at?: string
+          youtube_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "photoshop_classes_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "photoshop_students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      photoshop_posters: {
+        Row: {
+          caption: string | null
+          created_at: string
+          id: string
+          image_url: string
+          student_id: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url: string
+          student_id: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "photoshop_posters_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "photoshop_students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      photoshop_students: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          photo_url: string | null
+          remarks: string | null
+          score: number | null
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          photo_url?: string | null
+          remarks?: string | null
+          score?: number | null
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          photo_url?: string | null
+          remarks?: string | null
+          score?: number | null
+          sort_order?: number
+        }
+        Relationships: []
+      }
       samaja_awards: {
         Row: {
           award_month: string
