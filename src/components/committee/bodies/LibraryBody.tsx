@@ -235,9 +235,32 @@ export default function LibraryBody() {
         initialValues={editProg ? { title: editProg.title, description: editProg.description || '', entry_date: editProg.entry_date } : {}}
         onSave={async (vals) => { if (editProg) await programs.update(editProg.id, { title: vals.title, description: vals.description || null, entry_date: vals.entry_date } as any); }} />
       <EditEntryDialog open={!!editIssue} onOpenChange={(v) => { if (!v) setEditIssue(null); }} title="Edit Issue Record"
-        fields={[{ key: 'student_name', label: 'Student' }, { key: 'book_name', label: 'Book' }, { key: 'issue_date', label: 'Date', type: 'date' }, { key: 'issue_time', label: 'Time' }, { key: 'notes', label: 'Notes', type: 'textarea' }]}
-        initialValues={editIssue ? { student_name: editIssue.student_name, book_name: editIssue.book_name, issue_date: editIssue.issue_date, issue_time: editIssue.issue_time || '', notes: editIssue.notes || '' } : {}}
-        onSave={async (vals) => { if (editIssue) await issues.update(editIssue.id, { student_name: vals.student_name, book_name: vals.book_name, issue_date: vals.issue_date, issue_time: vals.issue_time || null, notes: vals.notes || null } as any); }} />
+        fields={[
+          { key: 'student_name', label: 'Student', type: 'select', options: STUDENT_LIST.map((s) => ({ label: s, value: s })) },
+          { key: 'book_name', label: 'Book' },
+          { key: 'issue_date', label: 'Issue Date', type: 'date' },
+          { key: 'issue_time', label: 'Issue Time' },
+          { key: 'status', label: 'Status', type: 'select', options: [{ label: 'Book Taken', value: 'taken' }, { label: 'Returned', value: 'returned' }, { label: 'Not Taken', value: 'not_taken' }] },
+          { key: 'return_date', label: 'Return Date', type: 'date' },
+          { key: 'return_time', label: 'Return Time' },
+          { key: 'notes', label: 'Notes', type: 'textarea' },
+        ]}
+        initialValues={editIssue ? { student_name: editIssue.student_name, book_name: editIssue.book_name, issue_date: editIssue.issue_date, issue_time: editIssue.issue_time || '', status: editIssue.status || 'taken', return_date: editIssue.return_date || '', return_time: editIssue.return_time || '', notes: editIssue.notes || '' } : {}}
+        onSave={async (vals) => {
+          if (!editIssue) return;
+          const day = vals.issue_date ? DAY_NAMES[new Date(vals.issue_date).getDay()] : null;
+          await issues.update(editIssue.id, {
+            student_name: vals.student_name,
+            book_name: vals.book_name,
+            issue_date: vals.issue_date,
+            issue_time: vals.issue_time || null,
+            status: vals.status,
+            return_date: vals.status === 'returned' ? (vals.return_date || null) : null,
+            return_time: vals.status === 'returned' ? (vals.return_time || null) : null,
+            day_name: day,
+            notes: vals.notes || null,
+          } as any);
+        }} />
     </>
   );
 }
