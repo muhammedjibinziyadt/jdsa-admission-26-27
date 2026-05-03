@@ -36,6 +36,17 @@ export default function LibraryBody() {
     notes: '',
   });
 
+  const [issueForm, setIssueForm] = useState({
+    student_name: '',
+    book_name: '',
+    issue_date: new Date().toISOString().slice(0, 10),
+    issue_time: new Date().toTimeString().slice(0, 5),
+    status: 'taken' as 'taken' | 'returned' | 'not_taken',
+    return_date: '',
+    return_time: '',
+    notes: '',
+  });
+
   const [editBook, setEditBook] = useState<LBook | null>(null);
   const [editProg, setEditProg] = useState<Program | null>(null);
   const [editIssue, setEditIssue] = useState<Issue | null>(null);
