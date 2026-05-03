@@ -31,3 +31,4 @@
 - [Committee Section](mem://features/committee-section) — Students Portal sub-section with photo, finance tracker, inventory, and constitution PDF (now nested under Central Committee)
 - [Multi-Committee System](mem://features/multi-committee-system) — 4 committees (Central, Al Jawahir, Samaja, Library) with login, content sections, and admin-managed scores
 - [Attendance System](mem://features/attendance-system) — Students Portal tab with student profiles, photo, daily attendance, and leave tracking
+- [Computer Section](mem://features/computer-section) — Students Portal "കമ്പ്യൂട്ടർ" tab with Typing timetable and Photoshop class system (20 lockable classes, posters, score)
