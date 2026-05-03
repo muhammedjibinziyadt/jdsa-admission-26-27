@@ -8,7 +8,15 @@ import EditEntryDialog from '@/components/committee/EditEntryDialog';
 
 interface LBook { id: string; name: string; author: string | null; photo_url: string | null; status: 'available' | 'missing'; }
 interface Program { id: string; title: string; description: string | null; entry_date: string; }
-interface Issue { id: string; student_name: string; book_name: string; issue_date: string; issue_time: string | null; notes: string | null; }
+interface Issue { id: string; student_name: string; book_name: string; issue_date: string; issue_time: string | null; notes: string | null; status: 'taken' | 'returned' | 'not_taken'; return_date: string | null; return_time: string | null; day_name: string | null; }
+
+const STUDENT_LIST = [
+  'Muhammad Navas', 'Muhammad Jibin Ziyad', 'Muhammad Anshid', 'Muhammad Jareer',
+  'Muhammad Shimlal', 'Muhammad Sidan', 'Muhammad Sinan', 'Muhammad Shafi P',
+  'Muhammad Ameen', 'Muhammad Shereef', 'Muhammad Jubair', 'Muhammad Afham',
+  'Muhammad Jinshad', 'Muhammad Shafi K', 'Salman Faris',
+];
+const DAY_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
 export default function LibraryBody() {
   const { canEdit } = useCommitteeEdit('library');
