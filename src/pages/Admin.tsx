@@ -40,6 +40,7 @@ import { generateApplicationPDF } from "@/utils/generateApplicationPDF";
 import AdminSettings from "@/components/AdminSettings";
 import { Switch } from "@/components/ui/switch";
 import StudentsAdminPanel from "@/components/StudentsAdminPanel";
+import PortalPasswordAdmin from "@/components/PortalPasswordAdmin";
 import TimetableAdmin from "@/components/TimetableAdmin";
 import BookStoreAdmin from "@/components/BookStoreAdmin";
 import CommitteeAdmin from "@/components/CommitteeAdmin";
@@ -1744,7 +1745,12 @@ const Admin = () => {
 
         {/* Settings Tab */}
         {activeTab === "settings" && <AdminSettings />}
-        {activeTab === "students" && <StudentsAdminPanel />}
+        {activeTab === "students" && (
+          <div className="space-y-6">
+            <PortalPasswordAdmin />
+            <StudentsAdminPanel />
+          </div>
+        )}
         {activeTab === "timetable" && <TimetableAdmin />}
         {activeTab === "bookstore" && <BookStoreAdmin />}
         {activeTab === "committee" && <CommitteeAdmin />}
