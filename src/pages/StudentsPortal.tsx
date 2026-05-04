@@ -8,8 +8,10 @@ import { useStudentsPortal } from "@/hooks/useStudentsPortal";
 import CommitteesGrid from "@/components/committee/CommitteesGrid";
 import AttendanceSection from "@/components/AttendanceSection";
 import ComputerSection from "@/components/ComputerSection";
+import StudentsPortalGate, { useStudentsPortalAuth, PortalLockButton } from "@/components/StudentsPortalGate";
 
 const StudentsPortal = () => {
+  const { unlocked, lock, unlock } = useStudentsPortalAuth();
   const { submitStudent, students, loading } = useStudentsPortal();
   const [activeView, setActiveView] = useState<'form' | 'computer' | 'students' | 'committee' | 'attendance'>('form');
   const [submitting, setSubmitting] = useState(false);
