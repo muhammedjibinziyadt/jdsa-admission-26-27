@@ -1060,6 +1060,24 @@ export type Database = {
         }
         Relationships: []
       }
+      portal_settings: {
+        Row: {
+          id: string
+          password: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          password?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          password?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       samaja_awards: {
         Row: {
           award_month: string
