@@ -8,8 +8,10 @@ import { useStudentsPortal } from "@/hooks/useStudentsPortal";
 import CommitteesGrid from "@/components/committee/CommitteesGrid";
 import AttendanceSection from "@/components/AttendanceSection";
 import ComputerSection from "@/components/ComputerSection";
+import StudentsPortalGate, { useStudentsPortalAuth, PortalLockButton } from "@/components/StudentsPortalGate";
 
 const StudentsPortal = () => {
+  const { unlocked, lock, unlock } = useStudentsPortalAuth();
   const { submitStudent, students, loading } = useStudentsPortal();
   const [activeView, setActiveView] = useState<'form' | 'computer' | 'students' | 'committee' | 'attendance'>('form');
   const [submitting, setSubmitting] = useState(false);
@@ -93,14 +95,21 @@ const StudentsPortal = () => {
 
   const inputClass = "rounded-xl border-emerald-200 focus:border-emerald-400 focus:ring-emerald-400/20";
 
+  if (!unlocked) {
+    return <StudentsPortalGate onUnlock={unlock} />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-emerald-50 to-white">
       {/* Header */}
       <div className="bg-emerald-700 text-white py-6">
         <div className="container mx-auto px-4">
-          <Link to="/" className="inline-flex items-center gap-2 text-emerald-100 hover:text-white mb-3 text-sm">
-            <ArrowLeft className="w-4 h-4" /> ഹോം പേജിലേക്ക്
-          </Link>
+          <div className="flex items-center justify-between gap-3 mb-3">
+            <Link to="/" className="inline-flex items-center gap-2 text-emerald-100 hover:text-white text-sm">
+              <ArrowLeft className="w-4 h-4" /> ഹോം പേജിലേക്ക്
+            </Link>
+            <PortalLockButton onLock={lock} />
+          </div>
           <h1 className="text-2xl md:text-3xl font-bold">വിദ്യാർത്ഥി പോർട്ടൽ</h1>
           <p className="text-emerald-200 mt-1">Students Portal</p>
         </div>
