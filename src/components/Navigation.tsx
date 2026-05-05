@@ -127,7 +127,7 @@ const Navigation = ({ content }: NavigationProps) => {
                   onClick={() => handleNavClick(link)}
                   className="block w-full text-left px-4 py-3 rounded-lg font-medium text-foreground hover:bg-muted hover:text-primary transition-colors"
                 >
-                  {link.label}
+                  {labelOf(link)}
                 </button>
               ))}
               <Link to="/admin" className="block w-full text-left px-4 py-3 rounded-lg font-medium text-foreground hover:bg-muted hover:text-primary transition-colors">
