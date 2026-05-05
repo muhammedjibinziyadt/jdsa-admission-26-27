@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Settings } from "lucide-react";
 import GlobalSearch from "./GlobalSearch";
+import LanguageToggle from "./LanguageToggle";
 import { WebsiteContent } from "@/hooks/useWebsiteContent";
 
 const navLinks = [
@@ -72,6 +73,7 @@ const Navigation = ({ content }: NavigationProps) => {
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1">
             {content && <GlobalSearch content={content} isScrolled={isScrolled} />}
+            <LanguageToggle variant={isScrolled ? 'dark' : 'light'} className="mr-1" />
             {navLinks.map((link) => (
               <button
                 key={link.href}
@@ -93,6 +95,7 @@ const Navigation = ({ content }: NavigationProps) => {
           {/* Mobile */}
           <div className="md:hidden flex items-center gap-2">
             {content && <GlobalSearch content={content} isScrolled={isScrolled} />}
+            <LanguageToggle variant={isScrolled ? 'dark' : 'light'} />
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className={`p-2 rounded-lg transition-colors ${
