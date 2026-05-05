@@ -66,7 +66,7 @@ const Navigation = ({ content }: NavigationProps) => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <button onClick={() => handleNavClick({ href: "#home", label: "ഹോം", isSection: true })} className="flex items-center gap-3">
+          <button onClick={() => handleNavClick({ href: "#home", label: "ഹോം", labelEn: "Home", isSection: true })} className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg emerald-gradient flex items-center justify-center">
               <span className="text-primary-foreground font-display font-bold text-base">ج</span>
             </div>
@@ -92,7 +92,7 @@ const Navigation = ({ content }: NavigationProps) => {
                   isScrolled ? "text-foreground hover:text-primary hover:bg-muted" : "text-primary-foreground/90 hover:text-primary-foreground hover:bg-white/10"
                 }`}
               >
-                {link.label}
+                {labelOf(link)}
               </button>
             ))}
             <Link to="/admin" className={`px-3 py-2 rounded-lg transition-colors ${
