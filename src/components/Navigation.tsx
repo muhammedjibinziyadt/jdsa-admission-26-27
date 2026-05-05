@@ -6,16 +6,16 @@ import LanguageToggle from "./LanguageToggle";
 import { WebsiteContent } from "@/hooks/useWebsiteContent";
 
 const navLinks = [
-  { href: "#home", label: "ഹോം", isSection: true },
-  { href: "#about", label: "ഞങ്ങളെക്കുറിച്ച്", isSection: true },
-  { href: "#courses", label: "കോഴ്‌സുകൾ", isSection: true },
-  { href: "/suffa", label: "സുഫ്ഫ", isSection: false },
-  { href: "#gallery", label: "ഗാലറി", isSection: true },
-  { href: "#route-map", label: "റൂട്ട് മാപ്പ്", isSection: true },
-  { href: "#admission-form", label: "അഡ്മിഷൻ", isSection: true },
-  { href: "/students-portal", label: "സ്റ്റുഡൻസ് പോർട്ടൽ", isSection: false },
-  { href: "/bookstore", label: "ബുക്ക് സ്റ്റോർ", isSection: false },
-  { href: "#contact", label: "ബന്ധപ്പെടുക", isSection: true },
+  { href: "#home", label: "ഹോം", labelEn: "Home", isSection: true },
+  { href: "#about", label: "ഞങ്ങളെക്കുറിച്ച്", labelEn: "About", isSection: true },
+  { href: "#courses", label: "കോഴ്‌സുകൾ", labelEn: "Courses", isSection: true },
+  { href: "/suffa", label: "സുഫ്ഫ", labelEn: "Suffa", isSection: false },
+  { href: "#gallery", label: "ഗാലറി", labelEn: "Gallery", isSection: true },
+  { href: "#route-map", label: "റൂട്ട് മാപ്പ്", labelEn: "Route Map", isSection: true },
+  { href: "#admission-form", label: "അഡ്മിഷൻ", labelEn: "Admission", isSection: true },
+  { href: "/students-portal", label: "സ്റ്റുഡൻസ് പോർട്ടൽ", labelEn: "Students Portal", isSection: false },
+  { href: "/bookstore", label: "ബുക്ക് സ്റ്റോർ", labelEn: "Book Store", isSection: false },
+  { href: "#contact", label: "ബന്ധപ്പെടുക", labelEn: "Contact", isSection: true },
 ];
 
 interface NavigationProps {
@@ -27,6 +27,16 @@ const Navigation = ({ content }: NavigationProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const lang = (typeof window !== 'undefined' ? localStorage.getItem('site_lang') : 'M') || 'M';
+  // Re-render on toggle
+  const [, force] = useState(0);
+  useEffect(() => {
+    const onStorage = () => force((n) => n + 1);
+    window.addEventListener('storage', onStorage);
+    const t = setInterval(onStorage, 400);
+    return () => { window.removeEventListener('storage', onStorage); clearInterval(t); };
+  }, []);
+  const labelOf = (l: typeof navLinks[0]) => lang === 'E' ? l.labelEn : l.label;
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
