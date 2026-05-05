@@ -11,7 +11,7 @@ import { useAdminAuth } from './useAdminAuth';
 export function useAdminGate() {
   const { isAuthenticated } = useAdminAuth();
 
-  const requireAdmin = useCallback(async (action: () => void | Promise<void>): Promise<void> => {
+  const requireAdmin = useCallback(async (action: () => any | Promise<any>): Promise<void> => {
     if (isAuthenticated) { await action(); return; }
     const pwd = window.prompt('Admin password required:');
     if (!pwd) return;
