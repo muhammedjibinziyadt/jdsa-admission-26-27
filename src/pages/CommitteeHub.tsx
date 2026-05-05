@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2, Receipt } from 'lucide-react';
 import { useCommittees, COMMITTEE_META, CommitteeId } from '@/hooks/useCommittees';
 import ScoreBoard from '@/components/committee/ScoreBoard';
 import CentralBody from '@/components/committee/bodies/CentralBody';
@@ -9,22 +9,26 @@ import SamajaBody from '@/components/committee/bodies/SamajaBody';
 import LibraryBody from '@/components/committee/bodies/LibraryBody';
 import CustomSections from '@/components/committee/CustomSections';
 import CommitteeFinesSection from '@/components/committee/CommitteeFinesSection';
+import FineHubBody from '@/components/committee/FineHubBody';
 import LoginCard from '@/components/committee/LoginCard';
 
-const ORDER: CommitteeId[] = ['central', 'jawahir', 'samaja', 'library'];
+type TabId = CommitteeId | 'fine';
+const ORDER: TabId[] = ['central', 'jawahir', 'samaja', 'library', 'fine'];
+const FINE_META = { name: 'Fine Hub', slug: 'fine', gradient: 'from-rose-600 to-pink-600', emoji: '🧾', accent: 'rose' };
+const META_FOR = (id: TabId) => id === 'fine' ? FINE_META : COMMITTEE_META[id];
 const BUCKET: Record<CommitteeId, string> = { central: 'committee', jawahir: 'jawahir', samaja: 'samaja', library: 'library' };
 
 export default function CommitteeHub() {
   const { id: paramId } = useParams<{ id?: string }>();
   const navigate = useNavigate();
-  const initial = (ORDER.includes(paramId as CommitteeId) ? paramId : 'central') as CommitteeId;
-  const [active, setActive] = useState<CommitteeId>(initial);
+  const initial = (ORDER.includes(paramId as TabId) ? paramId : 'central') as TabId;
+  const [active, setActive] = useState<TabId>(initial);
 
   const { committees, loading } = useCommittees();
-  const meta = COMMITTEE_META[active];
-  const committee = committees.find((c) => c.id === active);
+  const meta = META_FOR(active);
+  const committee = active === 'fine' ? null : committees.find((c) => c.id === active);
 
-  const handleSelect = (id: CommitteeId) => {
+  const handleSelect = (id: TabId) => {
     setActive(id);
     navigate(`/committee/${id}`, { replace: true });
     setTimeout(() => {
