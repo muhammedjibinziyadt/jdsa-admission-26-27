@@ -715,6 +715,42 @@ export type Database = {
         }
         Relationships: []
       }
+      individual_fines: {
+        Row: {
+          amount: number
+          created_at: string
+          day_name: string | null
+          fine_date: string
+          id: string
+          notes: string | null
+          payment_status: string
+          person_name: string
+          reason: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          day_name?: string | null
+          fine_date?: string
+          id?: string
+          notes?: string | null
+          payment_status?: string
+          person_name: string
+          reason: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          day_name?: string | null
+          fine_date?: string
+          id?: string
+          notes?: string | null
+          payment_status?: string
+          person_name?: string
+          reason?: string
+        }
+        Relationships: []
+      }
       jawahir_contributors: {
         Row: {
           created_at: string

@@ -2,19 +2,20 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Settings } from "lucide-react";
 import GlobalSearch from "./GlobalSearch";
+import LanguageToggle from "./LanguageToggle";
 import { WebsiteContent } from "@/hooks/useWebsiteContent";
 
 const navLinks = [
-  { href: "#home", label: "ഹോം", isSection: true },
-  { href: "#about", label: "ഞങ്ങളെക്കുറിച്ച്", isSection: true },
-  { href: "#courses", label: "കോഴ്‌സുകൾ", isSection: true },
-  { href: "/suffa", label: "സുഫ്ഫ", isSection: false },
-  { href: "#gallery", label: "ഗാലറി", isSection: true },
-  { href: "#route-map", label: "റൂട്ട് മാപ്പ്", isSection: true },
-  { href: "#admission-form", label: "അഡ്മിഷൻ", isSection: true },
-  { href: "/students-portal", label: "സ്റ്റുഡൻസ് പോർട്ടൽ", isSection: false },
-  { href: "/bookstore", label: "ബുക്ക് സ്റ്റോർ", isSection: false },
-  { href: "#contact", label: "ബന്ധപ്പെടുക", isSection: true },
+  { href: "#home", label: "ഹോം", labelEn: "Home", isSection: true },
+  { href: "#about", label: "ഞങ്ങളെക്കുറിച്ച്", labelEn: "About", isSection: true },
+  { href: "#courses", label: "കോഴ്‌സുകൾ", labelEn: "Courses", isSection: true },
+  { href: "/suffa", label: "സുഫ്ഫ", labelEn: "Suffa", isSection: false },
+  { href: "#gallery", label: "ഗാലറി", labelEn: "Gallery", isSection: true },
+  { href: "#route-map", label: "റൂട്ട് മാപ്പ്", labelEn: "Route Map", isSection: true },
+  { href: "#admission-form", label: "അഡ്മിഷൻ", labelEn: "Admission", isSection: true },
+  { href: "/students-portal", label: "സ്റ്റുഡൻസ് പോർട്ടൽ", labelEn: "Students Portal", isSection: false },
+  { href: "/bookstore", label: "ബുക്ക് സ്റ്റോർ", labelEn: "Book Store", isSection: false },
+  { href: "#contact", label: "ബന്ധപ്പെടുക", labelEn: "Contact", isSection: true },
 ];
 
 interface NavigationProps {
@@ -26,6 +27,16 @@ const Navigation = ({ content }: NavigationProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const lang = (typeof window !== 'undefined' ? localStorage.getItem('site_lang') : 'M') || 'M';
+  // Re-render on toggle
+  const [, force] = useState(0);
+  useEffect(() => {
+    const onStorage = () => force((n) => n + 1);
+    window.addEventListener('storage', onStorage);
+    const t = setInterval(onStorage, 400);
+    return () => { window.removeEventListener('storage', onStorage); clearInterval(t); };
+  }, []);
+  const labelOf = (l: typeof navLinks[0]) => lang === 'E' ? l.labelEn : l.label;
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -55,7 +66,7 @@ const Navigation = ({ content }: NavigationProps) => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <button onClick={() => handleNavClick({ href: "#home", label: "ഹോം", isSection: true })} className="flex items-center gap-3">
+          <button onClick={() => handleNavClick({ href: "#home", label: "ഹോം", labelEn: "Home", isSection: true })} className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg emerald-gradient flex items-center justify-center">
               <span className="text-primary-foreground font-display font-bold text-base">ج</span>
             </div>
@@ -72,6 +83,7 @@ const Navigation = ({ content }: NavigationProps) => {
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1">
             {content && <GlobalSearch content={content} isScrolled={isScrolled} />}
+            <LanguageToggle variant={isScrolled ? 'dark' : 'light'} className="mr-1" />
             {navLinks.map((link) => (
               <button
                 key={link.href}
@@ -80,7 +92,7 @@ const Navigation = ({ content }: NavigationProps) => {
                   isScrolled ? "text-foreground hover:text-primary hover:bg-muted" : "text-primary-foreground/90 hover:text-primary-foreground hover:bg-white/10"
                 }`}
               >
-                {link.label}
+                {labelOf(link)}
               </button>
             ))}
             <Link to="/admin" className={`px-3 py-2 rounded-lg transition-colors ${
@@ -93,6 +105,7 @@ const Navigation = ({ content }: NavigationProps) => {
           {/* Mobile */}
           <div className="md:hidden flex items-center gap-2">
             {content && <GlobalSearch content={content} isScrolled={isScrolled} />}
+            <LanguageToggle variant={isScrolled ? 'dark' : 'light'} />
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className={`p-2 rounded-lg transition-colors ${
@@ -114,7 +127,7 @@ const Navigation = ({ content }: NavigationProps) => {
                   onClick={() => handleNavClick(link)}
                   className="block w-full text-left px-4 py-3 rounded-lg font-medium text-foreground hover:bg-muted hover:text-primary transition-colors"
                 >
-                  {link.label}
+                  {labelOf(link)}
                 </button>
               ))}
               <Link to="/admin" className="block w-full text-left px-4 py-3 rounded-lg font-medium text-foreground hover:bg-muted hover:text-primary transition-colors">

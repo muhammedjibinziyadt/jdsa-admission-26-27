@@ -11,11 +11,13 @@ import Suffa from "./pages/Suffa";
 import BookStore from "./pages/BookStore";
 import CommitteeHub from "./pages/CommitteeHub";
 import NotFound from "./pages/NotFound";
+import { LanguageProvider } from "@/hooks/useLanguage";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
+    <LanguageProvider>
     <TooltipProvider>
       <Toaster />
       <Sonner />
@@ -34,6 +36,7 @@ const App = () => (
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
+    </LanguageProvider>
   </QueryClientProvider>
 );
 
