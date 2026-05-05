@@ -54,7 +54,7 @@ export default function CommitteeHub() {
         <div className="container mx-auto max-w-4xl">
           <div className="flex gap-1 overflow-x-auto px-2 py-2 scrollbar-hide">
             {ORDER.map((id) => {
-              const m = COMMITTEE_META[id];
+              const m = META_FOR(id);
               const isActive = active === id;
               return (
                 <button
@@ -75,23 +75,26 @@ export default function CommitteeHub() {
         </div>
       </nav>
 
+
       <main id="committee-content" className="container mx-auto px-4 py-6 max-w-4xl space-y-5">
-        {loading || !committee ? (
+        {loading ? (
           <div className="flex justify-center py-12">
             <Loader2 className="w-6 h-6 animate-spin text-emerald-600" />
           </div>
-        ) : (
+        ) : active === 'fine' ? (
+          <FineHubBody />
+        ) : committee ? (
           <>
-            <LoginCard id={active} />
+            <LoginCard id={active as CommitteeId} />
             <ScoreBoard committee={committee} gradient={meta.gradient} />
             {active === 'central' && <CentralBody />}
             {active === 'jawahir' && <JawahirBody />}
             {active === 'samaja' && <SamajaBody />}
             {active === 'library' && <LibraryBody />}
-            <CustomSections committeeId={active} bucket={BUCKET[active]} />
-            <CommitteeFinesSection committeeId={active} committeeName={meta.name} />
+            <CustomSections committeeId={active as CommitteeId} bucket={BUCKET[active as CommitteeId]} />
+            <CommitteeFinesSection committeeId={active as CommitteeId} committeeName={meta.name} />
           </>
-        )}
+        ) : null}
       </main>
     </div>
   );
