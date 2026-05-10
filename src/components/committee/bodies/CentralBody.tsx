@@ -45,9 +45,18 @@ export default function CentralBody() {
 
       {/* FUND BOOK */}
       <section className="bg-white rounded-2xl shadow-sm border border-emerald-100 p-5">
-        <h3 className="text-sm font-semibold text-emerald-800 flex items-center gap-2 mb-3">
-          <Wallet className="w-4 h-4" /> ഫണ്ട് ബുക്ക്
-        </h3>
+        <div className="flex items-center gap-2 mb-3 flex-wrap">
+          <h3 className="text-sm font-semibold text-emerald-800 flex items-center gap-2">
+            <Wallet className="w-4 h-4" /> ഫണ്ട് ബുക്ക്
+          </h3>
+          <SectionExportActions
+            committeeName="Central Committee"
+            sectionTitle="Fund Book"
+            columns={['Date', 'Name', 'Status', 'Reason', 'Amount (₹)']}
+            rows={funds.rows.map((f) => [new Date(f.entry_date).toLocaleDateString('en-IN'), f.person_name, f.fund_type.toUpperCase(), f.reason || '', Number(f.amount).toFixed(2)])}
+            filename="central-fund-book"
+          />
+        </div>
         <div className="grid grid-cols-2 gap-2 mb-4">
           <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-2.5">
             <p className="text-[11px] text-emerald-700 font-medium">Total Paid</p>
