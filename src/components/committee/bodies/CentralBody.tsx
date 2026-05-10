@@ -7,6 +7,7 @@ import CommitteeSection from '@/components/CommitteeSection';
 import { useCommitteeEdit } from '@/hooks/useCommitteeEdit';
 import { useCommitteeTable } from '@/hooks/useCommitteeTable';
 import EditEntryDialog from '@/components/committee/EditEntryDialog';
+import SectionExportActions from '@/components/committee/SectionExportActions';
 
 interface Update { id: string; title: string; content: string | null; entry_date: string; }
 interface ItemUsage { id: string; item_name: string; used_by: string | null; quantity: number | null; notes: string | null; entry_date: string; }
