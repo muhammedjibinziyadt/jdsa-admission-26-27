@@ -11,6 +11,7 @@ import CustomSections from '@/components/committee/CustomSections';
 import CommitteeFinesSection from '@/components/committee/CommitteeFinesSection';
 import FineHubBody from '@/components/committee/FineHubBody';
 import LoginCard from '@/components/committee/LoginCard';
+import SectionLockGate, { useSectionLock } from '@/components/SectionLock';
 
 type TabId = CommitteeId | 'fine';
 const ORDER: TabId[] = ['central', 'jawahir', 'samaja', 'library', 'fine'];
