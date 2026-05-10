@@ -8,10 +8,12 @@ import { useStudentsPortal } from "@/hooks/useStudentsPortal";
 import CommitteesGrid from "@/components/committee/CommitteesGrid";
 import AttendanceSection from "@/components/AttendanceSection";
 import ComputerSection from "@/components/ComputerSection";
-import StudentsPortalGate, { useStudentsPortalAuth, PortalLockButton } from "@/components/StudentsPortalGate";
+import SectionLockGate, { useSectionLock, SectionLockButton, ProtectedSection } from "@/components/SectionLock";
 
 const StudentsPortal = () => {
-  const { unlocked, lock, unlock } = useStudentsPortalAuth();
+  const committeeLock = useSectionLock('committee');
+  const computerLock = useSectionLock('computer');
+  const attendanceLock = useSectionLock('attendance');
   const { submitStudent, students, loading } = useStudentsPortal();
   const [activeView, setActiveView] = useState<'form' | 'computer' | 'students' | 'committee' | 'attendance'>('form');
   const [submitting, setSubmitting] = useState(false);
@@ -95,9 +97,8 @@ const StudentsPortal = () => {
 
   const inputClass = "rounded-xl border-emerald-200 focus:border-emerald-400 focus:ring-emerald-400/20";
 
-  if (!unlocked) {
-    return <StudentsPortalGate onUnlock={unlock} />;
-  }
+  const inputClassFinal = inputClass;
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-emerald-50 to-white">
@@ -108,7 +109,11 @@ const StudentsPortal = () => {
             <Link to="/" className="inline-flex items-center gap-2 text-emerald-100 hover:text-white text-sm">
               <ArrowLeft className="w-4 h-4" /> ഹോം പേജിലേക്ക്
             </Link>
-            <PortalLockButton onLock={lock} />
+            <div className="flex flex-wrap gap-1.5">
+              {committeeLock.unlocked && <SectionLockButton onLock={committeeLock.lock} label="🔒 കമ്മിറ്റി" />}
+              {computerLock.unlocked && <SectionLockButton onLock={computerLock.lock} label="🔒 കമ്പ്യൂട്ടർ" />}
+              {attendanceLock.unlocked && <SectionLockButton onLock={attendanceLock.lock} label="🔒 അറ്റൻഡൻസ്" />}
+            </div>
           </div>
           <h1 className="text-2xl md:text-3xl font-bold">വിദ്യാർത്ഥി പോർട്ടൽ</h1>
           <p className="text-emerald-200 mt-1">Students Portal</p>
@@ -147,21 +152,29 @@ const StudentsPortal = () => {
       </nav>
 
       {activeView === 'attendance' ? (
-        <div className="container mx-auto px-4 py-4 max-w-2xl">
-          <AttendanceSection />
-        </div>
+        attendanceLock.unlocked ? (
+          <div className="container mx-auto px-4 py-4 max-w-2xl">
+            <AttendanceSection />
+          </div>
+        ) : (
+          <SectionLockGate section="attendance" onUnlock={attendanceLock.unlock} />
+        )
       ) : activeView === 'committee' ? (
-        <div className="container mx-auto px-4 py-4 max-w-2xl">
-          <div className="mb-4 text-center">
-            <p className="text-sm text-emerald-700/70">കമ്മിറ്റി തിരഞ്ഞെടുക്കുക</p>
+        committeeLock.unlocked ? (
+          <div className="container mx-auto px-4 py-4 max-w-2xl">
+            <div className="mb-4 text-center">
+              <p className="text-sm text-emerald-700/70">കമ്മിറ്റി തിരഞ്ഞെടുക്കുക</p>
+            </div>
+            <CommitteesGrid />
+            <div className="mt-4 text-center">
+              <Link to="/committee" className="inline-block text-sm text-emerald-700 hover:text-emerald-900 underline">
+                അല്ലെങ്കിൽ കമ്മിറ്റി ഹബ്ബിലേക്ക് നേരിട്ട് പോകുക →
+              </Link>
+            </div>
           </div>
-          <CommitteesGrid />
-          <div className="mt-4 text-center">
-            <Link to="/committee" className="inline-block text-sm text-emerald-700 hover:text-emerald-900 underline">
-              അല്ലെങ്കിൽ കമ്മിറ്റി ഹബ്ബിലേക്ക് നേരിട്ട് പോകുക →
-            </Link>
-          </div>
-        </div>
+        ) : (
+          <SectionLockGate section="committee" onUnlock={committeeLock.unlock} />
+        )
       ) : activeView === 'students' ? (
         <div className="container mx-auto px-4 py-4 max-w-2xl">
           <div className="bg-white rounded-2xl shadow-sm border border-emerald-100 p-6">
@@ -192,10 +205,15 @@ const StudentsPortal = () => {
           </div>
         </div>
       ) : activeView === 'computer' ? (
-        <div className="container mx-auto px-4 py-4 max-w-2xl">
-          <ComputerSection />
-        </div>
+        computerLock.unlocked ? (
+          <div className="container mx-auto px-4 py-4 max-w-2xl">
+            <ComputerSection />
+          </div>
+        ) : (
+          <SectionLockGate section="computer" onUnlock={computerLock.unlock} />
+        )
       ) : (
+
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Personal Info */}
