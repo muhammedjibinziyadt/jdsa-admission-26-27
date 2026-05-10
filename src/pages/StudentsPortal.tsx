@@ -97,9 +97,8 @@ const StudentsPortal = () => {
 
   const inputClass = "rounded-xl border-emerald-200 focus:border-emerald-400 focus:ring-emerald-400/20";
 
-  if (!unlocked) {
-    return <StudentsPortalGate onUnlock={unlock} />;
-  }
+  const inputClassFinal = inputClass;
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-emerald-50 to-white">
