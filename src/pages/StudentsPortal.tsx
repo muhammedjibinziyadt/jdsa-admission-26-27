@@ -109,7 +109,11 @@ const StudentsPortal = () => {
             <Link to="/" className="inline-flex items-center gap-2 text-emerald-100 hover:text-white text-sm">
               <ArrowLeft className="w-4 h-4" /> ഹോം പേജിലേക്ക്
             </Link>
-            <PortalLockButton onLock={lock} />
+            <div className="flex flex-wrap gap-1.5">
+              {committeeLock.unlocked && <SectionLockButton onLock={committeeLock.lock} label="🔒 കമ്മിറ്റി" />}
+              {computerLock.unlocked && <SectionLockButton onLock={computerLock.lock} label="🔒 കമ്പ്യൂട്ടർ" />}
+              {attendanceLock.unlocked && <SectionLockButton onLock={attendanceLock.lock} label="🔒 അറ്റൻഡൻസ്" />}
+            </div>
           </div>
           <h1 className="text-2xl md:text-3xl font-bold">വിദ്യാർത്ഥി പോർട്ടൽ</h1>
           <p className="text-emerald-200 mt-1">Students Portal</p>
