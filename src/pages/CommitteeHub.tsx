@@ -34,9 +34,8 @@ export default function CommitteeHub() {
     return <SectionLockGate section="committee" onUnlock={committeeLock.unlock} />;
   }
 
-  const { committees, loading } = useCommittees();
-  const meta = META_FOR(active);
-  const committee = active === 'fine' ? null : committees.find((c) => c.id === active);
+
+
 
   const handleSelect = (id: TabId) => {
     setActive(id);
