@@ -24,6 +24,15 @@ export default function CommitteeHub() {
   const navigate = useNavigate();
   const initial = (ORDER.includes(paramId as TabId) ? paramId : 'central') as TabId;
   const [active, setActive] = useState<TabId>(initial);
+  const committeeLock = useSectionLock('committee');
+
+  const { committees, loading } = useCommittees();
+  const meta = META_FOR(active);
+  const committee = active === 'fine' ? null : committees.find((c) => c.id === active);
+
+  if (!committeeLock.unlocked) {
+    return <SectionLockGate section="committee" onUnlock={committeeLock.unlock} />;
+  }
 
   const { committees, loading } = useCommittees();
   const meta = META_FOR(active);
