@@ -22,12 +22,15 @@ const DAY_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','
 export default function LibraryBody() {
   const { canEdit } = useCommitteeEdit('library');
   const books = useCommitteeTable<LBook>('library_books');
+  const categories = useCommitteeTable<LibraryCategory>('library_categories', 'sort_order');
   const programs = useCommitteeTable<Program>('library_programs', 'entry_date');
   const issues = useCommitteeTable<Issue>('library_book_issues', 'issue_date');
 
-  const [bookForm, setBookForm] = useState({ name: '', author: '', status: 'available' as 'available' | 'missing' });
+  const [bookForm, setBookForm] = useState({ name: '', author: '', status: 'available' as 'available' | 'missing', category: 'Other' });
   const [bookFile, setBookFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [newCategory, setNewCategory] = useState('');
+  const [filterCategory, setFilterCategory] = useState<string>('all');
   const [progForm, setProgForm] = useState({ title: '', description: '' });
   const [issueForm, setIssueForm] = useState({
     student_name: '',
@@ -43,6 +46,18 @@ export default function LibraryBody() {
   const [editBook, setEditBook] = useState<LBook | null>(null);
   const [editProg, setEditProg] = useState<Program | null>(null);
   const [editIssue, setEditIssue] = useState<Issue | null>(null);
+
+  const categoryNames = categories.rows.map((c) => c.name);
+  const grouped = useMemo(() => {
+    const filtered = filterCategory === 'all' ? books.rows : books.rows.filter((b) => (b.category || 'Other') === filterCategory);
+    const map = new Map<string, LBook[]>();
+    filtered.forEach((b) => {
+      const k = b.category || 'Other';
+      if (!map.has(k)) map.set(k, []);
+      map.get(k)!.push(b);
+    });
+    return Array.from(map.entries()).sort(([a], [b]) => a.localeCompare(b));
+  }, [books.rows, filterCategory]);
 
   return (
     <>
