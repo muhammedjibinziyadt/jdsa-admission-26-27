@@ -282,9 +282,14 @@ export default function LibraryBody() {
       </section>
 
       <EditEntryDialog open={!!editBook} onOpenChange={(v) => { if (!v) setEditBook(null); }} title="Edit Book"
-        fields={[{ key: 'name', label: 'Name' }, { key: 'author', label: 'Author' }, { key: 'status', label: 'Status', type: 'select', options: [{ label: 'Available', value: 'available' }, { label: 'Missing', value: 'missing' }] }]}
-        initialValues={editBook ? { name: editBook.name, author: editBook.author || '', status: editBook.status || 'available' } : {}}
-        onSave={async (vals) => { if (editBook) await books.update(editBook.id, { name: vals.name, author: vals.author || null, status: vals.status } as any); }} />
+        fields={[
+          { key: 'name', label: 'Name' },
+          { key: 'author', label: 'Author' },
+          { key: 'category', label: 'Category', type: 'select', options: (categoryNames.length ? categoryNames : ['Other']).map((n) => ({ label: n, value: n })) },
+          { key: 'status', label: 'Status', type: 'select', options: [{ label: 'Available', value: 'available' }, { label: 'Missing', value: 'missing' }] },
+        ]}
+        initialValues={editBook ? { name: editBook.name, author: editBook.author || '', category: editBook.category || 'Other', status: editBook.status || 'available' } : {}}
+        onSave={async (vals) => { if (editBook) await books.update(editBook.id, { name: vals.name, author: vals.author || null, category: vals.category, status: vals.status } as any); }} />
       <EditEntryDialog open={!!editProg} onOpenChange={(v) => { if (!v) setEditProg(null); }} title="Edit Program"
         fields={[{ key: 'title', label: 'Title' }, { key: 'description', label: 'Description', type: 'textarea' }, { key: 'entry_date', label: 'Date', type: 'date' }]}
         initialValues={editProg ? { title: editProg.title, description: editProg.description || '', entry_date: editProg.entry_date } : {}}
