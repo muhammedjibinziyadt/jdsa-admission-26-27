@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Trash2, Edit2, Loader2, Book, Calendar, BookOpen, ScrollText, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Plus, Trash2, Edit2, Loader2, Book, Calendar, BookOpen, ScrollText, CheckCircle2, AlertTriangle, Tag, X } from 'lucide-react';
 import { useCommitteeEdit } from '@/hooks/useCommitteeEdit';
 import { useCommitteeTable, uploadCommitteeFile } from '@/hooks/useCommitteeTable';
 import EditEntryDialog from '@/components/committee/EditEntryDialog';
 
-interface LBook { id: string; name: string; author: string | null; photo_url: string | null; status: 'available' | 'missing'; }
+interface LBook { id: string; name: string; author: string | null; photo_url: string | null; status: 'available' | 'missing'; category: string | null; }
+interface LibraryCategory { id: string; name: string; sort_order: number; }
 interface Program { id: string; title: string; description: string | null; entry_date: string; }
 interface Issue { id: string; student_name: string; book_name: string; issue_date: string; issue_time: string | null; notes: string | null; status: 'taken' | 'returned' | 'not_taken'; return_date: string | null; return_time: string | null; day_name: string | null; }
 
@@ -21,12 +22,15 @@ const DAY_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','
 export default function LibraryBody() {
   const { canEdit } = useCommitteeEdit('library');
   const books = useCommitteeTable<LBook>('library_books');
+  const categories = useCommitteeTable<LibraryCategory>('library_categories', 'sort_order');
   const programs = useCommitteeTable<Program>('library_programs', 'entry_date');
   const issues = useCommitteeTable<Issue>('library_book_issues', 'issue_date');
 
-  const [bookForm, setBookForm] = useState({ name: '', author: '', status: 'available' as 'available' | 'missing' });
+  const [bookForm, setBookForm] = useState({ name: '', author: '', status: 'available' as 'available' | 'missing', category: 'Other' });
   const [bookFile, setBookFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [newCategory, setNewCategory] = useState('');
+  const [filterCategory, setFilterCategory] = useState<string>('all');
   const [progForm, setProgForm] = useState({ title: '', description: '' });
   const [issueForm, setIssueForm] = useState({
     student_name: '',
@@ -43,66 +47,117 @@ export default function LibraryBody() {
   const [editProg, setEditProg] = useState<Program | null>(null);
   const [editIssue, setEditIssue] = useState<Issue | null>(null);
 
+  const categoryNames = categories.rows.map((c) => c.name);
+  const grouped = useMemo(() => {
+    const filtered = filterCategory === 'all' ? books.rows : books.rows.filter((b) => (b.category || 'Other') === filterCategory);
+    const map = new Map<string, LBook[]>();
+    filtered.forEach((b) => {
+      const k = b.category || 'Other';
+      if (!map.has(k)) map.set(k, []);
+      map.get(k)!.push(b);
+    });
+    return Array.from(map.entries()).sort(([a], [b]) => a.localeCompare(b));
+  }, [books.rows, filterCategory]);
+
   return (
     <>
       {/* BOOK LIST + STATUS */}
       <section className="bg-white rounded-2xl shadow-sm border border-purple-100 p-5">
         <h3 className="text-sm font-semibold text-purple-800 flex items-center gap-2 mb-4"><Book className="w-4 h-4" /> പുസ്തക ലിസ്റ്റ്</h3>
         {canEdit && (
-          <form onSubmit={async (e) => {
-            e.preventDefault();
-            if (!bookForm.name.trim()) return;
-            setUploading(true);
-            const photo_url = bookFile ? await uploadCommitteeFile('library', bookFile, 'books') : null;
-            const ok = await books.insert({ name: bookForm.name, author: bookForm.author || null, photo_url, status: bookForm.status } as any);
-            if (ok) { setBookForm({ name: '', author: '', status: 'available' }); setBookFile(null); }
-            setUploading(false);
-          }} className="space-y-2 mb-4 p-3 bg-purple-50 rounded-xl">
-            <Input placeholder="Book name" value={bookForm.name} onChange={(e) => setBookForm({ ...bookForm, name: e.target.value })} className="rounded-lg" />
-            <div className="grid grid-cols-2 gap-2">
-              <Input placeholder="Author (optional)" value={bookForm.author} onChange={(e) => setBookForm({ ...bookForm, author: e.target.value })} className="rounded-lg" />
-              <select value={bookForm.status} onChange={(e) => setBookForm({ ...bookForm, status: e.target.value as any })} className="px-3 py-2 rounded-lg border border-purple-200 bg-white text-sm">
-                <option value="available">Available</option>
-                <option value="missing">Missing</option>
-              </select>
+          <>
+            {/* Category manager */}
+            <div className="mb-3 p-3 bg-amber-50 rounded-xl border border-amber-100">
+              <div className="flex items-center gap-2 mb-2 text-xs font-semibold text-amber-800"><Tag className="w-3.5 h-3.5" /> Categories</div>
+              <div className="flex flex-wrap gap-1.5 mb-2">
+                {categories.rows.map((c) => (
+                  <span key={c.id} className="inline-flex items-center gap-1 px-2 py-1 bg-white border border-amber-200 rounded-full text-[11px] text-amber-800">
+                    {c.name}
+                    <button type="button" onClick={() => { if (confirm(`Delete category "${c.name}"?`)) categories.remove(c.id); }} className="text-rose-500 hover:text-rose-700"><X className="w-3 h-3" /></button>
+                  </span>
+                ))}
+              </div>
+              <form onSubmit={async (e) => { e.preventDefault(); if (!newCategory.trim()) return; const ok = await categories.insert({ name: newCategory.trim(), sort_order: (categories.rows.length + 1) } as any); if (ok) setNewCategory(''); }} className="flex gap-2">
+                <Input placeholder="New category" value={newCategory} onChange={(e) => setNewCategory(e.target.value)} className="rounded-lg h-8 text-xs" />
+                <Button size="sm" type="submit" className="h-8 bg-amber-600 hover:bg-amber-700"><Plus className="w-3 h-3" /></Button>
+              </form>
             </div>
-            <Input type="file" accept="image/*" onChange={(e) => setBookFile(e.target.files?.[0] || null)} className="rounded-lg" />
-            <Button size="sm" type="submit" disabled={uploading} className="bg-purple-600 hover:bg-purple-700">{uploading ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> : <Plus className="w-3.5 h-3.5 mr-1" />} Add Book</Button>
-          </form>
+
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              if (!bookForm.name.trim()) return;
+              setUploading(true);
+              const photo_url = bookFile ? await uploadCommitteeFile('library', bookFile, 'books') : null;
+              const ok = await books.insert({ name: bookForm.name, author: bookForm.author || null, photo_url, status: bookForm.status, category: bookForm.category } as any);
+              if (ok) { setBookForm({ name: '', author: '', status: 'available', category: 'Other' }); setBookFile(null); }
+              setUploading(false);
+            }} className="space-y-2 mb-4 p-3 bg-purple-50 rounded-xl">
+              <Input placeholder="Book name" value={bookForm.name} onChange={(e) => setBookForm({ ...bookForm, name: e.target.value })} className="rounded-lg" />
+              <div className="grid grid-cols-2 gap-2">
+                <Input placeholder="Author (optional)" value={bookForm.author} onChange={(e) => setBookForm({ ...bookForm, author: e.target.value })} className="rounded-lg" />
+                <select value={bookForm.status} onChange={(e) => setBookForm({ ...bookForm, status: e.target.value as any })} className="px-3 py-2 rounded-lg border border-purple-200 bg-white text-sm">
+                  <option value="available">Available</option>
+                  <option value="missing">Missing</option>
+                </select>
+              </div>
+              <select value={bookForm.category} onChange={(e) => setBookForm({ ...bookForm, category: e.target.value })} className="w-full px-3 py-2 rounded-lg border border-purple-200 bg-white text-sm">
+                {categoryNames.length === 0 && <option value="Other">Other</option>}
+                {categoryNames.map((n) => <option key={n} value={n}>{n}</option>)}
+              </select>
+              <Input type="file" accept="image/*" onChange={(e) => setBookFile(e.target.files?.[0] || null)} className="rounded-lg" />
+              <Button size="sm" type="submit" disabled={uploading} className="bg-purple-600 hover:bg-purple-700">{uploading ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> : <Plus className="w-3.5 h-3.5 mr-1" />} Add Book</Button>
+            </form>
+          </>
         )}
-        {books.loading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : books.rows.length === 0 ? (
+
+        {/* Category filter */}
+        {books.rows.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            <button onClick={() => setFilterCategory('all')} className={`px-2.5 py-1 text-[11px] rounded-full border ${filterCategory === 'all' ? 'bg-purple-600 text-white border-purple-600' : 'bg-white text-purple-700 border-purple-200'}`}>All</button>
+            {categoryNames.map((n) => (
+              <button key={n} onClick={() => setFilterCategory(n)} className={`px-2.5 py-1 text-[11px] rounded-full border ${filterCategory === n ? 'bg-purple-600 text-white border-purple-600' : 'bg-white text-purple-700 border-purple-200'}`}>{n}</button>
+            ))}
+          </div>
+        )}
+
+        {books.loading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : grouped.length === 0 ? (
           <p className="text-center text-sm text-gray-400 py-4">പുസ്തകങ്ങൾ ഇല്ല</p>
         ) : (
-          <div className="space-y-2">{books.rows.map((b) => {
-            const missing = b.status === 'missing';
-            return (
-              <div key={b.id} className={`p-3 rounded-lg border flex items-center gap-3 ${missing ? 'bg-rose-50 border-rose-200' : 'bg-emerald-50/40 border-emerald-200'}`}>
-                {b.photo_url ? <img src={b.photo_url} alt={b.name} className="w-10 h-12 object-cover rounded flex-shrink-0" /> : <div className="w-10 h-12 bg-purple-100 flex items-center justify-center rounded text-purple-400 flex-shrink-0"><BookOpen className="w-5 h-5" /></div>}
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-800 truncate">{b.name}</p>
-                  {b.author && <p className="text-[11px] text-gray-500 truncate">{b.author}</p>}
-                </div>
-                <span className={`text-[10px] font-bold px-2 py-1 rounded-full inline-flex items-center gap-1 ${missing ? 'bg-rose-600 text-white' : 'bg-emerald-600 text-white'}`}>
-                  {missing ? <AlertTriangle className="w-3 h-3" /> : <CheckCircle2 className="w-3 h-3" />}
-                  {missing ? 'MISSING' : 'AVAILABLE'}
-                </span>
-                {canEdit && (
-                  <div className="flex gap-1 flex-shrink-0">
-                    <button onClick={async () => { await books.update(b.id, { status: missing ? 'available' : 'missing' } as any); }} className="text-xs text-gray-500 hover:text-purple-600" title="Toggle status"><CheckCircle2 className="w-4 h-4" /></button>
-                    <button onClick={() => setEditBook(b)} className="text-blue-500 hover:text-blue-700"><Edit2 className="w-4 h-4" /></button>
-                    <button onClick={() => books.remove(b.id)} className="text-rose-500 hover:text-rose-700"><Trash2 className="w-4 h-4" /></button>
+          <div className="space-y-4">{grouped.map(([cat, list]) => (
+            <div key={cat}>
+              <div className="flex items-center gap-2 mb-2 text-xs font-bold text-purple-700 uppercase tracking-wide"><Tag className="w-3 h-3" /> {cat} <span className="text-gray-400 font-normal">({list.length})</span></div>
+              <div className="space-y-2">{list.map((b) => {
+                const missing = b.status === 'missing';
+                return (
+                  <div key={b.id} className={`p-3 rounded-lg border flex items-center gap-3 ${missing ? 'bg-rose-50 border-rose-200' : 'bg-emerald-50/40 border-emerald-200'}`}>
+                    {b.photo_url ? <img src={b.photo_url} alt={b.name} className="w-10 h-12 object-cover rounded flex-shrink-0" /> : <div className="w-10 h-12 bg-purple-100 flex items-center justify-center rounded text-purple-400 flex-shrink-0"><BookOpen className="w-5 h-5" /></div>}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-800 truncate">{b.name}</p>
+                      {b.author && <p className="text-[11px] text-gray-500 truncate">{b.author}</p>}
+                    </div>
+                    <span className={`text-[10px] font-bold px-2 py-1 rounded-full inline-flex items-center gap-1 ${missing ? 'bg-rose-600 text-white' : 'bg-emerald-600 text-white'}`}>
+                      {missing ? <AlertTriangle className="w-3 h-3" /> : <CheckCircle2 className="w-3 h-3" />}
+                      {missing ? 'MISSING' : 'AVAILABLE'}
+                    </span>
+                    {canEdit && (
+                      <div className="flex gap-1 flex-shrink-0">
+                        <button onClick={async () => { await books.update(b.id, { status: missing ? 'available' : 'missing' } as any); }} className="text-xs text-gray-500 hover:text-purple-600" title="Toggle status"><CheckCircle2 className="w-4 h-4" /></button>
+                        <button onClick={() => setEditBook(b)} className="text-blue-500 hover:text-blue-700"><Edit2 className="w-4 h-4" /></button>
+                        <button onClick={() => books.remove(b.id)} className="text-rose-500 hover:text-rose-700"><Trash2 className="w-4 h-4" /></button>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            );
-          })}</div>
+                );
+              })}</div>
+            </div>
+          ))}</div>
         )}
       </section>
 
-      {/* BOOK ISSUE REGISTER */}
+      {/* BOOK REGISTER */}
       <section className="bg-white rounded-2xl shadow-sm border border-purple-100 p-5">
         <h3 className="text-sm font-semibold text-purple-800 flex items-center gap-2 mb-4">
-          <ScrollText className="w-4 h-4" /> Book Issue Register
+          <ScrollText className="w-4 h-4" /> Book Register
         </h3>
         <p className="text-[11px] text-gray-500 -mt-3 mb-4">വിതരണ ദിവസം: ചൊവ്വ (Tuesday)</p>
 
@@ -227,9 +282,14 @@ export default function LibraryBody() {
       </section>
 
       <EditEntryDialog open={!!editBook} onOpenChange={(v) => { if (!v) setEditBook(null); }} title="Edit Book"
-        fields={[{ key: 'name', label: 'Name' }, { key: 'author', label: 'Author' }, { key: 'status', label: 'Status', type: 'select', options: [{ label: 'Available', value: 'available' }, { label: 'Missing', value: 'missing' }] }]}
-        initialValues={editBook ? { name: editBook.name, author: editBook.author || '', status: editBook.status || 'available' } : {}}
-        onSave={async (vals) => { if (editBook) await books.update(editBook.id, { name: vals.name, author: vals.author || null, status: vals.status } as any); }} />
+        fields={[
+          { key: 'name', label: 'Name' },
+          { key: 'author', label: 'Author' },
+          { key: 'category', label: 'Category', type: 'select', options: (categoryNames.length ? categoryNames : ['Other']).map((n) => ({ label: n, value: n })) },
+          { key: 'status', label: 'Status', type: 'select', options: [{ label: 'Available', value: 'available' }, { label: 'Missing', value: 'missing' }] },
+        ]}
+        initialValues={editBook ? { name: editBook.name, author: editBook.author || '', category: editBook.category || 'Other', status: editBook.status || 'available' } : {}}
+        onSave={async (vals) => { if (editBook) await books.update(editBook.id, { name: vals.name, author: vals.author || null, category: vals.category, status: vals.status } as any); }} />
       <EditEntryDialog open={!!editProg} onOpenChange={(v) => { if (!v) setEditProg(null); }} title="Edit Program"
         fields={[{ key: 'title', label: 'Title' }, { key: 'description', label: 'Description', type: 'textarea' }, { key: 'entry_date', label: 'Date', type: 'date' }]}
         initialValues={editProg ? { title: editProg.title, description: editProg.description || '', entry_date: editProg.entry_date } : {}}

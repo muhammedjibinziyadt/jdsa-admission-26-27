@@ -12,6 +12,7 @@ import BookStore from "./pages/BookStore";
 import CommitteeHub from "./pages/CommitteeHub";
 import NotFound from "./pages/NotFound";
 import { LanguageProvider } from "@/hooks/useLanguage";
+import AIAssistant from "@/components/AIAssistant";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <AIAssistant />
       </BrowserRouter>
     </TooltipProvider>
     </LanguageProvider>

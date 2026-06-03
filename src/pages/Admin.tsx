@@ -41,6 +41,7 @@ import AdminSettings from "@/components/AdminSettings";
 import { Switch } from "@/components/ui/switch";
 import StudentsAdminPanel from "@/components/StudentsAdminPanel";
 import PortalPasswordAdmin from "@/components/PortalPasswordAdmin";
+import AIAssistantAdmin from "@/components/AIAssistantAdmin";
 import TimetableAdmin from "@/components/TimetableAdmin";
 import BookStoreAdmin from "@/components/BookStoreAdmin";
 import CommitteeAdmin from "@/components/CommitteeAdmin";
@@ -1748,6 +1749,7 @@ const Admin = () => {
         {activeTab === "students" && (
           <div className="space-y-6">
             <PortalPasswordAdmin />
+            <AIAssistantAdmin />
             <StudentsAdminPanel />
           </div>
         )}
