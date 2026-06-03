@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Trash2, Edit2, Loader2, Book, Calendar, BookOpen, ScrollText, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Plus, Trash2, Edit2, Loader2, Book, Calendar, BookOpen, ScrollText, CheckCircle2, AlertTriangle, Tag, X } from 'lucide-react';
 import { useCommitteeEdit } from '@/hooks/useCommitteeEdit';
 import { useCommitteeTable, uploadCommitteeFile } from '@/hooks/useCommitteeTable';
 import EditEntryDialog from '@/components/committee/EditEntryDialog';
 
-interface LBook { id: string; name: string; author: string | null; photo_url: string | null; status: 'available' | 'missing'; }
+interface LBook { id: string; name: string; author: string | null; photo_url: string | null; status: 'available' | 'missing'; category: string | null; }
+interface LibraryCategory { id: string; name: string; sort_order: number; }
 interface Program { id: string; title: string; description: string | null; entry_date: string; }
 interface Issue { id: string; student_name: string; book_name: string; issue_date: string; issue_time: string | null; notes: string | null; status: 'taken' | 'returned' | 'not_taken'; return_date: string | null; return_time: string | null; day_name: string | null; }
 
