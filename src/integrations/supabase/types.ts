@@ -173,6 +173,27 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_assistant_settings: {
+        Row: {
+          enabled: boolean
+          id: string
+          updated_at: string
+          welcome_message: string
+        }
+        Insert: {
+          enabled?: boolean
+          id?: string
+          updated_at?: string
+          welcome_message?: string
+        }
+        Update: {
+          enabled?: boolean
+          id?: string
+          updated_at?: string
+          welcome_message?: string
+        }
+        Relationships: []
+      }
       attendance_leaves: {
         Row: {
           created_at: string
@@ -945,6 +966,7 @@ export type Database = {
       library_books: {
         Row: {
           author: string | null
+          category: string | null
           created_at: string
           id: string
           name: string
@@ -953,6 +975,7 @@ export type Database = {
         }
         Insert: {
           author?: string | null
+          category?: string | null
           created_at?: string
           id?: string
           name: string
@@ -961,11 +984,33 @@ export type Database = {
         }
         Update: {
           author?: string | null
+          category?: string | null
           created_at?: string
           id?: string
           name?: string
           photo_url?: string | null
           status?: string
+        }
+        Relationships: []
+      }
+      library_categories: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          sort_order?: number
         }
         Relationships: []
       }
