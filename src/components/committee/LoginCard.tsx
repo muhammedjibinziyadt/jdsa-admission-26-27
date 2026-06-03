@@ -22,7 +22,7 @@ export default function LoginCard({ id }: { id: CommitteeId }) {
     return (
       <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5">
         <span className="text-sm text-emerald-700 font-medium flex items-center gap-2">
-          <Lock className="w-4 h-4" /> അംഗങ്ങളായി ലോഗിൻ ചെയ്തു
+          <Lock className="w-4 h-4" /> Convenor logged in
         </span>
         <Button size="sm" variant="ghost" onClick={logout} className="text-emerald-700 h-8">
           <LogOut className="w-3.5 h-3.5 mr-1" /> Logout
@@ -34,7 +34,7 @@ export default function LoginCard({ id }: { id: CommitteeId }) {
   if (!open) {
     return (
       <Button onClick={() => setOpen(true)} variant="outline" className="w-full rounded-xl border-dashed">
-        <Lock className="w-4 h-4 mr-2" /> അംഗങ്ങൾക്കായി ലോഗിൻ
+        <Lock className="w-4 h-4 mr-2" /> Convenor Login
       </Button>
     );
   }

@@ -99,10 +99,10 @@ export default function LibraryBody() {
         )}
       </section>
 
-      {/* BOOK ISSUE REGISTER */}
+      {/* BOOK REGISTER */}
       <section className="bg-white rounded-2xl shadow-sm border border-purple-100 p-5">
         <h3 className="text-sm font-semibold text-purple-800 flex items-center gap-2 mb-4">
-          <ScrollText className="w-4 h-4" /> Book Issue Register
+          <ScrollText className="w-4 h-4" /> Book Register
         </h3>
         <p className="text-[11px] text-gray-500 -mt-3 mb-4">വിതരണ ദിവസം: ചൊവ്വ (Tuesday)</p>
 
