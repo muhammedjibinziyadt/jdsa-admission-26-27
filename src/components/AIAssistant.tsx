@@ -38,11 +38,11 @@ export default function AIAssistant() {
 
   if (!enabled) return null;
 
-  const send = async () => {
-    const text = input.trim();
+  const send = async (overrideText?: string) => {
+    const text = (overrideText ?? input).trim();
     if (!text || loading) return;
     const userMsg: Msg = { role: 'user', content: text };
-    const history = [...messages.filter((m) => m.role !== 'assistant' || messages.indexOf(m) !== 0 ? true : true), userMsg];
+    const history = [...messages, userMsg];
     setMessages((m) => [...m, userMsg]);
     setInput('');
     setLoading(true);
