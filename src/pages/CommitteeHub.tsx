@@ -11,6 +11,7 @@ import CustomSections from '@/components/committee/CustomSections';
 import CommitteeFinesSection from '@/components/committee/CommitteeFinesSection';
 import FineHubBody from '@/components/committee/FineHubBody';
 import LoginCard from '@/components/committee/LoginCard';
+import NotificationsBanner from '@/components/committee/NotificationsBanner';
 import SectionLockGate, { useSectionLock } from '@/components/SectionLock';
 
 type TabId = CommitteeId | 'fine';
@@ -94,6 +95,7 @@ export default function CommitteeHub() {
           <FineHubBody />
         ) : committee ? (
           <>
+            <NotificationsBanner committeeId={active as string} />
             <LoginCard id={active as CommitteeId} />
             <ScoreBoard committee={committee} gradient={meta.gradient} />
             {active === 'central' && <CentralBody />}

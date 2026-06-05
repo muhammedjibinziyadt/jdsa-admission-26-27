@@ -46,6 +46,7 @@ import TimetableAdmin from "@/components/TimetableAdmin";
 import BookStoreAdmin from "@/components/BookStoreAdmin";
 import CommitteeAdmin from "@/components/CommitteeAdmin";
 import CommitteesAdminPanel from "@/components/CommitteesAdminPanel";
+import NotificationsAdminPanel from "@/components/NotificationsAdminPanel";
 
 const Admin = () => {
   const { isAuthenticated, loading: authLoading, login, logout } = useAdminAuth();
@@ -53,7 +54,7 @@ const Admin = () => {
   const { uploadImage, deleteImage, uploading } = useImageUpload();
   const { admissions, updateAdmission, deleteAdmission, newAdmissionCount } = useAdmissions();
   
-  const [activeTab, setActiveTab] = useState<"hero" | "slider" | "about" | "courses" | "benefits" | "gallery" | "suffa" | "contact" | "map" | "footer" | "social" | "admissions" | "form" | "search" | "settings" | "students" | "timetable" | "bookstore" | "committee" | "committees">("hero");
+  const [activeTab, setActiveTab] = useState<"hero" | "slider" | "about" | "courses" | "benefits" | "gallery" | "suffa" | "contact" | "map" | "footer" | "social" | "admissions" | "form" | "search" | "settings" | "students" | "timetable" | "bookstore" | "committee" | "committees" | "notifications">("hero");
   
   // Local editing state
   const [localContent, setLocalContent] = useState<WebsiteContent | null>(null);
@@ -420,6 +421,7 @@ const Admin = () => {
     { id: "bookstore" as const, label: "ബുക്ക് സ്റ്റോർ", icon: BookOpen },
     { id: "committee" as const, label: "കമ്മിറ്റി (Legacy)", icon: Users },
     { id: "committees" as const, label: "Committees (പുതിയത്)", icon: Award },
+    { id: "notifications" as const, label: "Notifications", icon: MessageSquare },
     { id: "settings" as const, label: "ക്രമീകരണം", icon: Settings },
   ];
 
@@ -1757,6 +1759,7 @@ const Admin = () => {
         {activeTab === "bookstore" && <BookStoreAdmin />}
         {activeTab === "committee" && <CommitteeAdmin />}
         {activeTab === "committees" && <CommitteesAdminPanel />}
+        {activeTab === "notifications" && <NotificationsAdminPanel />}
       </div>
     </div>
   );
