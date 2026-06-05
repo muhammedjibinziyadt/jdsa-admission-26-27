@@ -33,6 +33,9 @@ export default function CommitteeHub() {
   const initial = (ORDER.includes(paramId as TabId) ? paramId : 'central') as TabId;
   const [active, setActive] = useState<TabId>(initial);
   const committeeLock = useSectionLock('committee');
+  const { lang, t } = useLanguage();
+  const FINE_META = lang === 'E' ? FINE_META_E : FINE_META_M;
+  const META_FOR = (id: TabId) => id === 'fine' ? FINE_META : (lang === 'E' ? COMMITTEE_META_E[id] : COMMITTEE_META[id]);
 
   const { committees, loading } = useCommittees();
   const meta = META_FOR(active);
@@ -61,9 +64,9 @@ export default function CommitteeHub() {
             <ArrowLeft className="w-4 h-4" /> Students Portal
           </Link>
           <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
-            <span>{meta.emoji}</span> കമ്മിറ്റി ഹബ്
+            <span>{meta.emoji}</span> {t('കമ്മിറ്റി ഹബ്', 'Committee Hub')}
           </h1>
-          <p className="text-white/80 text-sm mt-1">എല്ലാ കമ്മിറ്റികളും ഒറ്റ സ്ഥലത്ത്</p>
+          <p className="text-white/80 text-sm mt-1">{t('എല്ലാ കമ്മിറ്റികളും ഒറ്റ സ്ഥലത്ത്', 'All committees in one place')}</p>
         </div>
       </header>
 
