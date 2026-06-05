@@ -23,6 +23,13 @@ export default function AIAssistant() {
     });
   }, []);
 
+  const SUGGESTIONS = [
+    'നിസ്കാരത്തിന്റെ ശർത്തുകൾ എന്തൊക്കെ?',
+    'What does Surah Al-Fatiha mean?',
+    'സകാത്ത് ആർക്കൊക്കെ കൊടുക്കാം?',
+    'Tell me a hadith about kindness',
+  ];
+
   useEffect(() => {
     if (open && messages.length === 0) setMessages([{ role: 'assistant', content: welcome }]);
   }, [open, welcome, messages.length]);
