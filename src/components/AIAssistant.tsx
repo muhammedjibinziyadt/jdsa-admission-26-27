@@ -96,27 +96,36 @@ export default function AIAssistant() {
     <>
       <button
         onClick={() => setOpen((o) => !o)}
-        className="fixed bottom-5 right-5 z-[60] w-14 h-14 rounded-full bg-gradient-to-br from-primary to-purple-600 text-white shadow-2xl flex items-center justify-center hover:scale-105 transition"
-        aria-label="AI Assistant"
+        className="fixed bottom-5 right-5 z-[60] w-14 h-14 rounded-full bg-gradient-to-br from-emerald-700 to-emerald-500 text-white shadow-2xl flex items-center justify-center hover:scale-105 transition"
+        aria-label="Islamic AI Assistant"
       >
         {open ? <X className="w-6 h-6" /> : <Bot className="w-6 h-6" />}
       </button>
 
       {open && (
         <div className="fixed bottom-24 right-5 z-[60] w-[calc(100vw-2.5rem)] sm:w-96 h-[70vh] max-h-[560px] bg-white rounded-2xl shadow-2xl border border-border flex flex-col overflow-hidden">
-          <div className="px-4 py-3 bg-gradient-to-r from-primary to-purple-600 text-white flex items-center gap-2">
-            <Bot className="w-5 h-5" />
+          <div className="px-4 py-3 bg-gradient-to-r from-emerald-700 to-emerald-500 text-white flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center font-display">ج</div>
             <div className="flex-1">
-              <p className="font-semibold text-sm">AI Assistant</p>
-              <p className="text-[10px] opacity-80">Ask anything about our website</p>
+              <p className="font-semibold text-sm">Islamic AI Assistant</p>
+              <p className="text-[10px] opacity-80">Ask about Qur'an, Hadith, Fiqh, or our website</p>
             </div>
           </div>
           <div ref={scrollRef} className="flex-1 overflow-y-auto p-3 space-y-2 bg-gray-50">
             {messages.map((m, i) => (
-              <div key={i} className={`max-w-[85%] px-3 py-2 rounded-2xl text-sm whitespace-pre-wrap ${m.role === 'user' ? 'ml-auto bg-primary text-primary-foreground rounded-br-sm' : 'mr-auto bg-white border border-border rounded-bl-sm'}`}>
+              <div key={i} className={`max-w-[85%] px-3 py-2 rounded-2xl text-sm whitespace-pre-wrap leading-relaxed ${m.role === 'user' ? 'ml-auto bg-emerald-600 text-white rounded-br-sm' : 'mr-auto bg-white border border-border rounded-bl-sm text-slate-800'}`}>
                 {m.content || (loading && i === messages.length - 1 ? <Loader2 className="w-4 h-4 animate-spin" /> : '')}
               </div>
             ))}
+            {messages.length <= 1 && !loading && (
+              <div className="flex flex-wrap gap-1.5 pt-2">
+                {SUGGESTIONS.map((s) => (
+                  <button key={s} onClick={() => send(s)} className="text-[11px] px-2.5 py-1.5 rounded-full bg-white border border-emerald-200 text-emerald-700 hover:bg-emerald-50">
+                    {s}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
           <form onSubmit={(e) => { e.preventDefault(); send(); }} className="p-2 border-t border-border bg-white flex gap-2">
             <input
