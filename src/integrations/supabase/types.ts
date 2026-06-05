@@ -664,6 +664,39 @@ export type Database = {
         }
         Relationships: []
       }
+      committee_notifications: {
+        Row: {
+          committee_id: string
+          created_at: string
+          id: string
+          message: string
+          notice_date: string
+          priority: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          committee_id: string
+          created_at?: string
+          id?: string
+          message: string
+          notice_date?: string
+          priority?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          committee_id?: string
+          created_at?: string
+          id?: string
+          message?: string
+          notice_date?: string
+          priority?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       committee_settings: {
         Row: {
           constitution_url: string | null

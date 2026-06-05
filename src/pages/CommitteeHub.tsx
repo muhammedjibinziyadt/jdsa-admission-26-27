@@ -11,12 +11,20 @@ import CustomSections from '@/components/committee/CustomSections';
 import CommitteeFinesSection from '@/components/committee/CommitteeFinesSection';
 import FineHubBody from '@/components/committee/FineHubBody';
 import LoginCard from '@/components/committee/LoginCard';
+import NotificationsBanner from '@/components/committee/NotificationsBanner';
 import SectionLockGate, { useSectionLock } from '@/components/SectionLock';
+import { useLanguage } from '@/hooks/useLanguage';
 
 type TabId = CommitteeId | 'fine';
 const ORDER: TabId[] = ['central', 'jawahir', 'samaja', 'library', 'fine'];
-const FINE_META = { name: 'Fine Hub', slug: 'fine', gradient: 'from-rose-600 to-pink-600', emoji: '🧾', accent: 'rose' };
-const META_FOR = (id: TabId) => id === 'fine' ? FINE_META : COMMITTEE_META[id];
+const FINE_META_M = { name: 'ഫൈൻ ഹബ്', slug: 'fine', gradient: 'from-rose-600 to-pink-600', emoji: '🧾', accent: 'rose' };
+const FINE_META_E = { name: 'Fine Hub', slug: 'fine', gradient: 'from-rose-600 to-pink-600', emoji: '🧾', accent: 'rose' };
+const COMMITTEE_META_E: Record<CommitteeId, typeof COMMITTEE_META[CommitteeId]> = {
+  central: { ...COMMITTEE_META.central, name: 'Central Committee' },
+  jawahir: { ...COMMITTEE_META.jawahir, name: 'Al Jawahir Committee' },
+  samaja: { ...COMMITTEE_META.samaja, name: 'Samaj Committee' },
+  library: { ...COMMITTEE_META.library, name: 'Library Committee' },
+};
 const BUCKET: Record<CommitteeId, string> = { central: 'committee', jawahir: 'jawahir', samaja: 'samaja', library: 'library' };
 
 export default function CommitteeHub() {
@@ -25,6 +33,9 @@ export default function CommitteeHub() {
   const initial = (ORDER.includes(paramId as TabId) ? paramId : 'central') as TabId;
   const [active, setActive] = useState<TabId>(initial);
   const committeeLock = useSectionLock('committee');
+  const { lang, t } = useLanguage();
+  const FINE_META = lang === 'E' ? FINE_META_E : FINE_META_M;
+  const META_FOR = (id: TabId) => id === 'fine' ? FINE_META : (lang === 'E' ? COMMITTEE_META_E[id] : COMMITTEE_META[id]);
 
   const { committees, loading } = useCommittees();
   const meta = META_FOR(active);
@@ -53,9 +64,9 @@ export default function CommitteeHub() {
             <ArrowLeft className="w-4 h-4" /> Students Portal
           </Link>
           <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
-            <span>{meta.emoji}</span> കമ്മിറ്റി ഹബ്
+            <span>{meta.emoji}</span> {t('കമ്മിറ്റി ഹബ്', 'Committee Hub')}
           </h1>
-          <p className="text-white/80 text-sm mt-1">എല്ലാ കമ്മിറ്റികളും ഒറ്റ സ്ഥലത്ത്</p>
+          <p className="text-white/80 text-sm mt-1">{t('എല്ലാ കമ്മിറ്റികളും ഒറ്റ സ്ഥലത്ത്', 'All committees in one place')}</p>
         </div>
       </header>
 
@@ -94,6 +105,7 @@ export default function CommitteeHub() {
           <FineHubBody />
         ) : committee ? (
           <>
+            <NotificationsBanner committeeId={active as string} />
             <LoginCard id={active as CommitteeId} />
             <ScoreBoard committee={committee} gradient={meta.gradient} />
             {active === 'central' && <CentralBody />}
