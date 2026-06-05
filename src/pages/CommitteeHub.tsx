@@ -13,11 +13,18 @@ import FineHubBody from '@/components/committee/FineHubBody';
 import LoginCard from '@/components/committee/LoginCard';
 import NotificationsBanner from '@/components/committee/NotificationsBanner';
 import SectionLockGate, { useSectionLock } from '@/components/SectionLock';
+import { useLanguage } from '@/hooks/useLanguage';
 
 type TabId = CommitteeId | 'fine';
 const ORDER: TabId[] = ['central', 'jawahir', 'samaja', 'library', 'fine'];
-const FINE_META = { name: 'Fine Hub', slug: 'fine', gradient: 'from-rose-600 to-pink-600', emoji: '🧾', accent: 'rose' };
-const META_FOR = (id: TabId) => id === 'fine' ? FINE_META : COMMITTEE_META[id];
+const FINE_META_M = { name: 'ഫൈൻ ഹബ്', slug: 'fine', gradient: 'from-rose-600 to-pink-600', emoji: '🧾', accent: 'rose' };
+const FINE_META_E = { name: 'Fine Hub', slug: 'fine', gradient: 'from-rose-600 to-pink-600', emoji: '🧾', accent: 'rose' };
+const COMMITTEE_META_E: Record<CommitteeId, typeof COMMITTEE_META[CommitteeId]> = {
+  central: { ...COMMITTEE_META.central, name: 'Central Committee' },
+  jawahir: { ...COMMITTEE_META.jawahir, name: 'Al Jawahir Committee' },
+  samaja: { ...COMMITTEE_META.samaja, name: 'Samaj Committee' },
+  library: { ...COMMITTEE_META.library, name: 'Library Committee' },
+};
 const BUCKET: Record<CommitteeId, string> = { central: 'committee', jawahir: 'jawahir', samaja: 'samaja', library: 'library' };
 
 export default function CommitteeHub() {
