@@ -12,12 +12,14 @@ import BookStore from "./pages/BookStore";
 import CommitteeHub from "./pages/CommitteeHub";
 import NotFound from "./pages/NotFound";
 import { LanguageProvider } from "@/hooks/useLanguage";
+import { ThemeProvider } from "@/hooks/useTheme";
 import AIAssistant from "@/components/AIAssistant";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
+    <ThemeProvider>
     <LanguageProvider>
     <TooltipProvider>
       <Toaster />
@@ -39,6 +41,7 @@ const App = () => (
       </BrowserRouter>
     </TooltipProvider>
     </LanguageProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
