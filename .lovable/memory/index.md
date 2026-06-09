@@ -32,3 +32,5 @@
 - [Multi-Committee System](mem://features/multi-committee-system) — 4 committees (Central, Al Jawahir, Samaja, Library) with login, content sections, and admin-managed scores
 - [Attendance System](mem://features/attendance-system) — Students Portal tab with student profiles, photo, daily attendance, and leave tracking
 - [Computer Section](mem://features/computer-section) — Students Portal "കമ്പ്യൂട്ടർ" tab with Typing timetable and Photoshop class system (20 lockable classes, posters, score)
+- [Theme System](mem://features/theme-system) — Admin-controlled site-wide theme manager with 5 presets, custom color picker, and live preview
+- [AI Assistant Advanced](mem://features/ai-assistant-advanced) — Enhanced floating chat with history, search, copy/share, markdown, and admin usage stats
