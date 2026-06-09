@@ -28,7 +28,9 @@ import {
   GripVertical,
   Download,
   Search,
-  Award
+  Award,
+  Palette
+
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useWebsiteContent, WebsiteContent } from "@/hooks/useWebsiteContent";
