@@ -425,6 +425,7 @@ const Admin = () => {
     { id: "committee" as const, label: "കമ്മിറ്റി (Legacy)", icon: Users },
     { id: "committees" as const, label: "Committees (പുതിയത്)", icon: Award },
     { id: "notifications" as const, label: "Notifications", icon: MessageSquare },
+    { id: "theme" as const, label: "Theme", icon: Palette },
     { id: "settings" as const, label: "ക്രമീകരണം", icon: Settings },
   ];
 
