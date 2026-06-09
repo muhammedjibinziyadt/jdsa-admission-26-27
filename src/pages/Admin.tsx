@@ -49,6 +49,7 @@ import BookStoreAdmin from "@/components/BookStoreAdmin";
 import CommitteeAdmin from "@/components/CommitteeAdmin";
 import CommitteesAdminPanel from "@/components/CommitteesAdminPanel";
 import NotificationsAdminPanel from "@/components/NotificationsAdminPanel";
+import ThemeAdmin from "@/components/ThemeAdmin";
 
 const Admin = () => {
   const { isAuthenticated, loading: authLoading, login, logout } = useAdminAuth();
