@@ -194,6 +194,27 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_usage_stats: {
+        Row: {
+          id: string
+          last_used: string | null
+          total_conversations: number
+          total_messages: number
+        }
+        Insert: {
+          id: string
+          last_used?: string | null
+          total_conversations?: number
+          total_messages?: number
+        }
+        Update: {
+          id?: string
+          last_used?: string | null
+          total_conversations?: number
+          total_messages?: number
+        }
+        Relationships: []
+      }
       attendance_leaves: {
         Row: {
           created_at: string
@@ -1375,6 +1396,33 @@ export type Database = {
         }
         Relationships: []
       }
+      theme_settings: {
+        Row: {
+          accent_color: string
+          id: string
+          preset: string
+          primary_color: string
+          secondary_color: string
+          updated_at: string
+        }
+        Insert: {
+          accent_color?: string
+          id: string
+          preset?: string
+          primary_color?: string
+          secondary_color?: string
+          updated_at?: string
+        }
+        Update: {
+          accent_color?: string
+          id?: string
+          preset?: string
+          primary_color?: string
+          secondary_color?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       timetables: {
         Row: {
           activity: string
@@ -1498,6 +1546,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_ai_usage: { Args: never; Returns: undefined }
     }
     Enums: {
       app_role: "super_admin" | "admin" | "moderator"
