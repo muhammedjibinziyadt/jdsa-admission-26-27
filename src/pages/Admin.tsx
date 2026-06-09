@@ -1764,6 +1764,7 @@ const Admin = () => {
         {activeTab === "committee" && <CommitteeAdmin />}
         {activeTab === "committees" && <CommitteesAdminPanel />}
         {activeTab === "notifications" && <NotificationsAdminPanel />}
+        {activeTab === "theme" && <ThemeAdmin />}
       </div>
     </div>
   );
