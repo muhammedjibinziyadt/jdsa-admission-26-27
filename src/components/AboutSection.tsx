@@ -63,18 +63,12 @@ const AboutSection = ({ content }: AboutSectionProps) => {
           {features.map((feature, index) => {
             const IconComponent = typeof feature.icon === 'function' ? feature.icon : BookOpen;
             return (
-              <ScrollAnimate key={feature.title} direction="up" delay={index * 100} duration={600}>
-                <div className="bg-card rounded-xl p-7 shadow-soft card-hover h-full">
-                  <div className="w-12 h-12 rounded-xl emerald-gradient flex items-center justify-center mb-5">
-                    <IconComponent className="w-6 h-6 text-primary-foreground" />
-                  </div>
-                  <h3 className="font-display text-xl font-semibold text-foreground mb-3">
-                    {feature.title}
-                  </h3>
-                  <p className="text-muted-foreground leading-relaxed">
-                    {feature.description}
-                  </p>
-                </div>
+              <ScrollAnimate key={feature.title} direction="up" delay={index * 120} duration={650}>
+                <AnimatedFeatureCard
+                  title={feature.title}
+                  description={feature.description}
+                  fallbackIcon={IconComponent}
+                />
               </ScrollAnimate>
             );
           })}
