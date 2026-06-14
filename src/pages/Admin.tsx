@@ -29,7 +29,8 @@ import {
   Download,
   Search,
   Award,
-  Palette
+  Palette,
+  HardDrive
 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -50,6 +51,7 @@ import CommitteeAdmin from "@/components/CommitteeAdmin";
 import CommitteesAdminPanel from "@/components/CommitteesAdminPanel";
 import NotificationsAdminPanel from "@/components/NotificationsAdminPanel";
 import ThemeAdmin from "@/components/ThemeAdmin";
+import StorageMonitor from "@/components/StorageMonitor";
 
 const Admin = () => {
   const { isAuthenticated, loading: authLoading, login, logout } = useAdminAuth();
@@ -57,7 +59,7 @@ const Admin = () => {
   const { uploadImage, deleteImage, uploading } = useImageUpload();
   const { admissions, updateAdmission, deleteAdmission, newAdmissionCount } = useAdmissions();
   
-  const [activeTab, setActiveTab] = useState<"hero" | "slider" | "about" | "courses" | "benefits" | "gallery" | "suffa" | "contact" | "map" | "footer" | "social" | "admissions" | "form" | "search" | "settings" | "students" | "timetable" | "bookstore" | "committee" | "committees" | "notifications" | "theme">("hero");
+  const [activeTab, setActiveTab] = useState<"hero" | "slider" | "about" | "courses" | "benefits" | "gallery" | "suffa" | "contact" | "map" | "footer" | "social" | "admissions" | "form" | "search" | "settings" | "students" | "timetable" | "bookstore" | "committee" | "committees" | "notifications" | "theme" | "storage">("hero");
   
   // Local editing state
   const [localContent, setLocalContent] = useState<WebsiteContent | null>(null);
@@ -426,6 +428,7 @@ const Admin = () => {
     { id: "committees" as const, label: "Committees (പുതിയത്)", icon: Award },
     { id: "notifications" as const, label: "Notifications", icon: MessageSquare },
     { id: "theme" as const, label: "Theme", icon: Palette },
+    { id: "storage" as const, label: "Storage Monitor", icon: HardDrive },
     { id: "settings" as const, label: "ക്രമീകരണം", icon: Settings },
   ];
 
@@ -1765,6 +1768,7 @@ const Admin = () => {
         {activeTab === "committees" && <CommitteesAdminPanel />}
         {activeTab === "notifications" && <NotificationsAdminPanel />}
         {activeTab === "theme" && <ThemeAdmin />}
+        {activeTab === "storage" && <StorageMonitor />}
       </div>
     </div>
   );
