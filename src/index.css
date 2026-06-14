@@ -218,3 +218,298 @@
     }
   }
 }
+
+/* ============================================================
+   Premium Courses Section — subject-specific animations
+   ============================================================ */
+@layer components {
+  .course-card {
+    position: relative;
+    border-radius: 1.25rem;
+    background: linear-gradient(160deg, hsl(0 0% 100% / 0.85), hsl(42 40% 97% / 0.65));
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid hsl(0 0% 100% / 0.6);
+    box-shadow:
+      0 1px 0 hsl(0 0% 100% / 0.7) inset,
+      0 10px 30px -12px hsl(158 64% 22% / 0.18),
+      0 2px 6px -2px hsl(220 20% 20% / 0.06);
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(.2,.8,.2,1), box-shadow 0.4s ease, border-color 0.4s ease;
+    animation: cardFloat 7s ease-in-out infinite;
+    will-change: transform;
+  }
+  .course-card:hover {
+    box-shadow:
+      0 1px 0 hsl(0 0% 100% / 0.8) inset,
+      0 24px 50px -18px hsl(158 64% 22% / 0.35),
+      0 6px 18px -6px hsl(38 78% 52% / 0.25);
+    border-color: hsl(38 78% 52% / 0.4);
+  }
+  .course-card:nth-child(2) { animation-delay: -1.2s; }
+  .course-card:nth-child(3) { animation-delay: -2.4s; }
+  .course-card:nth-child(4) { animation-delay: -3.6s; }
+  .course-card:nth-child(5) { animation-delay: -4.8s; }
+  .course-card:nth-child(6) { animation-delay: -6s; }
+
+  .course-card-glow {
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: radial-gradient(circle at 30% 0%, hsl(38 78% 52% / 0.25), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+  }
+  .course-card:hover .course-card-glow { opacity: 1; }
+
+  .course-visual {
+    position: relative;
+    height: 150px;
+    margin: 1rem 1rem 0;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, hsl(158 30% 96%), hsl(42 40% 97%));
+    overflow: hidden;
+    color: hsl(var(--primary));
+  }
+}
+
+/* ---- Writing ---- */
+.notebook {
+  position: relative;
+  width: 110px;
+  height: 80px;
+  background: hsl(0 0% 100%);
+  border-radius: 6px;
+  box-shadow: 0 6px 18px -8px hsl(220 20% 20% / 0.25), inset 4px 0 0 hsl(0 84% 60% / 0.5);
+  padding: 14px 10px 0 18px;
+  transform: rotate(-6deg);
+}
+.notebook-line {
+  height: 6px;
+  background: hsl(220 13% 91%);
+  border-radius: 3px;
+  margin-bottom: 7px;
+}
+.notebook-line.short { width: 60%; }
+.ink-stroke {
+  position: absolute;
+  bottom: 8px;
+  left: 12px;
+  width: 80px;
+  color: hsl(var(--primary));
+  stroke-dasharray: 120;
+  stroke-dashoffset: 120;
+  transition: stroke-dashoffset 1.2s ease;
+}
+.course-card--writing:hover .ink-stroke { stroke-dashoffset: 0; }
+.pen {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  right: 18px;
+  top: 18px;
+  animation: penFloat 4s ease-in-out infinite;
+  transition: transform 0.6s cubic-bezier(.2,.8,.2,1);
+  filter: drop-shadow(0 6px 10px hsl(158 64% 22% / 0.25));
+}
+.course-card--writing:hover .pen { transform: translate(-8px, 8px) rotate(8deg); }
+
+/* ---- Speech ---- */
+.mic {
+  width: 60px;
+  height: 60px;
+  position: relative;
+  z-index: 2;
+  animation: micFloat 3.5s ease-in-out infinite;
+  filter: drop-shadow(0 6px 10px hsl(158 64% 22% / 0.25));
+}
+.wave {
+  position: absolute;
+  border: 2px solid hsl(var(--primary) / 0.5);
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: waveExpand 2.4s ease-out infinite;
+  opacity: 0;
+}
+.wave-2 { animation-delay: 0.8s; }
+.wave-3 { animation-delay: 1.6s; }
+.course-card--speech:hover .wave { animation-duration: 1.4s; border-color: hsl(38 78% 52% / 0.7); }
+
+/* ---- Library ---- */
+.book {
+  width: 14px;
+  height: 56px;
+  border-radius: 2px 2px 1px 1px;
+  background: hsl(var(--primary));
+  box-shadow: inset -2px 0 0 hsl(158 64% 15%);
+  transform-origin: bottom center;
+  animation: bookSway 4s ease-in-out infinite;
+}
+.book-a { background: hsl(158 64% 22%); height: 60px; }
+.book-b { background: hsl(38 78% 52%); height: 54px; animation-delay: -1s; }
+.book-c { background: hsl(174 50% 40%); height: 64px; animation-delay: -2s; }
+.book-d { background: hsl(0 50% 45%); height: 50px; animation-delay: -3s; }
+.floating-book {
+  position: absolute;
+  width: 58px;
+  height: 44px;
+  top: 14px;
+  right: 18px;
+  animation: floatY 4s ease-in-out infinite;
+  filter: drop-shadow(0 8px 14px hsl(158 64% 22% / 0.3));
+  transition: transform 0.5s ease;
+}
+.course-card--library:hover .floating-book { transform: rotateY(35deg) scale(1.08); }
+
+/* ---- Canteen ---- */
+.cup {
+  width: 64px;
+  height: 64px;
+  z-index: 2;
+  position: relative;
+  filter: drop-shadow(0 8px 12px hsl(158 64% 22% / 0.25));
+  transition: transform 0.5s ease;
+}
+.course-card--canteen:hover .cup { transform: translateY(-6px); }
+.steam {
+  position: absolute;
+  bottom: 60%;
+  width: 6px;
+  height: 22px;
+  background: linear-gradient(to top, hsl(0 0% 100% / 0.9), transparent);
+  border-radius: 3px;
+  filter: blur(2px);
+  animation: steamRise 2.6s ease-in infinite;
+  opacity: 0;
+}
+.steam-1 { left: calc(50% - 12px); }
+.steam-2 { left: calc(50% + 2px); animation-delay: 0.8s; }
+.steam-3 { left: calc(50% + 12px); animation-delay: 1.6s; }
+.course-card--canteen:hover .steam { animation-duration: 1.6s; }
+
+/* ---- Growth ---- */
+.bar {
+  width: 16px;
+  background: linear-gradient(to top, hsl(var(--primary)), hsl(158 50% 45%));
+  border-radius: 4px 4px 0 0;
+  transform-origin: bottom;
+  animation: barRise 3s ease-in-out infinite;
+}
+.bar-1 { height: 30%; animation-delay: 0s; }
+.bar-2 { height: 55%; animation-delay: 0.3s; }
+.bar-3 { height: 40%; animation-delay: 0.6s; }
+.bar-4 { height: 75%; animation-delay: 0.9s; }
+.trend {
+  position: absolute;
+  inset: 12px;
+  width: calc(100% - 24px);
+  height: 60%;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px hsl(38 78% 52% / 0.4));
+}
+.sparkle {
+  position: absolute;
+  color: hsl(38 78% 52%);
+  font-size: 12px;
+  animation: sparkleFloat 3s ease-in-out infinite;
+}
+.sparkle-1 { top: 14px; left: 20px; }
+.sparkle-2 { top: 26px; right: 24px; animation-delay: 1s; }
+.sparkle-3 { bottom: 30px; right: 40px; animation-delay: 2s; }
+
+/* ---- Sermon ---- */
+.mosque {
+  width: 80px;
+  height: 60px;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 6px 10px hsl(158 64% 22% / 0.3));
+  animation: floatY 5s ease-in-out infinite;
+}
+.bubble {
+  position: absolute;
+  width: 40px;
+  height: 32px;
+  top: 16px;
+  right: 18px;
+  z-index: 3;
+  transition: transform 0.5s ease;
+  filter: drop-shadow(0 4px 8px hsl(158 64% 22% / 0.2));
+}
+.course-card--sermon:hover .bubble { transform: scale(1.15) translateY(-4px); }
+.rays {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  background: conic-gradient(from 0deg, transparent 0deg, hsl(38 78% 52% / 0.25) 20deg, transparent 40deg, transparent 60deg, hsl(38 78% 52% / 0.2) 80deg, transparent 100deg, transparent 360deg);
+  border-radius: 50%;
+  animation: spin 18s linear infinite;
+  opacity: 0.6;
+  transition: opacity 0.5s ease;
+}
+.course-card--sermon:hover .rays { opacity: 1; }
+.geo-pattern {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(45deg, hsl(var(--primary) / 0.06) 25%, transparent 25%),
+    linear-gradient(-45deg, hsl(var(--primary) / 0.06) 25%, transparent 25%);
+  background-size: 16px 16px;
+  animation: geoShift 12s linear infinite;
+  opacity: 0.5;
+}
+
+/* ---- Keyframes ---- */
+@keyframes cardFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes penFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-6px) rotate(-4deg); }
+}
+@keyframes micFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes waveExpand {
+  0% { transform: scale(0.6); opacity: 0.8; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+@keyframes bookSway {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes steamRise {
+  0% { transform: translateY(0) scale(1); opacity: 0; }
+  20% { opacity: 0.8; }
+  100% { transform: translateY(-50px) scale(1.6); opacity: 0; }
+}
+@keyframes barRise {
+  0%, 100% { transform: scaleY(0.85); }
+  50% { transform: scaleY(1); }
+}
+@keyframes sparkleFloat {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.5; }
+  50% { transform: translateY(-6px) scale(1.3); opacity: 1; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes geoShift {
+  0% { background-position: 0 0, 0 0; }
+  100% { background-position: 32px 32px, -32px 32px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .course-card, .pen, .mic, .wave, .book, .floating-book, .cup, .steam, .bar, .sparkle, .mosque, .rays, .geo-pattern {
+    animation: none !important;
+  }
+}
