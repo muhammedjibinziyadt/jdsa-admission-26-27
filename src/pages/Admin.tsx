@@ -29,7 +29,8 @@ import {
   Download,
   Search,
   Award,
-  Palette
+  Palette,
+  HardDrive
 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
