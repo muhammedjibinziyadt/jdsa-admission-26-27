@@ -1768,6 +1768,7 @@ const Admin = () => {
         {activeTab === "committees" && <CommitteesAdminPanel />}
         {activeTab === "notifications" && <NotificationsAdminPanel />}
         {activeTab === "theme" && <ThemeAdmin />}
+        {activeTab === "storage" && <StorageMonitor />}
       </div>
     </div>
   );
