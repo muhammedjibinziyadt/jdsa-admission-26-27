@@ -428,6 +428,7 @@ const Admin = () => {
     { id: "committees" as const, label: "Committees (പുതിയത്)", icon: Award },
     { id: "notifications" as const, label: "Notifications", icon: MessageSquare },
     { id: "theme" as const, label: "Theme", icon: Palette },
+    { id: "storage" as const, label: "Storage Monitor", icon: HardDrive },
     { id: "settings" as const, label: "ക്രമീകരണം", icon: Settings },
   ];
 
