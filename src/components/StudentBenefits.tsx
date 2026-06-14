@@ -1,5 +1,6 @@
 import { Shield, Brain, Award, HeartHandshake, BookOpen, Star, Heart, Users } from "lucide-react";
 import { ScrollAnimate } from "@/hooks/useScrollAnimation";
+import AnimatedFeatureCard from "@/components/AnimatedFeatureCard";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Shield, Brain, Award, HeartHandshake, BookOpen, Star, Heart, Users,
