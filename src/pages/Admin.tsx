@@ -51,6 +51,7 @@ import CommitteeAdmin from "@/components/CommitteeAdmin";
 import CommitteesAdminPanel from "@/components/CommitteesAdminPanel";
 import NotificationsAdminPanel from "@/components/NotificationsAdminPanel";
 import ThemeAdmin from "@/components/ThemeAdmin";
+import StorageMonitor from "@/components/StorageMonitor";
 
 const Admin = () => {
   const { isAuthenticated, loading: authLoading, login, logout } = useAdminAuth();
