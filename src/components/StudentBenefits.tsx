@@ -44,18 +44,12 @@ const StudentBenefits = ({ benefits }: StudentBenefitsProps) => {
           {benefits.map((benefit, index) => {
             const IconComponent = iconMap[benefit.icon || ''] || defaultIcons[index % defaultIcons.length];
             return (
-              <ScrollAnimate key={benefit.id} direction={index % 2 === 0 ? 'left' : 'right'} delay={index * 100} duration={650}>
-                <div className="bg-card rounded-xl p-6 shadow-soft card-hover text-center h-full">
-                  <div className="w-14 h-14 rounded-xl emerald-gradient flex items-center justify-center mx-auto mb-4">
-                    <IconComponent className="w-7 h-7 text-primary-foreground" />
-                  </div>
-                  <h3 className="font-display text-xl font-semibold text-foreground mb-2">
-                    {benefit.title}
-                  </h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    {benefit.description}
-                  </p>
-                </div>
+              <ScrollAnimate key={benefit.id} direction="up" delay={index * 120} duration={700}>
+                <AnimatedFeatureCard
+                  title={benefit.title}
+                  description={benefit.description}
+                  fallbackIcon={IconComponent}
+                />
               </ScrollAnimate>
             );
           })}
