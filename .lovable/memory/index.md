@@ -34,3 +34,4 @@
 - [Computer Section](mem://features/computer-section) — Students Portal "കമ്പ്യൂട്ടർ" tab with Typing timetable and Photoshop class system (20 lockable classes, posters, score)
 - [Theme System](mem://features/theme-system) — Admin-controlled site-wide theme manager with 5 presets, custom color picker, and live preview
 - [AI Assistant Advanced](mem://features/ai-assistant-advanced) — Enhanced floating chat with history, search, copy/share, markdown, and admin usage stats
+- [Bilingual Toggle](mem://features/bilingual-toggle) — Malayalam/English switch, scope of translated surfaces, PDF tx() helper
