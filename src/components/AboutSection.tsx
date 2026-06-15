@@ -1,6 +1,7 @@
 import { BookOpen, Heart, Users, Star } from "lucide-react";
 import { ScrollAnimate } from "@/hooks/useScrollAnimation";
 import AnimatedFeatureCard from "@/components/AnimatedFeatureCard";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   BookOpen, Heart, Users, Star,
@@ -32,6 +33,7 @@ const defaultFeatures = [
 ];
 
 const AboutSection = ({ content }: AboutSectionProps) => {
+  const { t } = useLanguage();
   const features = content.features?.length > 0 
     ? content.features.map((f, i) => ({
         ...f,
@@ -46,14 +48,17 @@ const AboutSection = ({ content }: AboutSectionProps) => {
         <ScrollAnimate direction="up">
           <div className="text-center max-w-3xl mx-auto mb-14">
             <span className="inline-block px-4 py-1.5 rounded-full bg-primary/8 text-primary text-sm font-medium mb-4">
-              {content.title || 'ഞങ്ങളെക്കുറിച്ച്'}
+              {t(content.title || 'ഞങ്ങളെക്കുറിച്ച്', 'About Us')}
             </span>
             <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-5">
-              വിജ്ഞാനത്തിന്റെ 
-              <span className="gold-text"> വെളിച്ചം</span>
+              {t('വിജ്ഞാനത്തിന്റെ', 'The Light of')}
+              <span className="gold-text"> {t('വെളിച്ചം', 'Knowledge')}</span>
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed">
-              {content.description || 'ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസ് ഇസ്ലാമിക വിദ്യാഭ്യാസത്തിന്റെയും ആധുനിക കഴിവുകളുടെയും സമന്വയത്തിലൂടെ വിദ്യാർത്ഥികളെ ഭാവിയിലേക്ക് സജ്ജമാക്കുന്നു.'}
+              {t(
+                content.description || 'ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസ് ഇസ്ലാമിക വിദ്യാഭ്യാസത്തിന്റെയും ആധുനിക കഴിവുകളുടെയും സമന്വയത്തിലൂടെ വിദ്യാർത്ഥികളെ ഭാവിയിലേക്ക് സജ്ജമാക്കുന്നു.',
+                'Jawharathul Uloom Suffa Dars prepares students for the future by blending Islamic education with modern skills.'
+              )}
             </p>
           </div>
         </ScrollAnimate>

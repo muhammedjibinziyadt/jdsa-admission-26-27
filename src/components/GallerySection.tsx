@@ -130,6 +130,8 @@ const GallerySection = ({ images, settings }: GallerySectionProps) => {
     toggleLike(imageId);
   };
 
+  const lang = typeof window !== 'undefined' ? (localStorage.getItem('site_lang') || 'M') : 'M';
+  const tt = (m: string, e: string) => lang === 'E' ? e : m;
   return (
     <section id="gallery" className="py-20 lg:py-28 bg-secondary/50">
       <div className="container mx-auto px-4">
@@ -138,14 +140,14 @@ const GallerySection = ({ images, settings }: GallerySectionProps) => {
           <div className="text-center max-w-3xl mx-auto mb-14">
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/8 text-primary text-sm font-medium mb-4">
               <ImageIcon className="w-4 h-4" />
-              ഗാലറി
+              {tt('ഗാലറി', 'Gallery')}
             </span>
             <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-5">
-              നിമിഷങ്ങൾ 
-              <span className="gold-text"> ഓർമ്മകളായി</span>
+              {tt('നിമിഷങ്ങൾ', 'Moments')}
+              <span className="gold-text"> {tt('ഓർമ്മകളായി', 'as Memories')}</span>
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed">
-              ഞങ്ങളുടെ സ്ഥാപനത്തിന്റെ വിവിധ പ്രവർത്തനങ്ങളുടെ ഓർമ്മകൾ
+              {tt('ഞങ്ങളുടെ സ്ഥാപനത്തിന്റെ വിവിധ പ്രവർത്തനങ്ങളുടെ ഓർമ്മകൾ', 'Memories from the various activities of our institution')}
             </p>
           </div>
         </ScrollAnimate>

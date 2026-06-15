@@ -1,6 +1,7 @@
 import { MapPin, Navigation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollAnimate } from "@/hooks/useScrollAnimation";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface Landmark {
   id: string;
@@ -27,6 +28,7 @@ const defaultLandmarks: Landmark[] = [
 ];
 
 const RouteMapSection = ({ content }: RouteMapSectionProps) => {
+  const { t } = useLanguage();
   const googleMapsEmbedUrl = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3929.5!2d76.27!3d10.04!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDAyJzI0LjAiTiA3NsKwMTYnMTIuMCJF!5e0!3m2!1sen!2sin!4v1234567890";
   
   const handleGetDirections = () => {
@@ -44,14 +46,14 @@ const RouteMapSection = ({ content }: RouteMapSectionProps) => {
           <div className="text-center max-w-3xl mx-auto mb-12">
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/8 text-primary text-sm font-medium mb-4">
               <Navigation className="w-4 h-4" />
-              റൂട്ട് മാപ്പ്
+              {t('റൂട്ട് മാപ്പ്', 'Route Map')}
             </span>
             <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-5">
-              ഞങ്ങളിലേക്കുള്ള 
-              <span className="gold-text"> വഴി</span>
+              {t('ഞങ്ങളിലേക്കുള്ള', 'The Way')}
+              <span className="gold-text"> {t('വഴി', 'to Us')}</span>
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed">
-              ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസിലേക്ക് എത്തിച്ചേരാൻ ഈ മാപ്പ് ഉപയോഗിക്കുക
+              {t('ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസിലേക്ക് എത്തിച്ചേരാൻ ഈ മാപ്പ് ഉപയോഗിക്കുക', 'Use this map to reach Jawharathul Uloom Suffa Dars')}
             </p>
           </div>
         </ScrollAnimate>
@@ -79,12 +81,12 @@ const RouteMapSection = ({ content }: RouteMapSectionProps) => {
                   </div>
                   <div>
                     <h3 className="font-display text-xl font-semibold text-foreground mb-1">
-                      {content.address || 'ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസ്'}
+                      {content.address || t('ജവ്ഹറത്തുൽ ഉലൂം സുഫ്ഫാ ദർസ്', 'Jawharathul Uloom Suffa Dars')}
                     </h3>
                     <p className="text-muted-foreground leading-relaxed">
-                      കേരളം, ഇന്ത്യ
+                      {t('കേരളം, ഇന്ത്യ', 'Kerala, India')}
                       <br />
-                      <span className="text-sm">(കൃത്യമായ വിലാസത്തിനായി ഞങ്ങളെ ബന്ധപ്പെടുക)</span>
+                      <span className="text-sm">{t('(കൃത്യമായ വിലാസത്തിനായി ഞങ്ങളെ ബന്ധപ്പെടുക)', '(Contact us for the exact address)')}</span>
                     </p>
                   </div>
                 </div>
@@ -94,7 +96,7 @@ const RouteMapSection = ({ content }: RouteMapSectionProps) => {
                   className="gold-bg text-primary font-semibold px-8 py-5 rounded-xl hover:opacity-90 transition-opacity"
                 >
                   <Navigation className="w-5 h-5 mr-2" />
-                  ദിശ കണ്ടെത്തുക
+                  {t('ദിശ കണ്ടെത്തുക', 'Get Directions')}
                 </Button>
               </div>
             </div>

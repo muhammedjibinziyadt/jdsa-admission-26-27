@@ -1,5 +1,6 @@
 import { Phone, Mail, Heart, MessageCircle, BookOpen } from "lucide-react";
 import { ScrollAnimate } from "@/hooks/useScrollAnimation";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface FooterContent { copyright: string; tagline: string; }
 interface ContactInfo { phone1: string; phone2: string; email: string; }
@@ -23,6 +24,7 @@ const InstagramIcon = () => (
 );
 
 const Footer = ({ content, contact, social }: FooterProps) => {
+  const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
 
   const socialLinks = [
@@ -57,14 +59,14 @@ const Footer = ({ content, contact, social }: FooterProps) => {
             
             {/* Quick Links */}
             <div>
-              <h4 className="font-display font-semibold text-lg mb-5">ദ്രുത ലിങ്കുകൾ</h4>
+              <h4 className="font-display font-semibold text-lg mb-5">{t('ദ്രുത ലിങ്കുകൾ', 'Quick Links')}</h4>
               <div className="space-y-2.5">
                 {[
-                  { href: "#home", label: "ഹോം" },
-                  { href: "#about", label: "ഞങ്ങളെക്കുറിച്ച്" },
-                  { href: "#courses", label: "കോഴ്‌സുകൾ" },
-                  { href: "#gallery", label: "ഗാലറി" },
-                  { href: "#contact", label: "ബന്ധപ്പെടുക" },
+                  { href: "#home", label: t("ഹോം", "Home") },
+                  { href: "#about", label: t("ഞങ്ങളെക്കുറിച്ച്", "About Us") },
+                  { href: "#courses", label: t("കോഴ്‌സുകൾ", "Courses") },
+                  { href: "#gallery", label: t("ഗാലറി", "Gallery") },
+                  { href: "#contact", label: t("ബന്ധപ്പെടുക", "Contact") },
                 ].map((link) => (
                   <a key={link.href} href={link.href} className="block text-primary-foreground/60 hover:text-gold-light transition-colors">
                     {link.label}
@@ -75,7 +77,7 @@ const Footer = ({ content, contact, social }: FooterProps) => {
             
             {/* Contact */}
             <div>
-              <h4 className="font-display font-semibold text-lg mb-5">ബന്ധപ്പെടുക</h4>
+              <h4 className="font-display font-semibold text-lg mb-5">{t('ബന്ധപ്പെടുക', 'Contact')}</h4>
               <div className="space-y-3">
                 <a href={`tel:${contact.phone1?.replace(/\s/g, '')}`} className="flex items-center gap-3 text-primary-foreground/60 hover:text-gold-light transition-colors">
                   <Phone className="w-4 h-4" /> {contact.phone1}
