@@ -53,6 +53,7 @@ export default function AIAssistant() {
   ];
 
   if (!enabled) return null;
+  if (typeof window !== 'undefined' && window.location.pathname.startsWith('/quiz')) return null;
 
   const newConversation = () => {
     const c: Conv = { id: crypto.randomUUID(), title: 'New chat', updatedAt: Date.now(), messages: [] };
