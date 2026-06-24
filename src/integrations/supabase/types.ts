@@ -1213,6 +1213,159 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_questions: {
+        Row: {
+          audio_url: string | null
+          correct_index: number
+          created_at: string
+          id: string
+          image_url: string | null
+          options: Json
+          order_index: number
+          question_text: string
+          type: string
+        }
+        Insert: {
+          audio_url?: string | null
+          correct_index?: number
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          options?: Json
+          order_index?: number
+          question_text?: string
+          type?: string
+        }
+        Update: {
+          audio_url?: string | null
+          correct_index?: number
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          options?: Json
+          order_index?: number
+          question_text?: string
+          type?: string
+        }
+        Relationships: []
+      }
+      quiz_settings: {
+        Row: {
+          enabled: boolean
+          end_at: string | null
+          id: string
+          intro_en: string | null
+          intro_ml: string | null
+          is_open: boolean
+          start_at: string | null
+          time_limit_seconds: number
+          timer_mode: string
+          title_en: string
+          title_ml: string
+          updated_at: string
+        }
+        Insert: {
+          enabled?: boolean
+          end_at?: string | null
+          id?: string
+          intro_en?: string | null
+          intro_ml?: string | null
+          is_open?: boolean
+          start_at?: string | null
+          time_limit_seconds?: number
+          timer_mode?: string
+          title_en?: string
+          title_ml?: string
+          updated_at?: string
+        }
+        Update: {
+          enabled?: boolean
+          end_at?: string | null
+          id?: string
+          intro_en?: string | null
+          intro_ml?: string | null
+          is_open?: boolean
+          start_at?: string | null
+          time_limit_seconds?: number
+          timer_mode?: string
+          title_en?: string
+          title_ml?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      quiz_students: {
+        Row: {
+          created_at: string
+          display_name: string
+          id: string
+          used: boolean
+          used_at: string | null
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          display_name: string
+          id?: string
+          used?: boolean
+          used_at?: string | null
+          username: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string
+          id?: string
+          used?: boolean
+          used_at?: string | null
+          username?: string
+        }
+        Relationships: []
+      }
+      quiz_submissions: {
+        Row: {
+          address: string | null
+          answers: Json
+          correct_count: number
+          extra_info: string | null
+          full_name: string
+          id: string
+          mobile: string
+          score: number
+          submitted_at: string
+          total: number
+          username: string
+          wrong_count: number
+        }
+        Insert: {
+          address?: string | null
+          answers?: Json
+          correct_count?: number
+          extra_info?: string | null
+          full_name: string
+          id?: string
+          mobile: string
+          score?: number
+          submitted_at?: string
+          total?: number
+          username: string
+          wrong_count?: number
+        }
+        Update: {
+          address?: string | null
+          answers?: Json
+          correct_count?: number
+          extra_info?: string | null
+          full_name?: string
+          id?: string
+          mobile?: string
+          score?: number
+          submitted_at?: string
+          total?: number
+          username?: string
+          wrong_count?: number
+        }
+        Relationships: []
+      }
       samaja_awards: {
         Row: {
           award_month: string
@@ -1547,6 +1700,18 @@ export type Database = {
         Returns: boolean
       }
       increment_ai_usage: { Args: never; Returns: undefined }
+      submit_quiz: {
+        Args: {
+          p_address: string
+          p_answers: Json
+          p_extra_info: string
+          p_full_name: string
+          p_mobile: string
+          p_username: string
+        }
+        Returns: Json
+      }
+      validate_quiz_username: { Args: { p_username: string }; Returns: Json }
     }
     Enums: {
       app_role: "super_admin" | "admin" | "moderator"
