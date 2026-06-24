@@ -52,6 +52,7 @@ import CommitteesAdminPanel from "@/components/CommitteesAdminPanel";
 import NotificationsAdminPanel from "@/components/NotificationsAdminPanel";
 import ThemeAdmin from "@/components/ThemeAdmin";
 import StorageMonitor from "@/components/StorageMonitor";
+import QuizAdmin from "@/components/QuizAdmin";
 
 const Admin = () => {
   const { isAuthenticated, loading: authLoading, login, logout } = useAdminAuth();
@@ -59,7 +60,7 @@ const Admin = () => {
   const { uploadImage, deleteImage, uploading } = useImageUpload();
   const { admissions, updateAdmission, deleteAdmission, newAdmissionCount } = useAdmissions();
   
-  const [activeTab, setActiveTab] = useState<"hero" | "slider" | "about" | "courses" | "benefits" | "gallery" | "suffa" | "contact" | "map" | "footer" | "social" | "admissions" | "form" | "search" | "settings" | "students" | "timetable" | "bookstore" | "committee" | "committees" | "notifications" | "theme" | "storage">("hero");
+  const [activeTab, setActiveTab] = useState<"hero" | "slider" | "about" | "courses" | "benefits" | "gallery" | "suffa" | "contact" | "map" | "footer" | "social" | "admissions" | "form" | "search" | "settings" | "students" | "timetable" | "bookstore" | "committee" | "committees" | "notifications" | "theme" | "storage" | "quiz">("hero");
   
   // Local editing state
   const [localContent, setLocalContent] = useState<WebsiteContent | null>(null);
@@ -429,6 +430,7 @@ const Admin = () => {
     { id: "notifications" as const, label: "Notifications", icon: MessageSquare },
     { id: "theme" as const, label: "Theme", icon: Palette },
     { id: "storage" as const, label: "Storage Monitor", icon: HardDrive },
+    { id: "quiz" as const, label: "ക്വിസ് മത്സരം", icon: Trophy },
     { id: "settings" as const, label: "ക്രമീകരണം", icon: Settings },
   ];
 
@@ -1769,6 +1771,7 @@ const Admin = () => {
         {activeTab === "notifications" && <NotificationsAdminPanel />}
         {activeTab === "theme" && <ThemeAdmin />}
         {activeTab === "storage" && <StorageMonitor />}
+        {activeTab === "quiz" && <QuizAdmin />}
       </div>
     </div>
   );

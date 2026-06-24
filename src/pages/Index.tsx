@@ -12,6 +12,7 @@ import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import ApprovedApplications from "@/components/ApprovedApplications";
 import AdmissionFormSection from "@/components/AdmissionFormSection";
+import HomeQuizBell from "@/components/HomeQuizBell";
 import { useWebsiteContent } from "@/hooks/useWebsiteContent";
 import { useAdmissions } from "@/hooks/useAdmissions";
 
@@ -51,6 +52,7 @@ const Index = () => {
   return (
     <main className="min-h-screen">
       <Navigation content={content} />
+      <HomeQuizBell />
       {hasSliderImages ? (
         <HeroSlider 
           images={content.heroSlider.images} 

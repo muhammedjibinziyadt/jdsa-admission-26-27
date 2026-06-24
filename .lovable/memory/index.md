@@ -35,3 +35,4 @@
 - [Theme System](mem://features/theme-system) — Admin-controlled site-wide theme manager with 5 presets, custom color picker, and live preview
 - [AI Assistant Advanced](mem://features/ai-assistant-advanced) — Enhanced floating chat with history, search, copy/share, markdown, and admin usage stats
 - [Bilingual Toggle](mem://features/bilingual-toggle) — Malayalam/English switch, scope of translated surfaces, PDF tx() helper
+- [Quiz System](mem://features/quiz-system) — Samastha Foundation Day Quiz: admin control, username allow-list, one-time access, timer, scoring, leaderboard, PDF/CSV exports

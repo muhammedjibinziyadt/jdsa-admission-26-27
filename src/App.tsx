@@ -10,6 +10,7 @@ import StudentsPortal from "./pages/StudentsPortal";
 import Suffa from "./pages/Suffa";
 import BookStore from "./pages/BookStore";
 import CommitteeHub from "./pages/CommitteeHub";
+import Quiz from "./pages/Quiz";
 import NotFound from "./pages/NotFound";
 import { LanguageProvider } from "@/hooks/useLanguage";
 import { ThemeProvider } from "@/hooks/useTheme";
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/bookstore" element={<BookStore />} />
           <Route path="/committee" element={<CommitteeHub />} />
           <Route path="/committee/:id" element={<CommitteeHub />} />
+          <Route path="/quiz" element={<Quiz />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
