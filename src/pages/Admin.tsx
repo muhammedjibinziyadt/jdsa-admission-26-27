@@ -30,7 +30,8 @@ import {
   Search,
   Award,
   Palette,
-  HardDrive
+  HardDrive,
+  Trophy
 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
