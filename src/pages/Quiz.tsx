@@ -295,10 +295,9 @@ function QuizBody({ questions, current, setCurrent, answers, setAnswers, perQues
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-2">
-        <Button variant="outline" onClick={prev} disabled={current === 0}>{t('മുമ്പത്തേത്','Previous')}</Button>
+      <div className="flex items-center justify-end gap-2">
         {current < questions.length - 1 ? (
-          <Button onClick={next}>{t('അടുത്തത്','Next')}</Button>
+          <Button onClick={next} disabled={answers[q.id] === undefined}>{t('അടുത്തത്','Next')}</Button>
         ) : (
           <Button onClick={onSubmit} disabled={submitting} className="bg-emerald-600 hover:bg-emerald-700">
             {submitting ? <Loader2 className="w-4 h-4 animate-spin"/> : <><Send className="w-4 h-4 mr-2"/>{t('സമർപ്പിക്കുക','Submit')}</>}
