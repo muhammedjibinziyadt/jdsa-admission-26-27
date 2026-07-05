@@ -177,14 +177,6 @@ export default function Quiz() {
                 <label className="text-sm font-medium mb-1 block">{t('മൊബൈൽ നമ്പർ','Mobile Number')} *</label>
                 <Input type="tel" value={profile.mobile} onChange={e => setProfile({ ...profile, mobile: e.target.value })} />
               </div>
-              <div>
-                <label className="text-sm font-medium mb-1 block">{t('വിലാസം','Address')}</label>
-                <Textarea rows={2} value={profile.address} onChange={e => setProfile({ ...profile, address: e.target.value })} />
-              </div>
-              <div>
-                <label className="text-sm font-medium mb-1 block">{t('കൂടുതൽ വിവരങ്ങൾ','Additional Information')}</label>
-                <Textarea rows={2} value={profile.extra_info} onChange={e => setProfile({ ...profile, extra_info: e.target.value })} />
-              </div>
             </div>
             <Button
               onClick={() => {
