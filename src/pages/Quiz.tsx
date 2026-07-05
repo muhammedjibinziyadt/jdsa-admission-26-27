@@ -18,7 +18,7 @@ export default function Quiz() {
   const [displayName, setDisplayName] = useState('');
   const [validating, setValidating] = useState(false);
 
-  const [profile, setProfile] = useState({ full_name: '', mobile: '', address: '', extra_info: '' });
+  const [profile, setProfile] = useState({ full_name: '', mobile: '' });
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [current, setCurrent] = useState(0);
