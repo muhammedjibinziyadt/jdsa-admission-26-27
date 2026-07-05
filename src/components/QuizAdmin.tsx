@@ -127,9 +127,11 @@ function ControlPanel() {
 }
 
 function StudentsPanel() {
-  const [students, setStudents] = useState<QuizStudent[]>([]);
+  const [students, setStudents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [u, setU] = useState(''); const [n, setN] = useState('');
+  const [q, setQ] = useState('');
+  const [editing, setEditing] = useState<any | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -152,6 +154,22 @@ function StudentsPanel() {
     await supabase.from('quiz_students').update({ used: false, used_at: null } as any).eq('id', id); load();
     toast.success('റീസെറ്റ് ചെയ്തു');
   };
+  const toggleEnabled = async (s: any) => {
+    await supabase.from('quiz_students').update({ enabled: !s.enabled } as any).eq('id', s.id); load();
+  };
+  const saveEdit = async () => {
+    if (!editing) return;
+    const { error } = await supabase.from('quiz_students').update({
+      username: editing.username.trim().toLowerCase(),
+      display_name: editing.display_name.trim(),
+    } as any).eq('id', editing.id);
+    if (error) return toast.error(error.message);
+    setEditing(null); load(); toast.success('അപ്ഡേറ്റ് ചെയ്തു');
+  };
+
+  const filtered = students.filter(s =>
+    !q.trim() || s.username.toLowerCase().includes(q.toLowerCase()) || (s.display_name || '').toLowerCase().includes(q.toLowerCase())
+  );
 
   return (
     <div className="space-y-3">
@@ -160,22 +178,39 @@ function StudentsPanel() {
         <Input value={n} onChange={e => setN(e.target.value)} placeholder="Display name"/>
         <Button onClick={add}><Plus className="w-4 h-4 mr-1"/>ചേർക്കുക</Button>
       </div>
+      <Input value={q} onChange={e => setQ(e.target.value)} placeholder="തിരയുക / Search…" />
+
+      {editing && (
+        <div className="bg-card border-2 border-primary/40 rounded-xl p-4 space-y-2">
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold">യൂസർനെയിം എഡിറ്റ്</h3>
+            <Button variant="ghost" size="sm" onClick={() => setEditing(null)}><X className="w-4 h-4"/></Button>
+          </div>
+          <Input value={editing.username} onChange={e => setEditing({ ...editing, username: e.target.value })} placeholder="username"/>
+          <Input value={editing.display_name} onChange={e => setEditing({ ...editing, display_name: e.target.value })} placeholder="Display name"/>
+          <Button onClick={saveEdit}><Save className="w-4 h-4 mr-2"/>സേവ്</Button>
+        </div>
+      )}
+
       {loading ? <Loader2 className="w-6 h-6 animate-spin"/> : (
-        <div className="bg-card border rounded-xl overflow-hidden">
+        <div className="bg-card border rounded-xl overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-muted/50"><tr><th className="p-3 text-left">പേര്</th><th className="p-3 text-left">യൂസർനെയിം</th><th className="p-3">സ്ഥിതി</th><th className="p-3"></th></tr></thead>
+            <thead className="bg-muted/50"><tr><th className="p-3 text-left">പേര്</th><th className="p-3 text-left">യൂസർനെയിം</th><th className="p-3">സ്ഥിതി</th><th className="p-3">സജീവം</th><th className="p-3"></th></tr></thead>
             <tbody>
-              {students.map(s => (
+              {filtered.map(s => (
                 <tr key={s.id} className="border-t">
                   <td className="p-3">{s.display_name}</td>
                   <td className="p-3 font-mono text-xs">{s.username}</td>
                   <td className="p-3 text-center">{s.used ? <span className="text-red-600">ഉപയോഗിച്ചു</span> : <span className="text-emerald-600">സജീവം</span>}</td>
-                  <td className="p-3 text-right space-x-1">
+                  <td className="p-3 text-center"><Switch checked={s.enabled !== false} onCheckedChange={() => toggleEnabled(s)}/></td>
+                  <td className="p-3 text-right space-x-1 whitespace-nowrap">
+                    <Button size="sm" variant="outline" onClick={() => setEditing({ id: s.id, username: s.username, display_name: s.display_name })}>എഡിറ്റ്</Button>
                     {s.used && <Button size="sm" variant="outline" onClick={() => reset(s.id)}><RefreshCw className="w-3 h-3"/></Button>}
                     <Button size="sm" variant="destructive" onClick={() => del(s.id)}><Trash2 className="w-3 h-3"/></Button>
                   </td>
                 </tr>
               ))}
+              {!filtered.length && <tr><td colSpan={5} className="p-6 text-center text-muted-foreground">ഇല്ല</td></tr>}
             </tbody>
           </table>
         </div>
