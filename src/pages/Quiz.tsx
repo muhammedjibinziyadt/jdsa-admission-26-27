@@ -18,7 +18,7 @@ export default function Quiz() {
   const [displayName, setDisplayName] = useState('');
   const [validating, setValidating] = useState(false);
 
-  const [profile, setProfile] = useState({ full_name: '', mobile: '', address: '', extra_info: '' });
+  const [profile, setProfile] = useState({ full_name: '', mobile: '' });
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [current, setCurrent] = useState(0);
@@ -87,8 +87,6 @@ export default function Quiz() {
         username,
         full_name: profile.full_name || displayName,
         mobile: profile.mobile,
-        address: profile.address,
-        extra_info: profile.extra_info,
         answers,
       });
       setResult({ score: res.score, total: res.total });
@@ -178,14 +176,6 @@ export default function Quiz() {
               <div>
                 <label className="text-sm font-medium mb-1 block">{t('മൊബൈൽ നമ്പർ','Mobile Number')} *</label>
                 <Input type="tel" value={profile.mobile} onChange={e => setProfile({ ...profile, mobile: e.target.value })} />
-              </div>
-              <div>
-                <label className="text-sm font-medium mb-1 block">{t('വിലാസം','Address')}</label>
-                <Textarea rows={2} value={profile.address} onChange={e => setProfile({ ...profile, address: e.target.value })} />
-              </div>
-              <div>
-                <label className="text-sm font-medium mb-1 block">{t('കൂടുതൽ വിവരങ്ങൾ','Additional Information')}</label>
-                <Textarea rows={2} value={profile.extra_info} onChange={e => setProfile({ ...profile, extra_info: e.target.value })} />
               </div>
             </div>
             <Button
@@ -305,10 +295,9 @@ function QuizBody({ questions, current, setCurrent, answers, setAnswers, perQues
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-2">
-        <Button variant="outline" onClick={prev} disabled={current === 0}>{t('മുമ്പത്തേത്','Previous')}</Button>
+      <div className="flex items-center justify-end gap-2">
         {current < questions.length - 1 ? (
-          <Button onClick={next}>{t('അടുത്തത്','Next')}</Button>
+          <Button onClick={next} disabled={answers[q.id] === undefined}>{t('അടുത്തത്','Next')}</Button>
         ) : (
           <Button onClick={onSubmit} disabled={submitting} className="bg-emerald-600 hover:bg-emerald-700">
             {submitting ? <Loader2 className="w-4 h-4 animate-spin"/> : <><Send className="w-4 h-4 mr-2"/>{t('സമർപ്പിക്കുക','Submit')}</>}
