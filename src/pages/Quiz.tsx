@@ -87,8 +87,6 @@ export default function Quiz() {
         username,
         full_name: profile.full_name || displayName,
         mobile: profile.mobile,
-        address: profile.address,
-        extra_info: profile.extra_info,
         answers,
       });
       setResult({ score: res.score, total: res.total });
