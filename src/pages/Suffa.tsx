@@ -6,6 +6,7 @@ import { useWebsiteContent } from '@/hooks/useWebsiteContent';
 import { useGalleryLikes } from '@/hooks/useGalleryLikes';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
+import { BrandedLoader } from '@/components/BrandedLoader';
 
 const Suffa = () => {
   const { content, loading } = useWebsiteContent();
@@ -79,11 +80,7 @@ const Suffa = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <BrandedLoader />;
   }
 
   return (
