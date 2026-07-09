@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { SplashScreen } from '@/components/SplashScreen';
+import { BrandedLoader } from '@/components/BrandedLoader';
 import Navigation from "@/components/Navigation";
 import HeroSlider from "@/components/HeroSlider";
 import HeroSection from "@/components/HeroSection";
