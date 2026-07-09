@@ -1,14 +1,10 @@
 import logoAsset from '@/assets/jdsa-logo.png.asset.json';
-import { useLanguage } from '@/hooks/useLanguage';
 
 interface BrandedLoaderProps {
   fullScreen?: boolean;
-  showText?: boolean;
 }
 
-export function BrandedLoader({ fullScreen = true, showText = true }: BrandedLoaderProps) {
-  const { t } = useLanguage();
-
+export function BrandedLoader({ fullScreen = true }: BrandedLoaderProps) {
   return (
     <div
       className={
@@ -18,6 +14,7 @@ export function BrandedLoader({ fullScreen = true, showText = true }: BrandedLoa
       }
       role="status"
       aria-live="polite"
+      aria-label="Loading"
     >
       {/* Subtle floating particles */}
       <div className="brand-loader-particles" aria-hidden>
@@ -45,16 +42,8 @@ export function BrandedLoader({ fullScreen = true, showText = true }: BrandedLoa
             draggable={false}
           />
         </div>
-
-        {showText && (
-          <div className="text-center">
-            <p className="brand-loader-text">{t('ലോഡിംഗ്...', 'Loading...')}</p>
-            <p className="brand-loader-subtext">
-              {t('ദയവായി കാത്തിരിക്കുക...', 'Please wait...')}
-            </p>
-          </div>
-        )}
       </div>
+
 
       <style>{`
         .brand-loader-bg {
