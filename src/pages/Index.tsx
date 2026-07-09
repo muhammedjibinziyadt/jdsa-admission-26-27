@@ -74,7 +74,7 @@ const Index = () => {
       )}
       <GallerySection images={content.gallery} settings={content.gallerySettings} />
       <RouteMapSection content={content.map} />
-      <AdmissionFormSection />
+      <AdmissionCTA />
       <ContactSection content={content.contact} />
       <Footer content={content.footer} contact={content.contact} social={content.social} />
     </main>
