@@ -11,7 +11,7 @@ import RouteMapSection from "@/components/RouteMapSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import ApprovedApplications from "@/components/ApprovedApplications";
-import AdmissionFormSection from "@/components/AdmissionFormSection";
+import AdmissionCTA from "@/components/AdmissionCTA";
 import HomeQuizBell from "@/components/HomeQuizBell";
 import { useWebsiteContent } from "@/hooks/useWebsiteContent";
 import { useAdmissions } from "@/hooks/useAdmissions";
