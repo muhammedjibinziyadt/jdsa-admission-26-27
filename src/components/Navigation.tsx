@@ -12,7 +12,7 @@ const navLinks = [
   { href: "/suffa", label: "സുഫ്ഫ", labelEn: "Suffa", isSection: false },
   { href: "#gallery", label: "ഗാലറി", labelEn: "Gallery", isSection: true },
   { href: "#route-map", label: "റൂട്ട് മാപ്പ്", labelEn: "Route Map", isSection: true },
-  { href: "#admission-form", label: "അഡ്മിഷൻ", labelEn: "Admission", isSection: true },
+  { href: "/admission", label: "അഡ്മിഷൻ", labelEn: "Admission", isSection: false },
   { href: "/students-portal", label: "സ്റ്റുഡൻസ് പോർട്ടൽ", labelEn: "Students Portal", isSection: false },
   { href: "/bookstore", label: "ബുക്ക് സ്റ്റോർ", labelEn: "Book Store", isSection: false },
   { href: "#contact", label: "ബന്ധപ്പെടുക", labelEn: "Contact", isSection: true },
