@@ -117,19 +117,6 @@ export function BrandedLoader({ fullScreen = true }: BrandedLoaderProps) {
           50%      { opacity: 1;   transform: scale(1.1); }
         }
 
-        .brand-loader-text {
-          font-family: 'Playfair Display', serif;
-          font-size: 1.05rem;
-          font-weight: 600;
-          color: #14232e;
-          letter-spacing: 0.02em;
-        }
-        .brand-loader-subtext {
-          margin-top: 4px;
-          font-size: 0.82rem;
-          color: #6b7a86;
-        }
-
         @media (prefers-reduced-motion: reduce) {
           .brand-loader-logo, .brand-loader-ring, .brand-loader-glow, .brand-loader-logo-wrap {
             animation: none !important;
