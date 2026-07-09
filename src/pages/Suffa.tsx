@@ -6,6 +6,7 @@ import { useWebsiteContent } from '@/hooks/useWebsiteContent';
 import { useGalleryLikes } from '@/hooks/useGalleryLikes';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
+import { BrandedLoader } from '@/components/BrandedLoader';
 
 const Suffa = () => {
   const { content, loading } = useWebsiteContent();
