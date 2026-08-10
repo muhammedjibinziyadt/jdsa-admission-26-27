@@ -1,15 +1,13 @@
 ---
-name: Quiz System
-description: Samastha Foundation Day Quiz — admin-controlled, username-based one-time access, timer, scoring, leaderboard, PDF/CSV exports
+name: Quiz System (Dynamic Event Based)
+description: Fully dynamic admin-controlled quiz event system — themes, banner/logo, bilingual copy, username-based one-time access, timer, scoring, leaderboard, PDF/CSV exports
 type: feature
 ---
-- Tables: `quiz_settings` (singleton 'global'), `quiz_students` (allow-list with `used` flag), `quiz_questions` (text/image/audio/mcq + options jsonb + correct_index), `quiz_submissions` (unique username, answers jsonb, score).
-- RPCs: `validate_quiz_username(p_username)` and `submit_quiz(...)` (SECURITY DEFINER, checks enabled+open+window+used flag, scores atomically, marks used).
-- 15 Dars students pre-seeded with usernames: navas, jibin, anshid, jareer, shimlal, sidan, sinan, shafip, ameen, shereef, jubair, afham, jinshad, shafik, salman.
-- Public route: `/quiz` (src/pages/Quiz.tsx). Stages: gate → warning → profile → quiz → done. Bilingual via `useLanguage`.
-- AI Assistant hidden when `location.pathname.startsWith('/quiz')` (early return in AIAssistant.tsx).
-- Home page floating bell `HomeQuizBell` shows when `enabled && is_open && within start/end window`.
-- Admin tab "ക്വിസ് മത്സരം" in `/admin` with sub-tabs: Control, Students, Questions, Results, Leaderboard. PDF/CSV via `src/utils/quizExports.ts`.
-- Question media (image + audio) uploaded into existing `images` storage bucket via `useImageUpload` (folders: `quiz`, `quiz-audio`).
-- Timer modes: `per_question` (auto-advance on 0) or `whole_quiz` (auto-submit on 0). Quick presets: 30/60/120/180/300/600 + custom.
-- One-time enforcement: server `quiz_students.used` flag + unique constraint on `quiz_submissions.username`. Client also writes `localStorage.quiz_done_<username>`.
+- Tables: `quiz_settings` (singleton 'global'), `quiz_students` (allow-list, `used` + `enabled` flags), `quiz_questions` (text/image/audio/mcq + options jsonb + correct_index + explanation), `quiz_submissions`.
+- `quiz_settings` is fully event-dynamic: title/subtitle/description/instructions/results_message (ML+EN), category, organizer, event_date_label, banner_url, logo_url, theme, show_countdown, timer settings, start/end window.
+- Themes live in `src/utils/quizThemes.ts` (`QUIZ_THEMES`): independence (Saffron/White/Green + rotating Ashoka Chakra), samastha, milad, ramadan, islamic_history, arabic, general, custom. Admin picks the theme; `/quiz` styles background, accent band, badge and particles from it.
+- Current event: **Independence Day Quiz Competition** (15 August program), theme `independence`.
+- RPCs: `validate_quiz_username(p_username)` and `submit_quiz(...)` (SECURITY DEFINER, checks enabled+open+window+used, scores atomically, marks used). Public execute is intentional — anonymous participants.
+- Public route `/quiz` (src/pages/Quiz.tsx). Stages: landing (event hero + description + instructions + countdown) → gate → warning → profile (name+mobile only) → quiz (one-way, no Previous button) → done.
+- AI Assistant hidden on `/quiz`. Home floating `HomeQuizBell` shows flip countdown when quiz enabled+open within window.
+- Admin tab "ക്വിസ് ഇവന്റ്" in `/admin`: Control (status, timing, timer, theme, banner/logo upload, bilingual copy), Students, Questions, Results, Leaderboard. Media uploads to `images` bucket (folders: `quiz`, `quiz-audio`, `quiz-event`).

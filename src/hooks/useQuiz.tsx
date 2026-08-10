@@ -13,6 +13,22 @@ export interface QuizSettings {
   title_en: string;
   intro_ml: string;
   intro_en: string;
+  // dynamic event fields
+  subtitle_ml: string;
+  subtitle_en: string;
+  description_ml: string;
+  description_en: string;
+  category: string;
+  organizer: string;
+  event_date_label: string;
+  banner_url: string | null;
+  logo_url: string | null;
+  theme: string;
+  instructions_ml: string;
+  instructions_en: string;
+  results_message_ml: string;
+  results_message_en: string;
+  show_countdown: boolean;
 }
 
 export interface QuizQuestion {
@@ -24,7 +40,9 @@ export interface QuizQuestion {
   audio_url: string | null;
   options: string[];
   correct_index: number;
+  explanation?: string | null;
 }
+
 
 export interface QuizStudent {
   id: string;

@@ -9,6 +9,8 @@ import { toast } from 'sonner';
 import { useImageUpload } from '@/hooks/useImageUpload';
 import { useQuizSettings, QuizQuestion, QuizStudent, QuizSubmission } from '@/hooks/useQuiz';
 import { downloadAllResultsPDF, downloadResultsCSV, downloadSingleResultPDF } from '@/utils/quizExports';
+import { QUIZ_THEMES } from '@/utils/quizThemes';
+
 
 type Tab = 'control' | 'students' | 'questions' | 'results' | 'leaderboard';
 
@@ -26,7 +28,7 @@ export default function QuizAdmin() {
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <Trophy className="w-6 h-6 text-primary"/>
-        <h2 className="text-2xl font-bold">സമസ്ത ക്വിസ് — അഡ്മിൻ</h2>
+        <h2 className="text-2xl font-bold">ക്വിസ് ഇവന്റ് — അഡ്മിൻ</h2>
       </div>
       <div className="flex gap-2 flex-wrap border-b pb-2">
         {tabs.map(t => (
@@ -49,8 +51,12 @@ function ControlPanel() {
   const { settings, save, loading } = useQuizSettings();
   const [local, setLocal] = useState(settings);
   const [saving, setSaving] = useState(false);
+  const { uploadImage, uploading } = useImageUpload();
+  const bannerRef = useRef<HTMLInputElement>(null);
+  const logoRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { if (settings) setLocal(settings); }, [settings]);
+
 
   if (loading || !local) return <Loader2 className="w-6 h-6 animate-spin"/>;
 
@@ -67,9 +73,31 @@ function ControlPanel() {
       title_en: local.title_en,
       intro_ml: local.intro_ml,
       intro_en: local.intro_en,
+      subtitle_ml: local.subtitle_ml,
+      subtitle_en: local.subtitle_en,
+      description_ml: local.description_ml,
+      description_en: local.description_en,
+      category: local.category,
+      organizer: local.organizer,
+      event_date_label: local.event_date_label,
+      banner_url: local.banner_url,
+      logo_url: local.logo_url,
+      theme: local.theme,
+      instructions_ml: local.instructions_ml,
+      instructions_en: local.instructions_en,
+      results_message_ml: local.results_message_ml,
+      results_message_en: local.results_message_en,
+      show_countdown: local.show_countdown,
     });
     setSaving(false);
     toast[ok ? 'success' : 'error'](ok ? 'സേവ് ചെയ്തു' : 'പരാജയം');
+  };
+
+  const pickMedia = async (e: React.ChangeEvent<HTMLInputElement>, key: 'banner_url' | 'logo_url') => {
+    const f = e.target.files?.[0]; if (!f) return;
+    const url = await uploadImage(f, 'quiz-event');
+    if (url) setLocal({ ...local, [key]: url } as any);
+    e.target.value = '';
   };
 
   const toLocalInput = (iso: string | null) => iso ? new Date(iso).toISOString().slice(0,16) : '';
@@ -81,6 +109,7 @@ function ControlPanel() {
         <h3 className="font-semibold">പ്രവർത്തനനില</h3>
         <label className="flex items-center justify-between">Enable Quiz <Switch checked={local.enabled} onCheckedChange={v => setLocal({ ...local, enabled: v })}/></label>
         <label className="flex items-center justify-between">Open Quiz <Switch checked={local.is_open} onCheckedChange={v => setLocal({ ...local, is_open: v })}/></label>
+        <label className="flex items-center justify-between">Show Countdown <Switch checked={local.show_countdown !== false} onCheckedChange={v => setLocal({ ...local, show_countdown: v })}/></label>
       </div>
       <div className="bg-card border rounded-xl p-4 space-y-3">
         <h3 className="font-semibold">സമയം</h3>
@@ -110,18 +139,68 @@ function ControlPanel() {
           <Input type="number" min={5} className="mt-2" value={local.time_limit_seconds} onChange={e => setLocal({ ...local, time_limit_seconds: parseInt(e.target.value || '0') })}/>
         </div>
       </div>
+
+      <div className="bg-card border rounded-xl p-4 space-y-3">
+        <h3 className="font-semibold">ഇവന്റ് തീം</h3>
+        <select value={local.theme || 'custom'} onChange={e => setLocal({ ...local, theme: e.target.value })} className="w-full border rounded-md px-3 py-2 bg-background">
+          {Object.values(QUIZ_THEMES).map(th => (
+            <option key={th.id} value={th.id}>{th.emoji} {th.label}</option>
+          ))}
+        </select>
+        <Input value={local.category || ''} onChange={e => setLocal({ ...local, category: e.target.value })} placeholder="വിഭാഗം / Category (Independence Day…)"/>
+        <Input value={local.event_date_label || ''} onChange={e => setLocal({ ...local, event_date_label: e.target.value })} placeholder="തീയതി ലേബൽ / Date label (15 August)"/>
+        <Input value={local.organizer || ''} onChange={e => setLocal({ ...local, organizer: e.target.value })} placeholder="സംഘാടകർ / Organizer"/>
+      </div>
+
       <div className="bg-card border rounded-xl p-4 space-y-3 md:col-span-2">
-        <h3 className="font-semibold">തലക്കെട്ട് & പരിചയം</h3>
+        <h3 className="font-semibold">ബാനർ & ലോഗോ</h3>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <Button type="button" variant="outline" size="sm" onClick={() => bannerRef.current?.click()} disabled={uploading}>
+              <ImageIcon className="w-4 h-4 mr-1"/>{local.banner_url ? 'ബാനർ മാറ്റുക' : 'ബാനർ അപ്‌ലോഡ്'}
+            </Button>
+            <input ref={bannerRef} type="file" accept="image/*" className="hidden" onChange={e => pickMedia(e, 'banner_url')}/>
+            {local.banner_url && (
+              <div className="mt-2 relative">
+                <img src={local.banner_url} alt="" className="max-h-32 w-full object-cover rounded border"/>
+                <button onClick={() => setLocal({ ...local, banner_url: null })} className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1"><X className="w-3 h-3"/></button>
+              </div>
+            )}
+          </div>
+          <div>
+            <Button type="button" variant="outline" size="sm" onClick={() => logoRef.current?.click()} disabled={uploading}>
+              <ImageIcon className="w-4 h-4 mr-1"/>{local.logo_url ? 'ലോഗോ മാറ്റുക' : 'ലോഗോ അപ്‌ലോഡ്'}
+            </Button>
+            <input ref={logoRef} type="file" accept="image/*" className="hidden" onChange={e => pickMedia(e, 'logo_url')}/>
+            {local.logo_url && (
+              <div className="mt-2 relative inline-block">
+                <img src={local.logo_url} alt="" className="max-h-24 rounded border bg-muted p-1"/>
+                <button onClick={() => setLocal({ ...local, logo_url: null })} className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1"><X className="w-3 h-3"/></button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-card border rounded-xl p-4 space-y-3 md:col-span-2">
+        <h3 className="font-semibold">തലക്കെട്ട് & വിവരണം</h3>
         <div className="grid md:grid-cols-2 gap-3">
           <Input value={local.title_ml} onChange={e => setLocal({ ...local, title_ml: e.target.value })} placeholder="തലക്കെട്ട് (മലയാളം)"/>
           <Input value={local.title_en} onChange={e => setLocal({ ...local, title_en: e.target.value })} placeholder="Title (English)"/>
-          <Textarea rows={2} value={local.intro_ml} onChange={e => setLocal({ ...local, intro_ml: e.target.value })} placeholder="പരിചയം (മലയാളം)"/>
-          <Textarea rows={2} value={local.intro_en} onChange={e => setLocal({ ...local, intro_en: e.target.value })} placeholder="Intro (English)"/>
+          <Input value={local.subtitle_ml || ''} onChange={e => setLocal({ ...local, subtitle_ml: e.target.value })} placeholder="ഉപതലക്കെട്ട് (മലയാളം)"/>
+          <Input value={local.subtitle_en || ''} onChange={e => setLocal({ ...local, subtitle_en: e.target.value })} placeholder="Subtitle (English)"/>
+          <Textarea rows={3} value={local.description_ml || ''} onChange={e => setLocal({ ...local, description_ml: e.target.value })} placeholder="വിവരണം (മലയാളം)"/>
+          <Textarea rows={3} value={local.description_en || ''} onChange={e => setLocal({ ...local, description_en: e.target.value })} placeholder="Description (English)"/>
+          <Textarea rows={4} value={local.instructions_ml || ''} onChange={e => setLocal({ ...local, instructions_ml: e.target.value })} placeholder="നിർദ്ദേശങ്ങൾ (മലയാളം)"/>
+          <Textarea rows={4} value={local.instructions_en || ''} onChange={e => setLocal({ ...local, instructions_en: e.target.value })} placeholder="Instructions (English)"/>
+          <Textarea rows={3} value={local.results_message_ml || ''} onChange={e => setLocal({ ...local, results_message_ml: e.target.value })} placeholder="ഫല സന്ദേശം (മലയാളം)"/>
+          <Textarea rows={3} value={local.results_message_en || ''} onChange={e => setLocal({ ...local, results_message_en: e.target.value })} placeholder="Results message (English)"/>
         </div>
       </div>
       <div className="md:col-span-2">
         <Button onClick={onSave} disabled={saving} className="w-full md:w-auto">{saving ? <Loader2 className="w-4 h-4 animate-spin mr-2"/> : <Save className="w-4 h-4 mr-2"/>}സേവ് ചെയ്യുക</Button>
       </div>
+
     </div>
   );
 }
