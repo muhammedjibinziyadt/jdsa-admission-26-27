@@ -762,3 +762,11 @@
   .bulb-icon, .bulb-glow, .idea-ring, .star-icon, .star-glow, .heart-icon,
   .heart-aura, .particles span, .feature-card-particles span { animation: none !important; }
 }
+
+/* Quiz event decorative particles */
+@keyframes quiz-float {
+  0% { transform: translateY(0) scale(1); opacity: 0; }
+  10% { opacity: .35; }
+  90% { opacity: .2; }
+  100% { transform: translateY(-110vh) scale(1.25); opacity: 0; }
+}
