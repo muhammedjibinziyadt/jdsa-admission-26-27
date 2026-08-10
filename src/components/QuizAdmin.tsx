@@ -9,6 +9,8 @@ import { toast } from 'sonner';
 import { useImageUpload } from '@/hooks/useImageUpload';
 import { useQuizSettings, QuizQuestion, QuizStudent, QuizSubmission } from '@/hooks/useQuiz';
 import { downloadAllResultsPDF, downloadResultsCSV, downloadSingleResultPDF } from '@/utils/quizExports';
+import { QUIZ_THEMES } from '@/utils/quizThemes';
+
 
 type Tab = 'control' | 'students' | 'questions' | 'results' | 'leaderboard';
 
