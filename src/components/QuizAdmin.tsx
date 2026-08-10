@@ -49,8 +49,12 @@ function ControlPanel() {
   const { settings, save, loading } = useQuizSettings();
   const [local, setLocal] = useState(settings);
   const [saving, setSaving] = useState(false);
+  const { uploadImage, uploading } = useImageUpload();
+  const bannerRef = useRef<HTMLInputElement>(null);
+  const logoRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { if (settings) setLocal(settings); }, [settings]);
+
 
   if (loading || !local) return <Loader2 className="w-6 h-6 animate-spin"/>;
 
