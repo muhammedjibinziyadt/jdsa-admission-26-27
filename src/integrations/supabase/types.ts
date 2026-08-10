@@ -1218,6 +1218,7 @@ export type Database = {
           audio_url: string | null
           correct_index: number
           created_at: string
+          explanation: string | null
           id: string
           image_url: string | null
           options: Json
@@ -1229,6 +1230,7 @@ export type Database = {
           audio_url?: string | null
           correct_index?: number
           created_at?: string
+          explanation?: string | null
           id?: string
           image_url?: string | null
           options?: Json
@@ -1240,6 +1242,7 @@ export type Database = {
           audio_url?: string | null
           correct_index?: number
           created_at?: string
+          explanation?: string | null
           id?: string
           image_url?: string | null
           options?: Json
@@ -1251,13 +1254,28 @@ export type Database = {
       }
       quiz_settings: {
         Row: {
+          banner_url: string | null
+          category: string
+          description_en: string
+          description_ml: string
           enabled: boolean
           end_at: string | null
+          event_date_label: string
           id: string
+          instructions_en: string
+          instructions_ml: string
           intro_en: string | null
           intro_ml: string | null
           is_open: boolean
+          logo_url: string | null
+          organizer: string
+          results_message_en: string
+          results_message_ml: string
+          show_countdown: boolean
           start_at: string | null
+          subtitle_en: string
+          subtitle_ml: string
+          theme: string
           time_limit_seconds: number
           timer_mode: string
           title_en: string
@@ -1265,13 +1283,28 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          banner_url?: string | null
+          category?: string
+          description_en?: string
+          description_ml?: string
           enabled?: boolean
           end_at?: string | null
+          event_date_label?: string
           id?: string
+          instructions_en?: string
+          instructions_ml?: string
           intro_en?: string | null
           intro_ml?: string | null
           is_open?: boolean
+          logo_url?: string | null
+          organizer?: string
+          results_message_en?: string
+          results_message_ml?: string
+          show_countdown?: boolean
           start_at?: string | null
+          subtitle_en?: string
+          subtitle_ml?: string
+          theme?: string
           time_limit_seconds?: number
           timer_mode?: string
           title_en?: string
@@ -1279,13 +1312,28 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          banner_url?: string | null
+          category?: string
+          description_en?: string
+          description_ml?: string
           enabled?: boolean
           end_at?: string | null
+          event_date_label?: string
           id?: string
+          instructions_en?: string
+          instructions_ml?: string
           intro_en?: string | null
           intro_ml?: string | null
           is_open?: boolean
+          logo_url?: string | null
+          organizer?: string
+          results_message_en?: string
+          results_message_ml?: string
+          show_countdown?: boolean
           start_at?: string | null
+          subtitle_en?: string
+          subtitle_ml?: string
+          theme?: string
           time_limit_seconds?: number
           timer_mode?: string
           title_en?: string
