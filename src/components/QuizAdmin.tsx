@@ -28,7 +28,7 @@ export default function QuizAdmin() {
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <Trophy className="w-6 h-6 text-primary"/>
-        <h2 className="text-2xl font-bold">സമസ്ത ക്വിസ് — അഡ്മിൻ</h2>
+        <h2 className="text-2xl font-bold">ക്വിസ് ഇവന്റ് — അഡ്മിൻ</h2>
       </div>
       <div className="flex gap-2 flex-wrap border-b pb-2">
         {tabs.map(t => (
