@@ -36,6 +36,7 @@ const App = () => (
           <Route path="/committee" element={<CommitteeHub />} />
           <Route path="/committee/:id" element={<CommitteeHub />} />
           <Route path="/quiz" element={<Quiz />} />
+          <Route path="/quiz/:slug" element={<Quiz />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

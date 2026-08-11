@@ -4,10 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Loader2, Plus, Trash2, Upload, RefreshCw, Download, FileText, Image as ImageIcon, Music, Save, X, Trophy } from 'lucide-react';
+import { Loader2, Plus, Trash2, RefreshCw, Download, FileText, Image as ImageIcon, Music, Save, X, Trophy, Copy, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { useImageUpload } from '@/hooks/useImageUpload';
-import { useQuizSettings, QuizQuestion, QuizStudent, QuizSubmission } from '@/hooks/useQuiz';
+import { useQuizEvents, QuizEvent, QuizQuestion, QuizSubmission } from '@/hooks/useQuiz';
 import { downloadAllResultsPDF, downloadResultsCSV, downloadSingleResultPDF } from '@/utils/quizExports';
 import { QUIZ_THEMES } from '@/utils/quizThemes';
 
@@ -15,7 +15,14 @@ import { QUIZ_THEMES } from '@/utils/quizThemes';
 type Tab = 'control' | 'students' | 'questions' | 'results' | 'leaderboard';
 
 export default function QuizAdmin() {
+  const { events, loading, create, update, remove, duplicate, reload } = useQuizEvents();
+  const [openId, setOpenId] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>('control');
+  const [newName, setNewName] = useState('');
+  const [creating, setCreating] = useState(false);
+
+  const active = events.find(e => e.id === openId) || null;
+
   const tabs: { id: Tab; label: string }[] = [
     { id: 'control', label: 'നിയന്ത്രണം' },
     { id: 'students', label: 'വിദ്യാർത്ഥികൾ' },
@@ -24,11 +31,91 @@ export default function QuizAdmin() {
     { id: 'leaderboard', label: 'റാങ്കിംഗ്' },
   ];
 
+  const slugify = (s: string) =>
+    s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || `quiz-${Date.now().toString(36)}`;
+
+  const addEvent = async () => {
+    if (!newName.trim()) return toast.error('ഇവന്റ് പേര് നൽകുക');
+    setCreating(true);
+    const { data, error } = await create({
+      name: newName.trim(),
+      slug: slugify(newName),
+      title_ml: newName.trim(),
+      title_en: newName.trim(),
+      status: 'draft',
+      enabled: false,
+      is_open: false,
+      sort_order: events.length,
+    });
+    setCreating(false);
+    if (error) return toast.error(error.message);
+    toast.success('ഇവന്റ് സൃഷ്ടിച്ചു');
+    setNewName('');
+    if (data) { setOpenId(data.id); setTab('control'); }
+  };
+
+  if (!openId || !active) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <Trophy className="w-6 h-6 text-primary"/>
+          <h2 className="text-2xl font-bold">ക്വിസ് ഇവന്റുകൾ — അഡ്മിൻ</h2>
+        </div>
+
+        <div className="bg-card border rounded-xl p-4 flex flex-col md:flex-row gap-2">
+          <Input value={newName} onChange={e => setNewName(e.target.value)} placeholder="പുതിയ ഇവന്റ് പേര് (Independence Day Quiz…)"/>
+          <Button onClick={addEvent} disabled={creating}>
+            {creating ? <Loader2 className="w-4 h-4 animate-spin mr-1"/> : <Plus className="w-4 h-4 mr-1"/>}പുതിയ ഇവന്റ്
+          </Button>
+        </div>
+
+        {loading ? <Loader2 className="w-6 h-6 animate-spin"/> : (
+          <div className="space-y-2">
+            {events.map(ev => (
+              <div key={ev.id} className="bg-card border rounded-xl p-4 space-y-2">
+                <div className="flex items-start gap-3">
+                  <div className="text-2xl">{QUIZ_THEMES[(ev.theme as keyof typeof QUIZ_THEMES)]?.emoji || '🏆'}</div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold truncate">{ev.name}</p>
+                    <p className="text-xs text-muted-foreground font-mono truncate">/quiz/{ev.slug}</p>
+                    <div className="flex gap-1 flex-wrap mt-1 text-[11px]">
+                      <span className="px-2 py-0.5 rounded-full bg-muted">{ev.status}</span>
+                      {ev.enabled && <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-400">enabled</span>}
+                      {ev.is_open && <span className="px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-700 dark:text-blue-400">open</span>}
+                    </div>
+                  </div>
+                  <Button size="sm" onClick={() => { setOpenId(ev.id); setTab('control'); }}>കൈകാര്യം</Button>
+                </div>
+                <div className="flex gap-2 flex-wrap border-t pt-2">
+                  <select value={ev.status} onChange={e => update(ev.id, { status: e.target.value as any })}
+                    className="border rounded-md px-2 py-1 text-xs bg-background">
+                    <option value="draft">draft</option>
+                    <option value="active">active</option>
+                    <option value="closed">closed</option>
+                    <option value="archived">archived</option>
+                  </select>
+                  <Button size="sm" variant="outline" onClick={() => duplicate(ev)}><Copy className="w-3 h-3 mr-1"/>ഡ്യൂപ്ലിക്കേറ്റ്</Button>
+                  <Button size="sm" variant="destructive" onClick={async () => {
+                    if (!confirm(`"${ev.name}" ഇവന്റും അതിന്റെ എല്ലാ ഡാറ്റയും നീക്കം ചെയ്യണോ?`)) return;
+                    (await remove(ev.id)) ? toast.success('നീക്കി') : toast.error('പരാജയം');
+                  }}><Trash2 className="w-3 h-3"/></Button>
+                </div>
+              </div>
+            ))}
+            {!events.length && <p className="text-sm text-muted-foreground text-center py-8">ഇവന്റുകൾ ഇല്ല</p>}
+            <Button variant="ghost" size="sm" onClick={reload}><RefreshCw className="w-4 h-4 mr-1"/>റീലോഡ്</Button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <Trophy className="w-6 h-6 text-primary"/>
-        <h2 className="text-2xl font-bold">ക്വിസ് ഇവന്റ് — അഡ്മിൻ</h2>
+      <div className="flex items-center gap-2 flex-wrap">
+        <Button variant="ghost" size="sm" onClick={() => setOpenId(null)}><ArrowLeft className="w-4 h-4 mr-1"/>ഇവന്റുകൾ</Button>
+        <Trophy className="w-5 h-5 text-primary"/>
+        <h2 className="text-xl font-bold">{active.name}</h2>
       </div>
       <div className="flex gap-2 flex-wrap border-b pb-2">
         {tabs.map(t => (
@@ -38,31 +125,40 @@ export default function QuizAdmin() {
           </button>
         ))}
       </div>
-      {tab === 'control' && <ControlPanel/>}
-      {tab === 'students' && <StudentsPanel/>}
-      {tab === 'questions' && <QuestionsPanel/>}
-      {tab === 'results' && <ResultsPanel/>}
-      {tab === 'leaderboard' && <LeaderboardPanel/>}
+      {tab === 'control' && <ControlPanel event={active} onSaved={reload}/>}
+      {tab === 'students' && <StudentsPanel eventId={active.id}/>}
+      {tab === 'questions' && <QuestionsPanel eventId={active.id}/>}
+      {tab === 'results' && <ResultsPanel eventId={active.id}/>}
+      {tab === 'leaderboard' && <LeaderboardPanel eventId={active.id}/>}
     </div>
   );
 }
 
-function ControlPanel() {
-  const { settings, save, loading } = useQuizSettings();
-  const [local, setLocal] = useState(settings);
+function ControlPanel({ event, onSaved }: { event: QuizEvent; onSaved: () => void }) {
+  const [local, setLocal] = useState<QuizEvent>(event);
   const [saving, setSaving] = useState(false);
   const { uploadImage, uploading } = useImageUpload();
   const bannerRef = useRef<HTMLInputElement>(null);
   const logoRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => { if (settings) setLocal(settings); }, [settings]);
+  useEffect(() => { setLocal(event); }, [event]);
 
+  const save = async (patch: Partial<QuizEvent>) => {
+    const { error } = await supabase.from('quiz_events')
+      .update({ ...patch, updated_at: new Date().toISOString() } as any).eq('id', event.id);
+    if (!error) onSaved();
+    return !error;
+  };
 
-  if (loading || !local) return <Loader2 className="w-6 h-6 animate-spin"/>;
+  if (!local) return <Loader2 className="w-6 h-6 animate-spin"/>;
+
 
   const onSave = async () => {
     setSaving(true);
     const ok = await save({
+      name: local.name,
+      slug: local.slug,
+      status: local.status,
       enabled: local.enabled,
       is_open: local.is_open,
       start_at: local.start_at,
@@ -105,12 +201,27 @@ function ControlPanel() {
 
   return (
     <div className="grid md:grid-cols-2 gap-4">
+      <div className="bg-card border rounded-xl p-4 space-y-3 md:col-span-2">
+        <h3 className="font-semibold">ഇവന്റ് വിവരം</h3>
+        <div className="grid md:grid-cols-3 gap-2">
+          <Input value={local.name} onChange={e => setLocal({ ...local, name: e.target.value })} placeholder="ഇവന്റ് പേര് (admin)"/>
+          <Input value={local.slug} onChange={e => setLocal({ ...local, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-') })} placeholder="slug (url)"/>
+          <select value={local.status} onChange={e => setLocal({ ...local, status: e.target.value as any })} className="border rounded-md px-3 py-2 bg-background">
+            <option value="draft">draft</option>
+            <option value="active">active</option>
+            <option value="closed">closed</option>
+            <option value="archived">archived</option>
+          </select>
+        </div>
+        <p className="text-xs text-muted-foreground font-mono">പൊതു ലിങ്ക്: /quiz/{local.slug}</p>
+      </div>
       <div className="bg-card border rounded-xl p-4 space-y-3">
         <h3 className="font-semibold">പ്രവർത്തനനില</h3>
         <label className="flex items-center justify-between">Enable Quiz <Switch checked={local.enabled} onCheckedChange={v => setLocal({ ...local, enabled: v })}/></label>
         <label className="flex items-center justify-between">Open Quiz <Switch checked={local.is_open} onCheckedChange={v => setLocal({ ...local, is_open: v })}/></label>
         <label className="flex items-center justify-between">Show Countdown <Switch checked={local.show_countdown !== false} onCheckedChange={v => setLocal({ ...local, show_countdown: v })}/></label>
       </div>
+
       <div className="bg-card border rounded-xl p-4 space-y-3">
         <h3 className="font-semibold">സമയം</h3>
         <div>
@@ -205,7 +316,7 @@ function ControlPanel() {
   );
 }
 
-function StudentsPanel() {
+function StudentsPanel({ eventId }: { eventId: string }) {
   const [students, setStudents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [u, setU] = useState(''); const [n, setN] = useState('');
@@ -214,14 +325,14 @@ function StudentsPanel() {
 
   const load = async () => {
     setLoading(true);
-    const { data } = await supabase.from('quiz_students').select('*').order('display_name');
+    const { data } = await supabase.from('quiz_students').select('*').eq('event_id', eventId).order('display_name');
     setStudents((data || []) as any); setLoading(false);
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [eventId]);
 
   const add = async () => {
     if (!u.trim() || !n.trim()) return;
-    const { error } = await supabase.from('quiz_students').insert({ username: u.trim().toLowerCase(), display_name: n.trim() } as any);
+    const { error } = await supabase.from('quiz_students').insert({ event_id: eventId, username: u.trim().toLowerCase(), display_name: n.trim() } as any);
     if (error) return toast.error(error.message);
     setU(''); setN(''); load(); toast.success('ചേർത്തു');
   };
@@ -298,7 +409,7 @@ function StudentsPanel() {
   );
 }
 
-function QuestionsPanel() {
+function QuestionsPanel({ eventId }: { eventId: string }) {
   const [items, setItems] = useState<QuizQuestion[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<QuizQuestion | null>(null);
@@ -308,10 +419,10 @@ function QuestionsPanel() {
 
   const load = async () => {
     setLoading(true);
-    const { data } = await supabase.from('quiz_questions').select('*').order('order_index');
+    const { data } = await supabase.from('quiz_questions').select('*').eq('event_id', eventId).order('order_index');
     setItems((data || []) as any); setLoading(false);
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [eventId]);
 
   const startNew = () => setEditing({
     id: '', order_index: items.length, type: 'mcq',
@@ -323,7 +434,7 @@ function QuestionsPanel() {
   const save = async () => {
     if (!editing) return;
     if (!editing.question_text.trim()) return toast.error('ചോദ്യം നൽകുക');
-    const payload: any = { ...editing }; delete payload.id;
+    const payload: any = { ...editing, event_id: eventId }; delete payload.id;
     const op = editing.id
       ? supabase.from('quiz_questions').update(payload).eq('id', editing.id)
       : supabase.from('quiz_questions').insert(payload);
@@ -435,16 +546,16 @@ function QuestionsPanel() {
   );
 }
 
-function ResultsPanel() {
+function ResultsPanel({ eventId }: { eventId: string }) {
   const [rows, setRows] = useState<QuizSubmission[]>([]);
   const [loading, setLoading] = useState(true);
 
   const load = async () => {
     setLoading(true);
-    const { data } = await supabase.from('quiz_submissions').select('*').order('submitted_at', { ascending: false });
+    const { data } = await supabase.from('quiz_submissions').select('*').eq('event_id', eventId).order('submitted_at', { ascending: false });
     setRows((data || []) as any); setLoading(false);
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [eventId]);
 
   const stats = {
     total: rows.length,
@@ -493,14 +604,14 @@ function ResultsPanel() {
   );
 }
 
-function LeaderboardPanel() {
+function LeaderboardPanel({ eventId }: { eventId: string }) {
   const [rows, setRows] = useState<QuizSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    supabase.from('quiz_submissions').select('*').order('score', { ascending: false }).then(({ data }) => {
+    supabase.from('quiz_submissions').select('*').eq('event_id', eventId).order('score', { ascending: false }).then(({ data }) => {
       setRows((data || []) as any); setLoading(false);
     });
-  }, []);
+  }, [eventId]);
   if (loading) return <Loader2 className="w-6 h-6 animate-spin"/>;
   const medals = ['🥇','🥈','🥉'];
   return (
