@@ -4,10 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Loader2, Plus, Trash2, Upload, RefreshCw, Download, FileText, Image as ImageIcon, Music, Save, X, Trophy } from 'lucide-react';
+import { Loader2, Plus, Trash2, RefreshCw, Download, FileText, Image as ImageIcon, Music, Save, X, Trophy, Copy, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { useImageUpload } from '@/hooks/useImageUpload';
-import { useQuizSettings, QuizQuestion, QuizStudent, QuizSubmission } from '@/hooks/useQuiz';
+import { useQuizEvents, QuizEvent, QuizQuestion, QuizSubmission } from '@/hooks/useQuiz';
 import { downloadAllResultsPDF, downloadResultsCSV, downloadSingleResultPDF } from '@/utils/quizExports';
 import { QUIZ_THEMES } from '@/utils/quizThemes';
 
@@ -156,6 +156,9 @@ function ControlPanel({ event, onSaved }: { event: QuizEvent; onSaved: () => voi
   const onSave = async () => {
     setSaving(true);
     const ok = await save({
+      name: local.name,
+      slug: local.slug,
+      status: local.status,
       enabled: local.enabled,
       is_open: local.is_open,
       start_at: local.start_at,
@@ -298,7 +301,7 @@ function ControlPanel({ event, onSaved }: { event: QuizEvent; onSaved: () => voi
   );
 }
 
-function StudentsPanel() {
+function StudentsPanel({ eventId }: { eventId: string }) {
   const [students, setStudents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [u, setU] = useState(''); const [n, setN] = useState('');
@@ -307,14 +310,14 @@ function StudentsPanel() {
 
   const load = async () => {
     setLoading(true);
-    const { data } = await supabase.from('quiz_students').select('*').order('display_name');
+    const { data } = await supabase.from('quiz_students').select('*').eq('event_id', eventId).order('display_name');
     setStudents((data || []) as any); setLoading(false);
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [eventId]);
 
   const add = async () => {
     if (!u.trim() || !n.trim()) return;
-    const { error } = await supabase.from('quiz_students').insert({ username: u.trim().toLowerCase(), display_name: n.trim() } as any);
+    const { error } = await supabase.from('quiz_students').insert({ event_id: eventId, username: u.trim().toLowerCase(), display_name: n.trim() } as any);
     if (error) return toast.error(error.message);
     setU(''); setN(''); load(); toast.success('ചേർത്തു');
   };
@@ -391,7 +394,7 @@ function StudentsPanel() {
   );
 }
 
-function QuestionsPanel() {
+function QuestionsPanel({ eventId }: { eventId: string }) {
   const [items, setItems] = useState<QuizQuestion[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<QuizQuestion | null>(null);
@@ -401,10 +404,10 @@ function QuestionsPanel() {
 
   const load = async () => {
     setLoading(true);
-    const { data } = await supabase.from('quiz_questions').select('*').order('order_index');
+    const { data } = await supabase.from('quiz_questions').select('*').eq('event_id', eventId).order('order_index');
     setItems((data || []) as any); setLoading(false);
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [eventId]);
 
   const startNew = () => setEditing({
     id: '', order_index: items.length, type: 'mcq',
@@ -416,7 +419,7 @@ function QuestionsPanel() {
   const save = async () => {
     if (!editing) return;
     if (!editing.question_text.trim()) return toast.error('ചോദ്യം നൽകുക');
-    const payload: any = { ...editing }; delete payload.id;
+    const payload: any = { ...editing, event_id: eventId }; delete payload.id;
     const op = editing.id
       ? supabase.from('quiz_questions').update(payload).eq('id', editing.id)
       : supabase.from('quiz_questions').insert(payload);
@@ -528,16 +531,16 @@ function QuestionsPanel() {
   );
 }
 
-function ResultsPanel() {
+function ResultsPanel({ eventId }: { eventId: string }) {
   const [rows, setRows] = useState<QuizSubmission[]>([]);
   const [loading, setLoading] = useState(true);
 
   const load = async () => {
     setLoading(true);
-    const { data } = await supabase.from('quiz_submissions').select('*').order('submitted_at', { ascending: false });
+    const { data } = await supabase.from('quiz_submissions').select('*').eq('event_id', eventId).order('submitted_at', { ascending: false });
     setRows((data || []) as any); setLoading(false);
   };
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [eventId]);
 
   const stats = {
     total: rows.length,
@@ -586,14 +589,14 @@ function ResultsPanel() {
   );
 }
 
-function LeaderboardPanel() {
+function LeaderboardPanel({ eventId }: { eventId: string }) {
   const [rows, setRows] = useState<QuizSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    supabase.from('quiz_submissions').select('*').order('score', { ascending: false }).then(({ data }) => {
+    supabase.from('quiz_submissions').select('*').eq('event_id', eventId).order('score', { ascending: false }).then(({ data }) => {
       setRows((data || []) as any); setLoading(false);
     });
-  }, []);
+  }, [eventId]);
   if (loading) return <Loader2 className="w-6 h-6 animate-spin"/>;
   const medals = ['🥇','🥈','🥉'];
   return (
