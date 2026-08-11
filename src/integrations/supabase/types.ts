@@ -1213,11 +1213,123 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_events: {
+        Row: {
+          banner_url: string | null
+          category: string
+          created_at: string
+          description_en: string
+          description_ml: string
+          enabled: boolean
+          end_at: string | null
+          event_date_label: string
+          id: string
+          instructions_en: string
+          instructions_ml: string
+          intro_en: string | null
+          intro_ml: string | null
+          is_open: boolean
+          logo_url: string | null
+          name: string
+          notification_en: string | null
+          notification_ml: string | null
+          organizer: string
+          results_message_en: string
+          results_message_ml: string
+          show_countdown: boolean
+          slug: string
+          sort_order: number
+          start_at: string | null
+          status: string
+          subtitle_en: string
+          subtitle_ml: string
+          theme: string
+          time_limit_seconds: number
+          timer_mode: string
+          title_en: string
+          title_ml: string
+          updated_at: string
+        }
+        Insert: {
+          banner_url?: string | null
+          category?: string
+          created_at?: string
+          description_en?: string
+          description_ml?: string
+          enabled?: boolean
+          end_at?: string | null
+          event_date_label?: string
+          id?: string
+          instructions_en?: string
+          instructions_ml?: string
+          intro_en?: string | null
+          intro_ml?: string | null
+          is_open?: boolean
+          logo_url?: string | null
+          name: string
+          notification_en?: string | null
+          notification_ml?: string | null
+          organizer?: string
+          results_message_en?: string
+          results_message_ml?: string
+          show_countdown?: boolean
+          slug: string
+          sort_order?: number
+          start_at?: string | null
+          status?: string
+          subtitle_en?: string
+          subtitle_ml?: string
+          theme?: string
+          time_limit_seconds?: number
+          timer_mode?: string
+          title_en?: string
+          title_ml?: string
+          updated_at?: string
+        }
+        Update: {
+          banner_url?: string | null
+          category?: string
+          created_at?: string
+          description_en?: string
+          description_ml?: string
+          enabled?: boolean
+          end_at?: string | null
+          event_date_label?: string
+          id?: string
+          instructions_en?: string
+          instructions_ml?: string
+          intro_en?: string | null
+          intro_ml?: string | null
+          is_open?: boolean
+          logo_url?: string | null
+          name?: string
+          notification_en?: string | null
+          notification_ml?: string | null
+          organizer?: string
+          results_message_en?: string
+          results_message_ml?: string
+          show_countdown?: boolean
+          slug?: string
+          sort_order?: number
+          start_at?: string | null
+          status?: string
+          subtitle_en?: string
+          subtitle_ml?: string
+          theme?: string
+          time_limit_seconds?: number
+          timer_mode?: string
+          title_en?: string
+          title_ml?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       quiz_questions: {
         Row: {
           audio_url: string | null
           correct_index: number
           created_at: string
+          event_id: string
           explanation: string | null
           id: string
           image_url: string | null
@@ -1230,6 +1342,7 @@ export type Database = {
           audio_url?: string | null
           correct_index?: number
           created_at?: string
+          event_id: string
           explanation?: string | null
           id?: string
           image_url?: string | null
@@ -1242,6 +1355,7 @@ export type Database = {
           audio_url?: string | null
           correct_index?: number
           created_at?: string
+          event_id?: string
           explanation?: string | null
           id?: string
           image_url?: string | null
@@ -1250,7 +1364,15 @@ export type Database = {
           question_text?: string
           type?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "quiz_questions_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_events"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       quiz_settings: {
         Row: {
@@ -1347,6 +1469,7 @@ export type Database = {
           created_at: string
           display_name: string
           enabled: boolean
+          event_id: string
           id: string
           used: boolean
           used_at: string | null
@@ -1356,6 +1479,7 @@ export type Database = {
           created_at?: string
           display_name: string
           enabled?: boolean
+          event_id: string
           id?: string
           used?: boolean
           used_at?: string | null
@@ -1365,18 +1489,28 @@ export type Database = {
           created_at?: string
           display_name?: string
           enabled?: boolean
+          event_id?: string
           id?: string
           used?: boolean
           used_at?: string | null
           username?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "quiz_students_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_events"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       quiz_submissions: {
         Row: {
           address: string | null
           answers: Json
           correct_count: number
+          event_id: string
           extra_info: string | null
           full_name: string
           id: string
@@ -1391,6 +1525,7 @@ export type Database = {
           address?: string | null
           answers?: Json
           correct_count?: number
+          event_id: string
           extra_info?: string | null
           full_name: string
           id?: string
@@ -1405,6 +1540,7 @@ export type Database = {
           address?: string | null
           answers?: Json
           correct_count?: number
+          event_id?: string
           extra_info?: string | null
           full_name?: string
           id?: string
@@ -1415,7 +1551,15 @@ export type Database = {
           username?: string
           wrong_count?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "quiz_submissions_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_events"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       samaja_awards: {
         Row: {
@@ -1755,6 +1899,7 @@ export type Database = {
         Args: {
           p_address: string
           p_answers: Json
+          p_event_id: string
           p_extra_info: string
           p_full_name: string
           p_mobile: string
@@ -1762,7 +1907,10 @@ export type Database = {
         }
         Returns: Json
       }
-      validate_quiz_username: { Args: { p_username: string }; Returns: Json }
+      validate_quiz_username: {
+        Args: { p_event_id: string; p_username: string }
+        Returns: Json
+      }
     }
     Enums: {
       app_role: "super_admin" | "admin" | "moderator"
