@@ -201,12 +201,27 @@ function ControlPanel({ event, onSaved }: { event: QuizEvent; onSaved: () => voi
 
   return (
     <div className="grid md:grid-cols-2 gap-4">
+      <div className="bg-card border rounded-xl p-4 space-y-3 md:col-span-2">
+        <h3 className="font-semibold">ഇവന്റ് വിവരം</h3>
+        <div className="grid md:grid-cols-3 gap-2">
+          <Input value={local.name} onChange={e => setLocal({ ...local, name: e.target.value })} placeholder="ഇവന്റ് പേര് (admin)"/>
+          <Input value={local.slug} onChange={e => setLocal({ ...local, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-') })} placeholder="slug (url)"/>
+          <select value={local.status} onChange={e => setLocal({ ...local, status: e.target.value as any })} className="border rounded-md px-3 py-2 bg-background">
+            <option value="draft">draft</option>
+            <option value="active">active</option>
+            <option value="closed">closed</option>
+            <option value="archived">archived</option>
+          </select>
+        </div>
+        <p className="text-xs text-muted-foreground font-mono">പൊതു ലിങ്ക്: /quiz/{local.slug}</p>
+      </div>
       <div className="bg-card border rounded-xl p-4 space-y-3">
         <h3 className="font-semibold">പ്രവർത്തനനില</h3>
         <label className="flex items-center justify-between">Enable Quiz <Switch checked={local.enabled} onCheckedChange={v => setLocal({ ...local, enabled: v })}/></label>
         <label className="flex items-center justify-between">Open Quiz <Switch checked={local.is_open} onCheckedChange={v => setLocal({ ...local, is_open: v })}/></label>
         <label className="flex items-center justify-between">Show Countdown <Switch checked={local.show_countdown !== false} onCheckedChange={v => setLocal({ ...local, show_countdown: v })}/></label>
       </div>
+
       <div className="bg-card border rounded-xl p-4 space-y-3">
         <h3 className="font-semibold">സമയം</h3>
         <div>
