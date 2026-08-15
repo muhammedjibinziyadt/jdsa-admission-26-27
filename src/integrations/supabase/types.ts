@@ -1326,6 +1326,8 @@ export type Database = {
       }
       quiz_questions: {
         Row: {
+          accepted_answers: string[]
+          answer_type: string
           audio_url: string | null
           correct_index: number
           created_at: string
@@ -1333,12 +1335,16 @@ export type Database = {
           explanation: string | null
           id: string
           image_url: string | null
+          option_count: number
           options: Json
           order_index: number
           question_text: string
+          time_limit_seconds: number | null
           type: string
         }
         Insert: {
+          accepted_answers?: string[]
+          answer_type?: string
           audio_url?: string | null
           correct_index?: number
           created_at?: string
@@ -1346,12 +1352,16 @@ export type Database = {
           explanation?: string | null
           id?: string
           image_url?: string | null
+          option_count?: number
           options?: Json
           order_index?: number
           question_text?: string
+          time_limit_seconds?: number | null
           type?: string
         }
         Update: {
+          accepted_answers?: string[]
+          answer_type?: string
           audio_url?: string | null
           correct_index?: number
           created_at?: string
@@ -1359,9 +1369,11 @@ export type Database = {
           explanation?: string | null
           id?: string
           image_url?: string | null
+          option_count?: number
           options?: Json
           order_index?: number
           question_text?: string
+          time_limit_seconds?: number | null
           type?: string
         }
         Relationships: [
@@ -1510,13 +1522,17 @@ export type Database = {
           address: string | null
           answers: Json
           correct_count: number
+          duration_seconds: number | null
           event_id: string
           extra_info: string | null
           full_name: string
           id: string
-          mobile: string
+          mobile: string | null
+          photo_url: string | null
+          result_state: string
           score: number
           submitted_at: string
+          text_answers: Json
           total: number
           username: string
           wrong_count: number
@@ -1525,13 +1541,17 @@ export type Database = {
           address?: string | null
           answers?: Json
           correct_count?: number
+          duration_seconds?: number | null
           event_id: string
           extra_info?: string | null
           full_name: string
           id?: string
-          mobile: string
+          mobile?: string | null
+          photo_url?: string | null
+          result_state?: string
           score?: number
           submitted_at?: string
+          text_answers?: Json
           total?: number
           username: string
           wrong_count?: number
@@ -1540,13 +1560,17 @@ export type Database = {
           address?: string | null
           answers?: Json
           correct_count?: number
+          duration_seconds?: number | null
           event_id?: string
           extra_info?: string | null
           full_name?: string
           id?: string
-          mobile?: string
+          mobile?: string | null
+          photo_url?: string | null
+          result_state?: string
           score?: number
           submitted_at?: string
+          text_answers?: Json
           total?: number
           username?: string
           wrong_count?: number
@@ -1895,14 +1919,17 @@ export type Database = {
         Returns: boolean
       }
       increment_ai_usage: { Args: never; Returns: undefined }
+      quiz_normalize_answer: { Args: { p: string }; Returns: string }
       submit_quiz: {
         Args: {
-          p_address: string
+          p_address?: string
           p_answers: Json
+          p_duration_seconds?: number
           p_event_id: string
-          p_extra_info: string
+          p_extra_info?: string
           p_full_name: string
-          p_mobile: string
+          p_mobile?: string
+          p_photo_url?: string
           p_username: string
         }
         Returns: Json
