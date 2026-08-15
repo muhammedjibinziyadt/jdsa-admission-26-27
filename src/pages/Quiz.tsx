@@ -1,15 +1,18 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, AlertTriangle, Clock, CheckCircle2, Loader2, Send, CalendarDays, Info, Sparkles, ArrowRight } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, Clock, CheckCircle2, Loader2, Send, CalendarDays, Info, Sparkles, ArrowRight, Camera, ImageIcon, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useImageUpload } from '@/hooks/useImageUpload';
 import {
   useQuizEvent, usePublicQuizEvents, isQuizLive, fetchQuestions, validateUsername, submitQuiz,
   QuizQuestion, QuizEvent,
 } from '@/hooks/useQuiz';
+import { prefetchQuizMedia, preloadQuestionMedia } from '@/utils/quizMedia';
 import { getQuizTheme } from '@/utils/quizThemes';
 import { toast } from 'sonner';
+
 
 type Stage = 'landing' | 'gate' | 'warning' | 'profile' | 'quiz' | 'done';
 
@@ -89,9 +92,13 @@ function QuizEventPage({ slug }: { slug: string }) {
   const [displayName, setDisplayName] = useState('');
   const [validating, setValidating] = useState(false);
 
-  const [profile, setProfile] = useState({ full_name: '', mobile: '' });
+  const [profile, setProfile] = useState({ full_name: '' });
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const { uploadImage, uploading } = useImageUpload();
+  const photoRef = useRef<HTMLInputElement>(null);
+  const startedAtRef = useRef<number | null>(null);
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
-  const [answers, setAnswers] = useState<Record<string, number>>({});
+  const [answers, setAnswers] = useState<Record<string, number | string>>({});
   const [current, setCurrent] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
   const [submitting, setSubmitting] = useState(false);
@@ -106,31 +113,48 @@ function QuizEventPage({ slug }: { slug: string }) {
   const instructions = pick(event?.instructions_ml, event?.instructions_en);
   const resultsMessage = pick(event?.results_message_ml, event?.results_message_en);
 
+  /** Warm the media cache as soon as the landing page is visible */
+  useEffect(() => {
+    if (!event) return;
+    fetchQuestions(event.id).then(qs => prefetchQuizMedia(qs));
+  }, [event?.id]);
+
   useEffect(() => {
     if (stage === 'quiz' && event && questions.length === 0) {
       fetchQuestions(event.id).then(qs => {
         setQuestions(qs);
+        prefetchQuizMedia(qs);
         setTimeLeft(event.time_limit_seconds);
+        startedAtRef.current = Date.now();
       });
     }
   }, [stage, questions.length, event]);
 
+  /** Whole-quiz timer (per-question timing is handled inside QuizBody) */
   useEffect(() => {
     if (stage !== 'quiz' || !event || questions.length === 0) return;
-    if (timeLeft <= 0) {
-      if (event.timer_mode === 'whole_quiz') {
-        handleSubmit();
-      } else if (current < questions.length - 1) {
-        setCurrent(c => c + 1);
-        setTimeLeft(event.time_limit_seconds);
-      } else {
-        handleSubmit();
-      }
-      return;
-    }
+    if (event.timer_mode !== 'whole_quiz') return;
+    if (timeLeft <= 0) { handleSubmit(); return; }
     const id = setTimeout(() => setTimeLeft(s => s - 1), 1000);
     return () => clearTimeout(id);
-  }, [timeLeft, stage, event, questions.length, current]);
+  }, [timeLeft, stage, event, questions.length]);
+
+  const pickPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    e.target.value = '';
+    if (!f) return;
+    if (!['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(f.type)) {
+      toast.error(t('JPG, PNG അല്ലെങ്കിൽ WEBP ഫോട്ടോ മാത്രം', 'Only JPG, PNG or WEBP photos allowed'));
+      return;
+    }
+    if (f.size > 5 * 1024 * 1024) {
+      toast.error(t('ഫോട്ടോ 5 MB യിൽ കുറവായിരിക്കണം', 'Photo must be under 5 MB'));
+      return;
+    }
+    const url = await uploadImage(f, `quiz-photos/${event?.slug || 'event'}`);
+    if (url) setPhotoUrl(url);
+  };
+
 
   const handleGate = async () => {
     if (!event) return;

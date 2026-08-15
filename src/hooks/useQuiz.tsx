@@ -40,11 +40,18 @@ export interface QuizEvent {
   updated_at: string;
 }
 
+export type QuizAnswerType = 'mcq' | 'text';
+
 export interface QuizQuestion {
   id: string;
   event_id?: string;
   order_index: number;
   type: 'text' | 'image' | 'audio' | 'mcq';
+  answer_type: QuizAnswerType;
+  option_count: number;
+  accepted_answers: string[];
+  /** null / 0 => no time limit for this question */
+  time_limit_seconds: number | null;
   question_text: string;
   image_url: string | null;
   audio_url: string | null;
@@ -63,21 +70,28 @@ export interface QuizStudent {
   enabled?: boolean;
 }
 
+export type QuizResultState = 'visible' | 'hidden' | 'archived' | 'removed';
+
 export interface QuizSubmission {
   id: string;
   event_id?: string;
   username: string;
   full_name: string;
-  mobile: string;
+  mobile: string | null;
   address: string | null;
   extra_info: string | null;
-  answers: Record<string, number>;
+  answers: Record<string, number | string>;
+  text_answers?: Record<string, string>;
+  photo_url?: string | null;
+  duration_seconds?: number | null;
+  result_state?: QuizResultState;
   score: number;
   correct_count: number;
   wrong_count: number;
   total: number;
   submitted_at: string;
 }
+
 
 /** All events (admin) */
 export function useQuizEvents(includeArchived = true) {
@@ -204,20 +218,25 @@ export async function submitQuiz(payload: {
   event_id: string;
   username: string;
   full_name: string;
-  mobile: string;
+  mobile?: string | null;
   address?: string;
   extra_info?: string;
-  answers: Record<string, number>;
+  photo_url?: string | null;
+  duration_seconds?: number | null;
+  answers: Record<string, number | string>;
 }) {
   const { data, error } = await supabase.rpc('submit_quiz', {
     p_event_id: payload.event_id,
     p_username: payload.username.trim().toLowerCase(),
     p_full_name: payload.full_name,
-    p_mobile: payload.mobile,
+    p_mobile: payload.mobile || null,
     p_address: payload.address || null,
     p_extra_info: payload.extra_info || null,
+    p_photo_url: payload.photo_url || null,
+    p_duration_seconds: payload.duration_seconds ?? null,
     p_answers: payload.answers as any,
   });
   if (error) throw new Error(error.message);
+
   return data as unknown as { id: string; score: number; total: number; correct: number; wrong: number };
 }
