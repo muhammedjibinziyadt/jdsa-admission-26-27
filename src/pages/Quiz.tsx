@@ -1,15 +1,18 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, AlertTriangle, Clock, CheckCircle2, Loader2, Send, CalendarDays, Info, Sparkles, ArrowRight } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, Clock, CheckCircle2, Loader2, Send, CalendarDays, Info, Sparkles, ArrowRight, Camera, ImageIcon, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useImageUpload } from '@/hooks/useImageUpload';
 import {
   useQuizEvent, usePublicQuizEvents, isQuizLive, fetchQuestions, validateUsername, submitQuiz,
   QuizQuestion, QuizEvent,
 } from '@/hooks/useQuiz';
+import { prefetchQuizMedia, preloadQuestionMedia } from '@/utils/quizMedia';
 import { getQuizTheme } from '@/utils/quizThemes';
 import { toast } from 'sonner';
+
 
 type Stage = 'landing' | 'gate' | 'warning' | 'profile' | 'quiz' | 'done';
 
