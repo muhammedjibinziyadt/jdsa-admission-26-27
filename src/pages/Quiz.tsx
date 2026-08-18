@@ -181,7 +181,6 @@ function QuizEventPage({ slug }: { slug: string }) {
         event_id: event.id,
         username,
         full_name: profile.full_name || displayName,
-        mobile: profile.mobile,
         answers,
       });
       setResult({ score: res.score, total: res.total });
@@ -298,14 +297,10 @@ function QuizEventPage({ slug }: { slug: string }) {
               <label className="text-sm font-medium mb-1 block">{t('പൂർണ്ണനാമം', 'Full Name')} *</label>
               <Input value={profile.full_name} onChange={e => setProfile({ ...profile, full_name: e.target.value })} />
             </div>
-            <div>
-              <label className="text-sm font-medium mb-1 block">{t('മൊബൈൽ നമ്പർ', 'Mobile Number')} *</label>
-              <Input type="tel" value={profile.mobile} onChange={e => setProfile({ ...profile, mobile: e.target.value })} />
-            </div>
           </div>
           <Button
             onClick={() => {
-              if (!profile.full_name.trim() || !profile.mobile.trim()) { toast.error(t('പേരും മൊബൈൽ നമ്പറും ആവശ്യമാണ്', 'Name and mobile required')); return; }
+              if (!profile.full_name.trim()) { toast.error(t('പേര് ആവശ്യമാണ്', 'Name required')); return; }
               setStage('quiz');
             }}
             className="w-full"
@@ -449,8 +444,8 @@ function QuizBody({ questions, current, setCurrent, answers, setAnswers, perQues
   questions: QuizQuestion[];
   current: number;
   setCurrent: (n: number | ((n: number) => number)) => void;
-  answers: Record<string, number>;
-  setAnswers: (a: Record<string, number> | ((p: Record<string, number>) => Record<string, number>)) => void;
+  answers: Record<string, number | string>;
+  setAnswers: (a: Record<string, number | string> | ((p: Record<string, number | string>) => Record<string, number | string>)) => void;
   perQuestionSeconds: number | null;
   timeLeft: number | null;
   resetTimer: () => void;
