@@ -428,6 +428,7 @@ function QuestionsPanel({ eventId }: { eventId: string }) {
     id: '', order_index: items.length, type: 'mcq',
     question_text: '', image_url: null, audio_url: null,
     options: ['', '', '', ''], correct_index: 0,
+    answer_type: 'mcq', option_count: 4, accepted_answers: [], time_limit_seconds: null,
   });
   const startEdit = (q: QuizQuestion) => setEditing({ ...q, options: [...q.options] });
 
