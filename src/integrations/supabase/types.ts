@@ -1092,6 +1092,90 @@ export type Database = {
         }
         Relationships: []
       }
+      online_library_books: {
+        Row: {
+          author: string
+          book_language: string
+          category: string
+          cover_path: string | null
+          created_at: string
+          custom_page_height: number | null
+          custom_page_width: number | null
+          description: string
+          display_order: number
+          id: string
+          page_format: string
+          pdf_path: string
+          publication_date: string | null
+          reading_direction: string
+          title: string
+          total_pages: number
+          updated_at: string
+          visibility: string
+        }
+        Insert: {
+          author?: string
+          book_language?: string
+          category?: string
+          cover_path?: string | null
+          created_at?: string
+          custom_page_height?: number | null
+          custom_page_width?: number | null
+          description?: string
+          display_order?: number
+          id?: string
+          page_format?: string
+          pdf_path: string
+          publication_date?: string | null
+          reading_direction?: string
+          title: string
+          total_pages?: number
+          updated_at?: string
+          visibility?: string
+        }
+        Update: {
+          author?: string
+          book_language?: string
+          category?: string
+          cover_path?: string | null
+          created_at?: string
+          custom_page_height?: number | null
+          custom_page_width?: number | null
+          description?: string
+          display_order?: number
+          id?: string
+          page_format?: string
+          pdf_path?: string
+          publication_date?: string | null
+          reading_direction?: string
+          title?: string
+          total_pages?: number
+          updated_at?: string
+          visibility?: string
+        }
+        Relationships: []
+      }
+      online_library_settings: {
+        Row: {
+          id: string
+          password_hash: string | null
+          password_salt: string | null
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          password_hash?: string | null
+          password_salt?: string | null
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          password_hash?: string | null
+          password_salt?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       photoshop_classes: {
         Row: {
           class_number: number

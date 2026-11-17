@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1794890987801,
+      "tag": "0000_create_private_online_reading_library",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794891076773,
+      "tag": "0001_protect_main_admin_credentials_for_server_auth",
+      "breakpoints": true
+    }
+  ]
+}
