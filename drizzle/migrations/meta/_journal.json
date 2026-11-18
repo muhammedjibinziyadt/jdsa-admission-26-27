@@ -15,6 +15,13 @@
       "when": 1794891076773,
       "tag": "0001_protect_main_admin_credentials_for_server_auth",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794996393427,
+      "tag": "0002_secure_private_online_library_cover_storage",
+      "breakpoints": true
     }
   ]
 }

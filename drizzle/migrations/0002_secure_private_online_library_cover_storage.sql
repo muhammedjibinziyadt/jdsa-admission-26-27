@@ -1,0 +1,1 @@
+CREATE POLICY "Server functions manage private online library covers" ON storage.objects FOR ALL TO service_role USING (bucket_id = 'online-library-covers' AND auth.role() = 'service_role') WITH CHECK (bucket_id = 'online-library-covers' AND auth.role() = 'service_role');
