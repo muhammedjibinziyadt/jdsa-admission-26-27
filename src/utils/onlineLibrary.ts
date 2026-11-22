@@ -47,17 +47,23 @@ export async function libraryRequest<T>(action: string, payload: Record<string, 
 }
 
 export async function uploadLibraryFile(file: File, token: string, onProgress?: (progress: number) => void) {
-  const { path, token: uploadToken } = await libraryRequest<{ path: string; token: string }>('admin-upload-url', {
+  const { path, signedUrl } = await libraryRequest<{ path: string; signedUrl: string }>('admin-upload-url', {
     name: file.name,
     type: file.type,
     size: file.size,
   }, token);
-  const bucket = file.type === 'application/pdf' ? 'online-library' : 'online-library-covers';
-  const { error } = await supabase.storage.from(bucket).uploadToSignedUrl(path, uploadToken, file, {
-    contentType: file.type,
-    cacheControl: '3600',
+  await new Promise<void>((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('PUT', signedUrl);
+    xhr.setRequestHeader('Content-Type', file.type);
+    xhr.setRequestHeader('Cache-Control', 'max-age=3600');
+    xhr.upload.onprogress = event => {
+      if (event.lengthComputable) onProgress?.(Math.round((event.loaded / event.total) * 100));
+    };
+    xhr.onload = () => xhr.status >= 200 && xhr.status < 300 ? resolve() : reject(new Error('ഫയൽ അപ്‌ലോഡ് ചെയ്യാനായില്ല'));
+    xhr.onerror = () => reject(new Error('ഫയൽ അപ്‌ലോഡ് ചെയ്യാനായില്ല'));
+    xhr.send(file);
   });
-  if (error) throw error;
   onProgress?.(100);
   return path;
 }

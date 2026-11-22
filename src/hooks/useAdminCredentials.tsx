@@ -1,6 +1,8 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
+const ADMIN_TOKEN_KEY = 'online-library-admin-session';
+
 interface UpdateResult {
   success: boolean;
   error?: string;
@@ -35,15 +37,11 @@ export function useAdminCredentials() {
   // Verify current password
   const verifyCurrentPassword = async (currentPassword: string): Promise<boolean> => {
     try {
-      const { data, error } = await supabase
-        .from('admin_credentials')
-        .select('password_hash')
-        .eq('id', 'admin')
-        .maybeSingle();
-
+      const { data, error } = await supabase.functions.invoke('online-reading-library', { body: { action: 'admin-verify', password: currentPassword } });
       if (error) throw error;
-      
-      return data?.password_hash === currentPassword;
+      if (!data?.token) return false;
+      sessionStorage.setItem(ADMIN_TOKEN_KEY, data.token);
+      return true;
     } catch (error) {
       console.error('Password verification error:', error);
       return false;
@@ -53,12 +51,9 @@ export function useAdminCredentials() {
   // Get current email
   const getCurrentEmail = async (): Promise<string | null> => {
     try {
-      const { data, error } = await supabase
-        .from('admin_credentials')
-        .select('username')
-        .eq('id', 'admin')
-        .maybeSingle();
-
+      const token = sessionStorage.getItem(ADMIN_TOKEN_KEY);
+      if (!token) return null;
+      const { data, error } = await supabase.functions.invoke('online-reading-library', { body: { action: 'admin-current' }, headers: { Authorization: `Bearer ${token}` } });
       if (error) throw error;
       return data?.username || null;
     } catch (error) {
@@ -87,15 +82,9 @@ export function useAdminCredentials() {
       }
 
       // Update email
-      const { error } = await supabase
-        .from('admin_credentials')
-        .update({ 
-          username: newEmail.trim(),
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', 'admin');
-
+      const { data, error } = await supabase.functions.invoke('online-reading-library', { body: { action: 'admin-credentials', username: newEmail.trim(), currentPassword } });
       if (error) throw error;
+      if (data?.token) sessionStorage.setItem(ADMIN_TOKEN_KEY, data.token);
 
       return { success: true };
     } catch (error) {
@@ -132,15 +121,9 @@ export function useAdminCredentials() {
       }
 
       // Update password
-      const { error } = await supabase
-        .from('admin_credentials')
-        .update({ 
-          password_hash: newPassword,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', 'admin');
-
+      const { data, error } = await supabase.functions.invoke('online-reading-library', { body: { action: 'admin-credentials', newPassword, currentPassword } });
       if (error) throw error;
+      if (data?.token) sessionStorage.setItem(ADMIN_TOKEN_KEY, data.token);
 
       return { success: true };
     } catch (error) {

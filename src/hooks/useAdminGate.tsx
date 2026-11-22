@@ -15,12 +15,9 @@ export function useAdminGate() {
     if (isAuthenticated) { await action(); return; }
     const pwd = window.prompt('Admin password required:');
     if (!pwd) return;
-    const { data, error } = await supabase
-      .from('admin_credentials')
-      .select('id')
-      .eq('password_hash', pwd)
-      .maybeSingle();
-    if (error || !data) { toast.error('Wrong admin password'); return; }
+    const { data, error } = await supabase.functions.invoke('online-reading-library', { body: { action: 'admin-verify', password: pwd } });
+    if (error || !data?.token) { toast.error('Wrong admin password'); return; }
+    sessionStorage.setItem('online-library-admin-session', data.token);
     sessionStorage.setItem('adminLoggedIn', 'true');
     await action();
   }, [isAuthenticated]);

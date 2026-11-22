@@ -98,7 +98,8 @@ Deno.serve(async (req) => {
       }
       const { error: updateError } = await supabase.from('admin_credentials').update(update).eq('id', 'admin')
       if (updateError) throw updateError
-      return reply({ success: true })
+      const token = await signPayload({ aud: 'admin', exp: Date.now() + 8 * 60 * 60 * 1000, username: update.username ?? data.username, id: data.id })
+      return reply({ success: true, token })
     }
 
     const authorization = req.headers.get('authorization')?.replace(/^Bearer\s+/i, '') ?? ''
@@ -234,7 +235,17 @@ Deno.serve(async (req) => {
         const bucket = type === 'application/pdf' ? BUCKET : COVER_BUCKET
         const { data, error } = await supabase.storage.from(bucket).createSignedUploadUrl(path)
         if (error) throw error
-        return reply({ path, token: data.token })
+        return reply({ path, token: data.token, signedUrl: data.signedUrl })
+      }
+
+      if (action === 'admin-read-url') {
+        const id = typeof input.id === 'string' ? input.id : ''
+        const { data: book, error } = await supabase.from('online_library_books').select('pdf_path').eq('id', id).maybeSingle()
+        if (error) throw error
+        if (!book) return reply({ error: 'Book not found' }, 404)
+        const { data: signed, error: signError } = await supabase.storage.from(BUCKET).createSignedUrl(book.pdf_path, 30 * 60)
+        if (signError) throw signError
+        return reply({ url: signed.signedUrl })
       }
 
       return reply({ error: 'Unknown administrator action' }, 400)
