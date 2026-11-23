@@ -126,20 +126,21 @@ Deno.serve(async (req) => {
       if (action === 'admin-list') {
         const { data: books, error } = await supabase.from('online_library_books').select('*').order('display_order').order('created_at', { ascending: false })
         if (error) throw error
-        const storageBytes = await Promise.all([BUCKET, COVER_BUCKET].map(async bucket => {
-          const { data: roots, error: fileError } = await supabase.storage.from(bucket).list('', { limit: 1000 })
+        const withCovers = await Promise.all((books ?? []).map(async book => {
+          if (!book.cover_path) return { ...book, cover_url: null }
+          const { data: cover } = await supabase.storage.from(COVER_BUCKET).createSignedUrl(book.cover_path, 60 * 60)
+          return { ...book, cover_url: cover?.signedUrl ?? null }
+        }))
+        const bucketBytes = async (bucket: string, prefix = ''): Promise<number> => {
+          const { data: entries, error: fileError } = await supabase.storage.from(bucket).list(prefix, { limit: 1000 })
           if (fileError) throw fileError
-          let size = 0
-          for (const item of roots ?? []) {
-            if (item.id) size += Number(item.metadata?.size ?? 0)
-            else {
-              const { data: nested } = await supabase.storage.from(bucket).list(item.name, { limit: 1000 })
-              size += (nested ?? []).reduce((sum, file) => sum + Number(file.metadata?.size ?? 0), 0)
-            }
-          }
-          return size
-        })).then(values => values.reduce((sum, value) => sum + value, 0))
-        return reply({ books: books ?? [], storageBytes })
+          const nested = await Promise.all((entries ?? []).map(item => item.id
+            ? Promise.resolve(Number(item.metadata?.size ?? 0))
+            : bucketBytes(bucket, prefix ? `${prefix}/${item.name}` : item.name)))
+          return nested.reduce((sum, size) => sum + size, 0)
+        }
+        const storageBytes = await Promise.all([bucketBytes(BUCKET), bucketBytes(COVER_BUCKET)]).then(values => values.reduce((sum, value) => sum + value, 0))
+        return reply({ books: withCovers, storageBytes })
       }
 
       if (action === 'admin-save') {
@@ -231,7 +232,7 @@ Deno.serve(async (req) => {
         if (!Number.isFinite(size) || size <= 0 || size > maxSize) return reply({ error: type === 'application/pdf' ? 'PDF must be 500 MB or smaller' : 'Cover must be 10 MB or smaller' }, 400)
         const safeName = name.replace(/[^a-zA-Z0-9._-]/g, '_').slice(-100)
         const folder = type === 'application/pdf' ? 'pdf' : 'covers'
-        const path = `books/${folder}/${crypto.randomUUID()}-${safeName}`
+        const path = `${type === 'application/pdf' ? 'books' : 'covers'}/${folder}/${crypto.randomUUID()}-${safeName}`
         const bucket = type === 'application/pdf' ? BUCKET : COVER_BUCKET
         const { data, error } = await supabase.storage.from(bucket).createSignedUploadUrl(path)
         if (error) throw error

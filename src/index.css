@@ -420,6 +420,25 @@
 .sparkle-2 { top: 26px; right: 24px; animation-delay: 1s; }
 .sparkle-3 { bottom: 30px; right: 40px; animation-delay: 2s; }
 
+@layer components {
+  .reader-page {
+    transform-origin: left center;
+    backface-visibility: hidden;
+    box-shadow: var(--shadow-elevated);
+  }
+  [dir="rtl"] .reader-page { transform-origin: right center; }
+  .reader-page-turn { animation: readerPageTurn 420ms cubic-bezier(.2,.7,.2,1); }
+  .reader-landscape { padding: 0.5rem; }
+  .reader-landscape .reader-page { max-width: 100%; }
+  @keyframes readerPageTurn {
+    0% { opacity: 0.7; transform: perspective(1000px) rotateY(8deg); }
+    100% { opacity: 1; transform: perspective(1000px) rotateY(0deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reader-page-turn { animation: none; }
+  }
+}
+
 /* ---- Sermon ---- */
 .mosque {
   width: 80px;

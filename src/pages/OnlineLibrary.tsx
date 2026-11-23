@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ArrowLeftToLine, ArrowRight, BookOpen, BookText, ChevronDown, ChevronLeft, ChevronRight, Eye, EyeOff, Expand, LibraryBig, LoaderCircle, LockKeyhole, Maximize, Minus, RotateCcw, Search, Shrink, X, ZoomIn, ZoomOut } from 'lucide-react';
+import { ArrowLeft, BookOpen, BookText, ChevronLeft, ChevronRight, Eye, EyeOff, Expand, LibraryBig, LoaderCircle, LockKeyhole, Minus, RotateCcw, Search, Shrink, X, ZoomIn, ZoomOut } from 'lucide-react';
 import { GlobalWorkerOptions, getDocument, type PDFDocumentProxy } from 'pdfjs-dist';
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { Button } from '@/components/ui/button';
@@ -27,7 +27,6 @@ function Reader({ book, token, onClose }: { book: OnlineBook; token: string; onC
 
   useEffect(() => {
     let cancelled = false;
-    let task: ReturnType<PDFDocumentProxy['getPage']> extends Promise<infer _T> ? { cancel: () => void } | null : null = null;
     const load = async () => {
       setLoading(true);
       setError('');
@@ -50,7 +49,6 @@ function Reader({ book, token, onClose }: { book: OnlineBook; token: string; onC
     void load();
     return () => {
       cancelled = true;
-      if (task) task.cancel();
       const document = pdfRef.current;
       pdfRef.current = null;
       if (document) void document.destroy();
@@ -246,6 +244,7 @@ export default function OnlineLibrary() {
                 <div className="space-y-2 p-3 sm:p-4">
                   <h3 className="line-clamp-2 min-h-10 font-display text-base font-semibold sm:text-lg">{book.title}</h3>
                   <p className="truncate text-xs text-muted-foreground">{book.author || 'രചയിതാവിനെ നൽകിയിട്ടില്ല'}</p>
+                  {book.description && <p className="line-clamp-2 text-xs leading-5 text-muted-foreground">{book.description}</p>}
                   <p className="text-xs text-muted-foreground">{book.total_pages} പേജുകൾ</p>
                   <Button size="sm" className="w-full" disabled={opening} onClick={() => void openBook(book)}><BookOpen className="mr-2 h-4 w-4" />വായിക്കുക</Button>
                 </div>

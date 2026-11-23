@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ShoppingCart, Loader2, CheckCircle, Upload, CreditCard } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Loader2, CheckCircle, Upload, CreditCard, BookOpen, LibraryBig } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -129,6 +129,7 @@ function BuyModal({ book, onClose }: { book: Book; onClose: () => void }) {
 export default function BookStore() {
   const { books, loading } = useBookStore();
   const [buyingBook, setBuyingBook] = useState<Book | null>(null);
+  const [section, setSection] = useState<'choice' | 'offline'>('choice');
 
   const activeBooks = books.filter(b => b.active);
 
@@ -152,6 +153,25 @@ export default function BookStore() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
+        {section === 'choice' ? (
+          <div className="mx-auto grid max-w-5xl gap-5 md:grid-cols-2">
+            <button type="button" onClick={() => setSection('offline')} className="group flex min-h-60 flex-col items-start justify-between border border-amber-200 bg-card p-6 text-left shadow-soft transition-shadow hover:shadow-elevated sm:p-8">
+              <span className="flex h-12 w-12 items-center justify-center rounded-sm bg-primary/10 text-primary"><ShoppingCart className="h-6 w-6" /></span>
+              <span><span className="block font-display text-2xl font-semibold text-foreground">ഓഫ്‌ലൈൻ ബുക്ക് സ്റ്റോർ</span><span className="mt-2 block text-sm text-muted-foreground">അച്ചടിച്ച പുസ്തകങ്ങൾ പരിശോധിച്ച് ഓർഡർ ചെയ്യുക.</span></span>
+              <span className="flex items-center gap-2 text-sm font-semibold text-primary">പുസ്തകങ്ങൾ കാണുക <ArrowLeft className="h-4 w-4 rotate-180 transition-transform group-hover:translate-x-1" /></span>
+            </button>
+            <Link to="/online-library" className="group flex min-h-60 flex-col items-start justify-between border border-amber-200 bg-card p-6 shadow-soft transition-shadow hover:shadow-elevated sm:p-8">
+              <span className="flex h-12 w-12 items-center justify-center rounded-sm bg-secondary text-secondary-foreground"><LibraryBig className="h-6 w-6" /></span>
+              <span><span className="block font-display text-2xl font-semibold text-foreground">ഓൺലൈൻ വായനശാല</span><span className="mt-2 block text-sm text-muted-foreground">അംഗീകൃത പ്രവേശനത്തോടെ പുസ്തകങ്ങൾ ഓൺലൈനായി വായിക്കുക.</span></span>
+              <span className="flex items-center gap-2 text-sm font-semibold text-primary">വായനശാല തുറക്കുക <BookOpen className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span>
+            </Link>
+          </div>
+        ) : (
+        <>
+        <div className="mb-6 flex items-center justify-between gap-3">
+          <Button variant="outline" size="sm" onClick={() => setSection('choice')}><ArrowLeft className="mr-2 h-4 w-4" />വിഭാഗങ്ങൾ</Button>
+          <p className="text-sm font-medium text-muted-foreground">ഓഫ്‌ലൈൻ ബുക്ക് സ്റ്റോർ</p>
+        </div>
         {loading ? (
           <div className="flex justify-center py-12">
             <Loader2 className="w-8 h-8 animate-spin text-amber-700" />
@@ -182,6 +202,8 @@ export default function BookStore() {
               </div>
             ))}
           </div>
+        )}
+        </>
         )}
       </div>
 

@@ -9,6 +9,7 @@ import AdmissionForm from "./pages/AdmissionForm";
 import StudentsPortal from "./pages/StudentsPortal";
 import Suffa from "./pages/Suffa";
 import BookStore from "./pages/BookStore";
+import OnlineLibrary from "./pages/OnlineLibrary";
 import CommitteeHub from "./pages/CommitteeHub";
 import Quiz from "./pages/Quiz";
 import NotFound from "./pages/NotFound";
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/suffa" element={<Suffa />} />
           <Route path="/students-portal" element={<StudentsPortal />} />
           <Route path="/bookstore" element={<BookStore />} />
+          <Route path="/online-library" element={<OnlineLibrary />} />
           <Route path="/committee" element={<CommitteeHub />} />
           <Route path="/committee/:id" element={<CommitteeHub />} />
           <Route path="/quiz" element={<Quiz />} />
