@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
-const ADMIN_TOKEN_KEY = 'online-library-admin-session';
+const ADMIN_TOKEN_KEY = 'main-admin-session';
+const LIBRARY_ADMIN_TOKEN_KEY = 'online-library-admin-session';
 
 export function useAdminAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -17,10 +18,15 @@ export function useAdminAuth() {
       .then(({ data, error }) => {
         const valid = !error && typeof data?.username === 'string';
         setIsAuthenticated(valid);
-        if (!valid) sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+        if (!valid) {
+          sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+          sessionStorage.removeItem(LIBRARY_ADMIN_TOKEN_KEY);
+          sessionStorage.removeItem('adminLoggedIn');
+        }
       })
       .catch(() => {
         sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+        sessionStorage.removeItem(LIBRARY_ADMIN_TOKEN_KEY);
         setIsAuthenticated(false);
       })
       .finally(() => setLoading(false));
@@ -32,6 +38,7 @@ export function useAdminAuth() {
       if (error) throw error;
       if (data?.token) {
         sessionStorage.setItem(ADMIN_TOKEN_KEY, data.token);
+        sessionStorage.setItem(LIBRARY_ADMIN_TOKEN_KEY, data.token);
         sessionStorage.setItem('adminLoggedIn', 'true');
         setIsAuthenticated(true);
         return true;
@@ -46,6 +53,7 @@ export function useAdminAuth() {
   const logout = useCallback(() => {
     sessionStorage.removeItem('adminLoggedIn');
     sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+    sessionStorage.removeItem(LIBRARY_ADMIN_TOKEN_KEY);
     setIsAuthenticated(false);
   }, []);
 

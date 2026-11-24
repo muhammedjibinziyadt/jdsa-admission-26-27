@@ -1,7 +1,8 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
-const ADMIN_TOKEN_KEY = 'online-library-admin-session';
+const ADMIN_TOKEN_KEY = 'main-admin-session';
+const LIBRARY_ADMIN_TOKEN_KEY = 'online-library-admin-session';
 
 interface UpdateResult {
   success: boolean;
@@ -41,6 +42,7 @@ export function useAdminCredentials() {
       if (error) throw error;
       if (!data?.token) return false;
       sessionStorage.setItem(ADMIN_TOKEN_KEY, data.token);
+      sessionStorage.setItem(LIBRARY_ADMIN_TOKEN_KEY, data.token);
       return true;
     } catch (error) {
       console.error('Password verification error:', error);
@@ -84,7 +86,10 @@ export function useAdminCredentials() {
       // Update email
       const { data, error } = await supabase.functions.invoke('online-reading-library', { body: { action: 'admin-credentials', username: newEmail.trim(), currentPassword } });
       if (error) throw error;
-      if (data?.token) sessionStorage.setItem(ADMIN_TOKEN_KEY, data.token);
+      if (data?.token) {
+        sessionStorage.setItem(ADMIN_TOKEN_KEY, data.token);
+        sessionStorage.setItem(LIBRARY_ADMIN_TOKEN_KEY, data.token);
+      }
 
       return { success: true };
     } catch (error) {
@@ -123,7 +128,10 @@ export function useAdminCredentials() {
       // Update password
       const { data, error } = await supabase.functions.invoke('online-reading-library', { body: { action: 'admin-credentials', newPassword, currentPassword } });
       if (error) throw error;
-      if (data?.token) sessionStorage.setItem(ADMIN_TOKEN_KEY, data.token);
+      if (data?.token) {
+        sessionStorage.setItem(ADMIN_TOKEN_KEY, data.token);
+        sessionStorage.setItem(LIBRARY_ADMIN_TOKEN_KEY, data.token);
+      }
 
       return { success: true };
     } catch (error) {

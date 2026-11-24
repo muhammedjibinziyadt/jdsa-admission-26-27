@@ -424,7 +424,6 @@
   .reader-page {
     transform-origin: left center;
     backface-visibility: hidden;
-    box-shadow: var(--shadow-elevated);
   }
   [dir="rtl"] .reader-page { transform-origin: right center; }
   .reader-page-turn { animation: readerPageTurn 420ms cubic-bezier(.2,.7,.2,1); }

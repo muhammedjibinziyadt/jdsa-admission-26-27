@@ -85,12 +85,12 @@ export default function OnlineLibraryAdmin({ enabled }: { enabled: boolean }) {
       const task = getDocument({ data: await file.arrayBuffer() });
       const pdf = await task.promise;
       if (pdf.numPages > 500) {
-        await pdf.destroy();
+        await task.destroy();
         toast.error('ഒരു പുസ്തകത്തിന് പരമാവധി 500 പേജുകൾ');
         return;
       }
       setDraft(current => ({ ...current, total_pages: pdf.numPages, title: current.title || file.name.replace(/\.pdf$/i, '') }));
-      await pdf.destroy();
+      await task.destroy();
       setPdfFile(file);
     } catch {
       toast.error('ഈ PDF വായിക്കാനായില്ല');
@@ -179,8 +179,8 @@ export default function OnlineLibraryAdmin({ enabled }: { enabled: boolean }) {
     if (!other) return;
     try {
       await Promise.all([
-        libraryRequest('admin-save', { book: { ...book, display_order: other.display_order } }, session.token),
-        libraryRequest('admin-save', { book: { ...other, display_order: book.display_order } }, session.token),
+        libraryRequest('admin-save', { book: { ...book, display_order: index + direction } }, session.token),
+        libraryRequest('admin-save', { book: { ...other, display_order: index } }, session.token),
       ]);
       await refresh();
     } catch (error) {

@@ -17,6 +17,7 @@ export function useAdminGate() {
     if (!pwd) return;
     const { data, error } = await supabase.functions.invoke('online-reading-library', { body: { action: 'admin-verify', password: pwd } });
     if (error || !data?.token) { toast.error('Wrong admin password'); return; }
+    sessionStorage.setItem('main-admin-session', data.token);
     sessionStorage.setItem('online-library-admin-session', data.token);
     sessionStorage.setItem('adminLoggedIn', 'true');
     await action();

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, BookOpen, BookText, ChevronLeft, ChevronRight, Eye, EyeOff, Expand, LibraryBig, LoaderCircle, LockKeyhole, Minus, RotateCcw, Search, Shrink, X, ZoomIn, ZoomOut } from 'lucide-react';
-import { GlobalWorkerOptions, getDocument, type PDFDocumentProxy } from 'pdfjs-dist';
+import { GlobalWorkerOptions, getDocument, type PDFDocumentLoadingTask, type PDFDocumentProxy, type RenderTask } from 'pdfjs-dist';
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,6 +12,7 @@ import { libraryRequest, OnlineBook } from '@/utils/onlineLibrary';
 GlobalWorkerOptions.workerSrc = workerUrl;
 
 function Reader({ book, token, onClose }: { book: OnlineBook; token: string; onClose: () => void }) {
+  const readerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const pdfRef = useRef<PDFDocumentProxy | null>(null);
@@ -24,17 +25,21 @@ function Reader({ book, token, onClose }: { book: OnlineBook; token: string; onC
   const [error, setError] = useState('');
   const [turning, setTurning] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
+  const [paperDimensions, setPaperDimensions] = useState({ width: 0, height: 0 });
+  const [layoutVersion, setLayoutVersion] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
+    let loadingTask: PDFDocumentLoadingTask | null = null;
     const load = async () => {
       setLoading(true);
       setError('');
       try {
         const { url } = await libraryRequest<{ url: string }>('read-url', { id: book.id }, token);
-        const document = await getDocument({ url }).promise;
+        loadingTask = getDocument({ url });
+        const document = await loadingTask.promise;
         if (cancelled) {
-          await document.destroy();
+          await loadingTask.destroy();
           return;
         }
         pdfRef.current = document;
@@ -49,15 +54,14 @@ function Reader({ book, token, onClose }: { book: OnlineBook; token: string; onC
     void load();
     return () => {
       cancelled = true;
-      const document = pdfRef.current;
       pdfRef.current = null;
-      if (document) void document.destroy();
+      if (loadingTask) void loadingTask.destroy();
     };
   }, [book.id, token]);
 
   useEffect(() => {
     let cancelled = false;
-    let renderTask: { cancel: () => void } | null = null;
+    let renderTask: RenderTask | null = null;
     const drawPage = async () => {
       const pdf = pdfRef.current;
       const canvas = canvasRef.current;
@@ -67,12 +71,24 @@ function Reader({ book, token, onClose }: { book: OnlineBook; token: string; onC
       try {
         const pdfPage = await pdf.getPage(page);
         const baseViewport = pdfPage.getViewport({ scale: 1 });
-        const availableWidth = Math.max(260, stage.clientWidth - 48);
-        const availableHeight = Math.max(300, stage.clientHeight - 48);
-        const widthScale = availableWidth / baseViewport.width;
-        const heightScale = availableHeight / baseViewport.height;
-        const fitScale = fitMode === 'width' ? widthScale : fitMode === 'screen' ? Math.min(widthScale, heightScale) : Math.min(widthScale, heightScale);
+        const safeInset = fitMode === 'screen' ? 24 : 64;
+        const availableWidth = Math.max(260, stage.clientWidth - safeInset);
+        const availableHeight = Math.max(300, stage.clientHeight - safeInset);
+        const nativeRatio = baseViewport.width / baseViewport.height;
+        const paperRatio = book.page_format === 'a4-landscape' || book.page_format === 'a5-landscape'
+          ? 297 / 210
+          : book.page_format === 'a4-portrait' || book.page_format === 'a5-portrait'
+            ? 210 / 297
+            : book.page_format === 'custom' && book.custom_page_width && book.custom_page_height
+              ? book.custom_page_width / book.custom_page_height
+              : nativeRatio;
+        const paperWidth = Math.min(availableWidth, availableHeight * paperRatio);
+        const paperHeight = paperWidth / paperRatio;
+        const widthScale = paperWidth / baseViewport.width;
+        const heightScale = paperHeight / baseViewport.height;
+        const fitScale = fitMode === 'width' ? widthScale : Math.min(widthScale, heightScale);
         const viewport = pdfPage.getViewport({ scale: fitScale * scale });
+        setPaperDimensions({ width: paperWidth, height: paperHeight });
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         canvas.width = Math.floor(viewport.width * dpr);
         canvas.height = Math.floor(viewport.height * dpr);
@@ -81,7 +97,7 @@ function Reader({ book, token, onClose }: { book: OnlineBook; token: string; onC
         const context = canvas.getContext('2d');
         if (!context) throw new Error('ഈ പേജ് കാണിക്കാൻ സാധിക്കുന്നില്ല');
         const transform = dpr === 1 ? undefined : [dpr, 0, 0, dpr, 0, 0] as [number, number, number, number, number, number];
-        renderTask = pdfPage.render({ canvasContext: context, viewport, transform });
+        renderTask = pdfPage.render({ canvas, canvasContext: context, viewport, transform });
         await renderTask.promise;
         if (!cancelled) {
           localStorage.setItem(`library-page-${book.id}`, String(page));
@@ -98,12 +114,18 @@ function Reader({ book, token, onClose }: { book: OnlineBook; token: string; onC
       cancelled = true;
       renderTask?.cancel();
     };
-  }, [book.id, fitMode, landscape, page, scale]);
+  }, [book.custom_page_height, book.custom_page_width, book.id, book.page_format, fitMode, landscape, layoutVersion, page, scale]);
 
   useEffect(() => {
     const update = () => setFullscreen(Boolean(document.fullscreenElement));
     document.addEventListener('fullscreenchange', update);
     return () => document.removeEventListener('fullscreenchange', update);
+  }, []);
+
+  useEffect(() => {
+    const resize = () => setLayoutVersion(value => value + 1);
+    window.addEventListener('resize', resize);
+    return () => window.removeEventListener('resize', resize);
   }, []);
 
   const turn = (delta: number) => {
@@ -115,13 +137,23 @@ function Reader({ book, token, onClose }: { book: OnlineBook; token: string; onC
   };
 
   const toggleFullscreen = async () => {
-    if (!stageRef.current) return;
-    if (!document.fullscreenElement) await stageRef.current.requestFullscreen?.();
+    if (!readerRef.current) return;
+    if (!document.fullscreenElement) await readerRef.current.requestFullscreen?.();
     else await document.exitFullscreen?.();
   };
 
+  const toggleOrientation = async () => {
+    const next = !landscape;
+    setLandscape(next);
+    setFitMode(next ? 'width' : 'page');
+    const orientation = screen.orientation as ScreenOrientation & { lock?: (value: string) => Promise<void> };
+    if (document.fullscreenElement && orientation.lock) {
+      try { await orientation.lock(next ? 'landscape' : 'portrait'); } catch { /* The browser may not permit orientation locking. */ }
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-[70] flex flex-col bg-background" dir={book.reading_direction}>
+    <div ref={readerRef} className="fixed inset-0 z-[70] flex flex-col bg-background" dir={book.reading_direction}>
       <header className="flex min-h-16 items-center gap-3 border-b border-border bg-card px-3 sm:px-6">
         <Button variant="ghost" size="icon" aria-label="Close reader" onClick={onClose}><X className="h-5 w-5" /></Button>
         <div className="min-w-0 flex-1">
@@ -132,20 +164,20 @@ function Reader({ book, token, onClose }: { book: OnlineBook; token: string; onC
         <span className="min-w-12 text-center text-xs text-muted-foreground">{Math.round(scale * 100)}%</span>
         <Button variant="outline" size="icon" aria-label="Zoom in" onClick={() => setScale(value => Math.min(2.5, Number((value + 0.15).toFixed(2))))}><ZoomIn className="h-4 w-4" /></Button>
         <Select value={fitMode} onValueChange={setFitMode}>
-          <SelectTrigger className="hidden w-36 sm:flex"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="w-28 sm:w-36"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="page">Fit to page</SelectItem>
             <SelectItem value="width">Fit to width</SelectItem>
             <SelectItem value="screen">Fit to screen</SelectItem>
           </SelectContent>
         </Select>
-        <Button variant="outline" size="icon" aria-label={landscape ? 'Portrait reading mode' : 'Landscape reading mode'} onClick={() => setLandscape(value => !value)}><RotateCcw className="h-4 w-4" /></Button>
+        <Button variant="outline" size="icon" aria-label={landscape ? 'Portrait reading mode' : 'Landscape reading mode'} onClick={() => void toggleOrientation()}><RotateCcw className="h-4 w-4" /></Button>
         <Button variant="outline" size="icon" aria-label={fullscreen ? 'Exit fullscreen' : 'Enter fullscreen'} onClick={() => void toggleFullscreen()}>{fullscreen ? <Shrink className="h-4 w-4" /> : <Expand className="h-4 w-4" />}</Button>
       </header>
       <main ref={stageRef} className={`relative flex min-h-0 flex-1 items-center justify-center overflow-auto bg-muted/50 p-3 sm:p-8 ${landscape ? 'reader-landscape' : ''}`}>
         <div className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-4 -translate-x-1/2 bg-gradient-to-r from-foreground/10 via-foreground/5 to-transparent md:block" />
         {loading && <div className="absolute z-10 flex items-center gap-2 rounded-md bg-card/90 px-4 py-3 text-sm text-muted-foreground shadow-soft"><LoaderCircle className="h-4 w-4 animate-spin" /> പേജ് തുറക്കുന്നു…</div>}
-        {error ? <p role="alert" className="max-w-md text-center text-sm text-destructive">{error}</p> : <canvas key={page} ref={canvasRef} className={`reader-page relative block max-h-full bg-card shadow-elevated ${turning ? 'reader-page-turn' : ''}`} />}
+        {error ? <p role="alert" className="max-w-md text-center text-sm text-destructive">{error}</p> : <div className="reader-paper flex max-h-full max-w-full items-center justify-center bg-card shadow-elevated" style={{ width: paperDimensions.width, height: paperDimensions.height }}><canvas key={page} ref={canvasRef} className={`reader-page relative block bg-card ${turning ? 'reader-page-turn' : ''}`} /></div>}
       </main>
       <footer className="flex min-h-16 items-center justify-center gap-4 border-t border-border bg-card px-3">
         <Button variant="outline" size="icon" aria-label="Previous page" disabled={page <= 1 || loading} onClick={() => turn(-1)}><ChevronLeft className="h-4 w-4" /></Button>
@@ -180,7 +212,8 @@ export default function OnlineLibrary() {
   const submitPassword = async (event: React.FormEvent) => {
     event.preventDefault();
     setSubmitting(true);
-    await unlock(password);
+    const success = await unlock(password);
+    if (success) setPassword('');
     setSubmitting(false);
   };
 
