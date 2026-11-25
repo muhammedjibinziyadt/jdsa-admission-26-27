@@ -235,7 +235,7 @@ export default function OnlineLibrary() {
         <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-4 sm:px-6">
           <Link to="/bookstore" aria-label="Back to bookstore" className="rounded-sm p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"><ArrowLeft className="h-5 w-5" /></Link>
           <div className="flex h-11 w-11 items-center justify-center rounded-sm bg-primary/10 text-primary"><LibraryBig className="h-6 w-6" /></div>
-          <div className="min-w-0 flex-1"><p className="text-xs font-medium uppercase tracking-[0.12em] text-primary">Jawharathul Uloom Suffa Dars</p><h1 className="truncate font-display text-xl font-bold sm:text-2xl">ഓൺലൈൻ വായനശാല</h1></div>
+          <div className="min-w-0 flex-1"><p className="hidden text-xs font-medium uppercase tracking-[0.12em] text-primary sm:block">Jawharathul Uloom Suffa Dars</p><h1 className="whitespace-normal break-words font-display text-base font-bold leading-tight sm:text-2xl">ഓൺലൈൻ വായനശാല</h1></div>
           {token && <Button variant="outline" size="sm" onClick={lock}><LockKeyhole className="mr-2 h-4 w-4" /> ലോക്ക്</Button>}
         </div>
       </header>
